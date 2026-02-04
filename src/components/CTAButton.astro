@@ -1,0 +1,34 @@
+---
+import type { CTAKind } from '@/config';
+import { config } from '@/config';
+
+type Props = {
+  kind: CTAKind;
+  label?: string;
+  class?: string;
+  subtle?: boolean;
+};
+
+const { kind, label, subtle } = Astro.props;
+const href = kind === 'line' ? config.urls.lineAddFriend : config.urls.booking;
+const defaultLabel =
+  kind === 'line' ? 'LINEで無料面談を相談する' : '予約ページで日程を選ぶ';
+const buttonClass =
+  kind === 'line'
+    ? subtle
+      ? 'btn subtle'
+      : 'btn success'
+    : subtle
+      ? 'btn subtle'
+      : 'btn primary';
+---
+<a
+  class={[buttonClass, Astro.props.class].filter(Boolean).join(' ')}
+  href={href}
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  {label ?? defaultLabel}
+  <span aria-hidden="true">→</span>
+</a>
+

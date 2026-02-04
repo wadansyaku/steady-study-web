@@ -1,0 +1,109 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CTAButton from '@/components/CTAButton.astro';
+import { config } from '@/config';
+
+const title = `法人AI（自動化）｜${config.site.name}`;
+const description =
+  '業務の自動化・AI活用の受託。小さなPoCから段階的に進め、現場で回る形に落とし込みます。';
+---
+<BaseLayout title={title} description={description}>
+  <section class="section hero">
+    <div class="container">
+      <div class="grid cols-2 hero-grid">
+        <div>
+          <div class="pill">法人向け（簡潔）</div>
+          <h1 class="h1">AI自動化を、現場で回る形に。</h1>
+          <p class="lead">
+            要件が曖昧でも大丈夫です。現状の業務フローを整理し、リスクと効果のバランスを見ながら、小さく始めます。
+          </p>
+          <div class="actions">
+            <a class="btn primary" href="/contact">問い合わせ窓口</a>
+            <CTAButton kind="line" label="LINEで軽く相談" subtle />
+          </div>
+          <p class="kicker">※教育事業とはページを分けています。法人案件は別枠で対応します。</p>
+        </div>
+        <div class="card panel">
+          <div class="panel-inner">
+            <h2 class="h2">提供領域</h2>
+            <ul class="clean">
+              <li>定型業務の自動化（入力・集計・通知など）</li>
+              <li>社内ナレッジの検索/要約（LLM活用）</li>
+              <li>問い合わせ対応の半自動化（一次切り分け）</li>
+              <li>PoC → 段階導入 → 運用設計</li>
+            </ul>
+            <div class="divider"></div>
+            <div class="muted">
+              セキュリティ・機密：必要に応じてNDA/権限設計/ログ設計を前提に進めます。
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section compact">
+    <div class="container">
+      <h2 class="h2">進め方（例）</h2>
+      <div class="grid cols-3">
+        <div class="card step">
+          <div class="step-inner">
+            <div class="step-title">1. ヒアリング</div>
+            <p class="muted">目的・制約・現行フローを整理します。</p>
+          </div>
+        </div>
+        <div class="card step">
+          <div class="step-inner">
+            <div class="step-title">2. 小さなPoC</div>
+            <p class="muted">短期間で試作品を作り、期待値を合わせます。</p>
+          </div>
+        </div>
+        <div class="card step">
+          <div class="step-inner">
+            <div class="step-title">3. 運用設計</div>
+            <p class="muted">現場で回る手順・権限・例外処理を整えます。</p>
+          </div>
+        </div>
+      </div>
+      <div class="note">
+        誇大広告はしません。自動化は「置き換え」ではなく「運用」です。効果が出る範囲と、残る作業を明確にした上で進めます。
+      </div>
+      <div class="actions">
+        <a class="btn primary" href="/contact">相談する</a>
+        <a class="btn subtle" href="/">トップに戻る</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-top: 54px;
+  }
+  .hero-grid {
+    gap: 18px;
+    align-items: stretch;
+  }
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+  }
+  .panel {
+    padding: 18px;
+  }
+  .panel-inner {
+    padding: 10px 10px;
+  }
+  .step {
+    padding: 16px;
+  }
+  .step-inner {
+    padding: 8px 10px;
+  }
+  .step-title {
+    font-weight: 900;
+    margin-bottom: 6px;
+  }
+</style>

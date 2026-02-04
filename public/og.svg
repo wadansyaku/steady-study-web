@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1020"/>
+      <stop offset="1" stop-color="#111a33"/>
+    </linearGradient>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7c3aed"/>
+      <stop offset="1" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="220" cy="160" r="160" fill="#7c3aed" opacity="0.18"/>
+  <circle cx="980" cy="260" r="210" fill="#22c55e" opacity="0.16"/>
+  <rect x="80" y="110" width="1040" height="410" rx="28" fill="#0f1730" opacity="0.55" stroke="rgba(199,210,254,0.22)"/>
+  <rect x="120" y="160" width="74" height="74" rx="18" fill="url(#g)"/>
+  <text x="157" y="210" text-anchor="middle" font-family="ui-sans-serif, system-ui" font-size="34" font-weight="900" fill="white">SS</text>
+  <text x="220" y="220" font-family="ui-sans-serif, system-ui" font-size="56" font-weight="900" fill="white">Steady Study</text>
+  <text x="120" y="290" font-family="ui-sans-serif, system-ui" font-size="34" font-weight="700" fill="#c7d2fe">続けられる仕組み × 個別最適化で、受験を前に。</text>
+  <text x="120" y="360" font-family="ui-sans-serif, system-ui" font-size="26" fill="#94a3b8">初回無料面談（30分）｜週5枠限定</text>
+</svg>
+

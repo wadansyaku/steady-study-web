@@ -1,0 +1,81 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CTAButton from '@/components/CTAButton.astro';
+import { config } from '@/config';
+
+const title = `お問い合わせ｜${config.site.name}`;
+const description =
+  'Steady Studyのお問い合わせ窓口。基本はLINE、必要に応じてメールでも受け付けます。';
+---
+<BaseLayout title={title} description={description}>
+  <section class="section">
+    <div class="container">
+      <h1 class="h1">お問い合わせ</h1>
+      <p class="lead">
+        まずはLINEが最短です（無料面談の相談・日程調整）。法人案件や資料送付が必要な場合はメールもご利用ください。
+      </p>
+
+      <div class="grid cols-2">
+        <div class="card box">
+          <div class="box-inner">
+            <h2 class="h2">LINE（推奨）</h2>
+            <p class="muted">相談内容が未整理でもOKです。状況を短く送ってください。</p>
+            <div class="actions">
+              <CTAButton kind="line" label="LINEで相談する" />
+              <CTAButton kind="booking" label="予約ページを見る" subtle />
+            </div>
+            <p class="kicker">※週5枠のため、直近の枠が埋まる場合があります。</p>
+          </div>
+        </div>
+
+        <div class="card box">
+          <div class="box-inner">
+            <h2 class="h2">メール（補助）</h2>
+            <p class="muted">
+              法人のご相談や、ファイル共有が必要な場合はこちら。
+            </p>
+            <div class="email">
+              <div class="muted">連絡先</div>
+              <div class="addr">{config.contact.email}</div>
+            </div>
+            <div class="note">
+              件名例：<strong>無料面談希望（学年/志望校）</strong> /
+              <strong>法人AI相談</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="note">
+        注意：当サイトはv1ではサーバー処理を持たず、フォーム送信は外部サービス（LINE/予約/メール）で対応します。
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .box {
+    padding: 18px;
+  }
+  .box-inner {
+    padding: 10px 10px;
+  }
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .email {
+    margin-top: 14px;
+    padding: 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    background: rgba(17, 26, 51, 0.35);
+  }
+  .addr {
+    font-weight: 900;
+    font-size: 1.08rem;
+    margin-top: 6px;
+  }
+</style>

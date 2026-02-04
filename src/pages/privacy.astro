@@ -1,0 +1,94 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { config } from '@/config';
+
+const title = `プライバシーポリシー｜${config.site.name}`;
+const description =
+  'Steady Studyのプライバシーポリシー。LINE・外部予約サービス・アクセス解析の利用を想定しています。';
+---
+<BaseLayout title={title} description={description}>
+  <section class="section">
+    <div class="container">
+      <h1 class="h1">プライバシーポリシー</h1>
+      <p class="muted">
+        {config.site.name}（以下「当サービス」）は、個人情報の保護を重要な責務と考え、以下の方針に基づき適切に取り扱います。
+      </p>
+
+      <div class="card content">
+        <div class="content-inner">
+          <h2 class="h2">1. 取得する情報</h2>
+          <p class="muted">
+            当サービスは、お問い合わせ・面談予約等の際に、氏名（ハンドルネームを含む）、連絡先（LINE/メール）、学年、学習状況などの情報を取得する場合があります。
+          </p>
+
+          <h2 class="h2">2. 利用目的</h2>
+          <ul class="clean">
+            <li>お問い合わせへの対応</li>
+            <li>面談の実施、連絡、日程調整</li>
+            <li>サービス提供（学習支援）のための連絡・資料共有</li>
+            <li>品質改善（匿名化または個人が特定されない形での分析）</li>
+          </ul>
+
+          <h2 class="h2">3. 第三者提供</h2>
+          <p class="muted">
+            法令に基づく場合を除き、本人の同意なく個人情報を第三者に提供しません。
+          </p>
+
+          <h2 class="h2">4. 外部サービスの利用</h2>
+          <p class="muted">
+            当サービスは、利便性のため外部サービスを利用する場合があります。
+          </p>
+          <ul class="clean">
+            <li>
+              LINE（連絡/予約導線）：
+              <a href={config.urls.lineAddFriend} target="_blank" rel="noopener noreferrer"
+                >友だち追加</a
+              >
+            </li>
+            <li>
+              外部予約サービス（予約導線）：
+              <a href={config.urls.booking} target="_blank" rel="noopener noreferrer">予約ページ</a>
+            </li>
+          </ul>
+          <p class="muted">
+            外部サービスにおける個人情報の取り扱いについては、各サービス提供者のプライバシーポリシーをご確認ください。
+          </p>
+
+          <h2 class="h2">5. アクセス解析</h2>
+          <p class="muted">
+            当サービスは、サイト改善のためアクセス解析ツールを利用する場合があります（導入する場合は設定でONにします）。
+            解析タグの有無は <code>src/config.ts</code> の設定により切り替え可能です。
+          </p>
+
+          <h2 class="h2">6. お問い合わせ</h2>
+          <p class="muted">
+            個人情報の取り扱いに関するお問い合わせは、<a href="/contact">お問い合わせページ</a>
+            よりご連絡ください。
+          </p>
+
+          <div class="divider"></div>
+          <p class="muted">制定日：2026-02-04</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .content {
+    padding: 18px;
+  }
+  .content-inner {
+    padding: 10px 10px;
+  }
+  code {
+    padding: 2px 6px;
+    border-radius: 8px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: rgba(17, 26, 51, 0.6);
+  }
+  a {
+    text-decoration: underline;
+  }
+</style>
+

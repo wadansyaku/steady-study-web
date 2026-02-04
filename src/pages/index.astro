@@ -1,0 +1,203 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CTAButton from '@/components/CTAButton.astro';
+import { config } from '@/config';
+
+const title = `${config.site.name}｜受験の「続かない」を仕組みで変える`;
+const description =
+  '難関中学受験・難関高校受験・医学部受験の家庭向け。週1面談＋必要に応じたチャット伴走で、計画倒れを減らし、やることを明確にします。';
+---
+<BaseLayout title={title} description={description}>
+  <section class="section hero">
+    <div class="container">
+      <div class="grid cols-2 hero-grid">
+        <div>
+          <div class="pill">{config.education.bookingNote}</div>
+          <h1 class="h1">
+            情報はあるのに進められない受験を、
+            <br />
+            「続けられる仕組み」と「個別最適化」で前へ。
+          </h1>
+          <p class="lead">
+            学習の詰まりは「意志」より「設計」に原因があることが多いです。Steady
+            Studyは、教材設計と運用（習慣化）をセットで支援します。
+          </p>
+          <div class="actions">
+            <CTAButton kind="line" label="LINEで無料面談（30分）を予約" />
+            <a class="btn subtle" href="/education">教育LPを見る</a>
+          </div>
+          <p class="kicker">
+            ※成果を保証するものではありません。現状と目標に合わせて、再現性のある運用を一緒に作ります。
+          </p>
+        </div>
+
+        <div class="card panel">
+          <div class="panel-inner">
+            <h2 class="h2">まずは「状況整理」から</h2>
+            <p class="muted">
+              無料面談では、現状・志望校・学習時間・教材・模試結果をもとに、詰まりの原因を整理します。
+            </p>
+            <div class="divider"></div>
+            <div class="grid cols-2 mini">
+              <div class="mini-card">
+                <div class="mini-title">対象</div>
+                <div class="muted">難関中学 / 難関高校 / 医学部（再受験含む）</div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-title">支援の軸</div>
+                <div class="muted">計画・教材・振り返り・修正（PDCA）</div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-title">関わり方</div>
+                <div class="muted">週1面談 + 必要に応じた日々チャット</div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-title">枠</div>
+                <div class="muted">週5枠限定（無理な勧誘はしません）</div>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <CTAButton kind="booking" label="予約ページで日程を確認" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section compact">
+    <div class="container">
+      <div class="grid cols-3">
+        <a class="card link-card main" href="/education">
+          <div class="badge">主役</div>
+          <h2 class="h2">教育（受験伴走）</h2>
+          <p class="muted">
+            「やること」を迷わせない学習設計と、週次レビューでの修正。続けられる形に落とします。
+          </p>
+          <div class="arrow">詳しく見る →</div>
+        </a>
+        <a class="card link-card" href="/creator">
+          <h2 class="h2">クリエイター</h2>
+          <p class="muted">音楽制作 / 動画編集。相談窓口と制作例（準備中）を掲載します。</p>
+          <div class="arrow">ページへ →</div>
+        </a>
+        <a class="card link-card" href="/automation">
+          <h2 class="h2">法人AI</h2>
+          <p class="muted">業務の自動化・AI活用の受託。小さなPoCから段階的に進めます。</p>
+          <div class="arrow">ページへ →</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="grid cols-2">
+        <div>
+          <h2 class="h2">Steady Studyが目指す支援</h2>
+          <p class="muted">
+            受験の不安は「情報不足」より「運用の不安定さ」で増えます。だからこそ、計画を立てて終わりにせず、
+            <strong>振り返り→修正</strong>までを仕組みにします。
+          </p>
+          <ul class="clean">
+            <li>今日やることが具体的で、迷いが減る</li>
+            <li>模試・過去問の振り返りが、次の行動に繋がる</li>
+            <li>親子で揉めにくい「関わり方」を設計できる</li>
+          </ul>
+        </div>
+        <div class="card big-card">
+          <div class="big-inner">
+            <h2 class="h2">無料面談（30分）で話すこと</h2>
+            <ul class="clean">
+              <li>志望校と現状の差分（何がボトルネックか）</li>
+              <li>教材・塾・学習時間の整理（優先順位を決める）</li>
+              <li>続かない原因（計画・環境・負荷・設計）</li>
+              <li>次の2週間でやること（最小の行動に落とす）</li>
+            </ul>
+            <div class="divider"></div>
+            <div class="actions">
+              <CTAButton kind="line" label="LINEで無料面談を予約" />
+              <CTAButton kind="booking" label="予約ページで空きを見る" subtle />
+            </div>
+            <p class="kicker">※週5枠のため、直近の枠が埋まる場合があります。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-top: 54px;
+  }
+  .hero-grid {
+    gap: 18px;
+    align-items: stretch;
+  }
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+  }
+  .panel {
+    padding: 18px;
+  }
+  .panel-inner {
+    padding: 10px 10px;
+  }
+  .mini {
+    gap: 10px;
+  }
+  .mini-card {
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 12px;
+    padding: 12px;
+    background: rgba(17, 26, 51, 0.35);
+  }
+  .mini-title {
+    font-weight: 900;
+    margin-bottom: 6px;
+  }
+  .link-card {
+    padding: 18px;
+    text-decoration: none;
+    transition: transform 140ms ease, border-color 140ms ease;
+    display: grid;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .link-card:hover {
+    text-decoration: none;
+    transform: translateY(-1px);
+    border-color: rgba(199, 210, 254, 0.35);
+  }
+  .link-card .arrow {
+    color: var(--muted);
+    font-weight: 800;
+    margin-top: 4px;
+  }
+  .link-card.main {
+    border-color: rgba(124, 58, 237, 0.45);
+    background: linear-gradient(180deg, rgba(124, 58, 237, 0.14), rgba(255, 255, 255, 0.03));
+  }
+  .badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(124, 58, 237, 0.25);
+    border: 1px solid rgba(124, 58, 237, 0.45);
+    color: var(--text);
+    font-weight: 900;
+    font-size: 0.85rem;
+  }
+  .big-card {
+    padding: 18px;
+  }
+  .big-inner {
+    padding: 10px 10px;
+  }
+</style>

@@ -1,0 +1,64 @@
+---
+type Item = { q: string; a: string };
+type Props = {
+  items: Item[];
+};
+
+const { items } = Astro.props;
+---
+<div class="faq">
+  {items.map((item) => (
+    <details class="faq-item">
+      <summary>
+        <span class="q">{item.q}</span>
+        <span class="icon" aria-hidden="true">＋</span>
+      </summary>
+      <div class="a">{item.a}</div>
+    </details>
+  ))}
+</div>
+
+<style>
+  .faq {
+    display: grid;
+    gap: 12px;
+  }
+  .faq-item {
+    border: 1px solid var(--border);
+    background: rgba(17, 26, 51, 0.55);
+    border-radius: var(--radius-sm);
+    padding: 12px 12px;
+  }
+  summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    justify-content: space-between;
+    font-weight: 800;
+  }
+  summary:focus-visible {
+    outline: 2px solid rgba(124, 58, 237, 0.9);
+    outline-offset: 3px;
+    border-radius: 10px;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .q {
+    flex: 1;
+  }
+  .icon {
+    margin-left: 8px;
+    color: var(--muted);
+    font-weight: 900;
+  }
+  details[open] .icon {
+    transform: rotate(45deg);
+  }
+  .a {
+    color: var(--muted);
+    padding-top: 10px;
+  }
+</style>

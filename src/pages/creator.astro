@@ -1,0 +1,110 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CTAButton from '@/components/CTAButton.astro';
+import { config } from '@/config';
+
+const title = `クリエイター｜${config.site.name}`;
+const description =
+  '音楽制作・動画編集の相談窓口。要件整理→提案→制作→納品まで、目的に合わせて進めます。';
+---
+<BaseLayout title={title} description={description}>
+  <section class="section hero">
+    <div class="container">
+      <div class="grid cols-2 hero-grid">
+        <div>
+          <div class="pill">クリエイター向け（簡潔）</div>
+          <h1 class="h1">音楽制作 / 動画編集の相談窓口</h1>
+          <p class="lead">
+            まずは用途（SNS/YouTube/イベント/広告など）と納期、イメージを整理し、最短で形にします。
+          </p>
+          <div class="actions">
+            <CTAButton kind="line" label="LINEで制作を相談する" />
+            <a class="btn subtle" href="/contact">連絡先を見る</a>
+          </div>
+          <p class="kicker">※制作例・メニューは順次追加予定です（捏造はしません）。</p>
+        </div>
+        <div class="card panel">
+          <div class="panel-inner">
+            <h2 class="h2">できること</h2>
+            <ul class="clean">
+              <li>楽曲制作（BGM / ジングル / 効果音など）</li>
+              <li>動画編集（カット / テロップ / 音調整 / サムネ補助）</li>
+              <li>用途に合わせた提案（尺・テンポ・構成）</li>
+            </ul>
+            <div class="divider"></div>
+            <div class="muted">
+              進め方：ヒアリング → 提案 → 制作 → 確認 → 納品
+              <br />
+              料金：内容により変動（まずは要件を整理します）
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section compact">
+    <div class="container">
+      <h2 class="h2">制作例（プレースホルダ）</h2>
+      <div class="grid cols-3">
+        <div class="card sample">
+          <div class="sample-inner">
+            <div class="sample-title">制作例A</div>
+            <p class="muted">準備中（後日差し替え）</p>
+          </div>
+        </div>
+        <div class="card sample">
+          <div class="sample-inner">
+            <div class="sample-title">制作例B</div>
+            <p class="muted">準備中（後日差し替え）</p>
+          </div>
+        </div>
+        <div class="card sample">
+          <div class="sample-inner">
+            <div class="sample-title">制作例C</div>
+            <p class="muted">準備中（後日差し替え）</p>
+          </div>
+        </div>
+      </div>
+      <div class="note">
+        「何を頼めばいいか分からない」状態でも大丈夫です。目的と素材の有無だけ分かれば、こちらで要件を分解して提案します。
+      </div>
+      <div class="actions">
+        <CTAButton kind="line" label="LINEで制作の相談をする" />
+        <a class="btn subtle" href="/">トップに戻る</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-top: 54px;
+  }
+  .hero-grid {
+    gap: 18px;
+    align-items: stretch;
+  }
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+  }
+  .panel {
+    padding: 18px;
+  }
+  .panel-inner {
+    padding: 10px 10px;
+  }
+  .sample {
+    padding: 16px;
+  }
+  .sample-inner {
+    padding: 8px 10px;
+  }
+  .sample-title {
+    font-weight: 900;
+    margin-bottom: 6px;
+  }
+</style>

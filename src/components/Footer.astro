@@ -1,0 +1,57 @@
+---
+import { config } from '@/config';
+---
+<footer class="footer">
+  <div class="container inner">
+    <div class="brand">
+      <div class="name">{config.site.name}</div>
+      <div class="muted">教育 / クリエイター / 法人AI</div>
+    </div>
+    <nav class="links" aria-label="フッター">
+      <a href="/privacy">プライバシーポリシー</a>
+      <a href="/contact">お問い合わせ</a>
+    </nav>
+    <div class="copy muted">© {new Date().getFullYear()} {config.site.name}</div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid rgba(148, 163, 184, 0.18);
+    padding: 34px 0;
+    background: rgba(11, 16, 32, 0.35);
+  }
+  .inner {
+    display: grid;
+    gap: 14px;
+    align-items: center;
+  }
+  .brand .name {
+    font-weight: 900;
+    letter-spacing: 0.01em;
+  }
+  .links {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .links a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .links a:hover {
+    text-decoration: underline;
+  }
+  .copy {
+    font-size: 0.92rem;
+  }
+  @media (min-width: 860px) {
+    .inner {
+      grid-template-columns: 1fr auto;
+    }
+    .copy {
+      grid-column: 1 / -1;
+    }
+  }
+</style>
+
