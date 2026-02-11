@@ -1,0 +1,37 @@
+---
+type Props = {
+  title: string;
+  subtitle?: string;
+  center?: boolean;
+  class?: string;
+};
+
+const { title, subtitle, center, class: className } = Astro.props;
+---
+
+<div class:list={['section-heading', { center }, className]}>
+  {subtitle && <span class="eyebrow">{subtitle}</span>}
+  <h2 class="h2">{title}</h2>
+  <slot name="desc" />
+</div>
+
+<style>
+  .section-heading {
+    margin-bottom: 3rem;
+  }
+  .center {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 800px;
+  }
+  .eyebrow {
+    color: var(--brand); /* Indigo */
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.875rem;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+</style>

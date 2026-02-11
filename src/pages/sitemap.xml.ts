@@ -9,6 +9,8 @@ export const GET: APIRoute = () => {
     '/education',
     '/creator',
     '/automation',
+    '/articles',
+    '/articles/study-tools',
     '/privacy',
     '/contact',
   ];

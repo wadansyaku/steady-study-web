@@ -1,203 +1,185 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import CTAButton from '@/components/CTAButton.astro';
+import InfoCard from '@/components/InfoCard.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
 import { config } from '@/config';
 
-const title = `${config.site.name}｜受験の「続かない」を仕組みで変える`;
+const title = `${config.brands.home}｜受験の「続かない」を仕組みで変える`;
 const description =
-  '難関中学受験・難関高校受験・医学部受験の家庭向け。週1面談＋必要に応じたチャット伴走で、計画倒れを減らし、やることを明確にします。';
+  'AIYuMe。難関受験の学習伴走、クリエイター支援、業務自動化の3つの事業を展開。主軸は「AIYuMe Learning（教育）」です。';
 ---
+
 <BaseLayout title={title} description={description}>
-  <section class="section hero">
-    <div class="container">
-      <div class="grid cols-2 hero-grid">
-        <div>
-          <div class="pill">{config.education.bookingNote}</div>
-          <h1 class="h1">
-            情報はあるのに進められない受験を、
-            <br />
-            「続けられる仕組み」と「個別最適化」で前へ。
-          </h1>
-          <p class="lead">
-            学習の詰まりは「意志」より「設計」に原因があることが多いです。Steady
-            Studyは、教材設計と運用（習慣化）をセットで支援します。
-          </p>
-          <div class="actions">
-            <CTAButton kind="line" label="LINEで無料面談（30分）を予約" />
-            <a class="btn subtle" href="/education">教育LPを見る</a>
-          </div>
-          <p class="kicker">
-            ※成果を保証するものではありません。現状と目標に合わせて、再現性のある運用を一緒に作ります。
-          </p>
-        </div>
-
-        <div class="card panel">
-          <div class="panel-inner">
-            <h2 class="h2">まずは「状況整理」から</h2>
-            <p class="muted">
-              無料面談では、現状・志望校・学習時間・教材・模試結果をもとに、詰まりの原因を整理します。
+  <!-- Hero Portal -->
+  <section class="section hero-portal">
+    <div class="container text-center">
+      <h1 class="h1 brand-title">
+        <span class="text-brand">AI</span>YuMe
+      </h1>
+      <p class="lead text-muted">
+        Intelligence, Organized.<br />
+        知性を整理し、前へ進める。
+      </p>
+      <div class="portal-grid">
+        <!-- Education (Main) -->
+        <a href="/education" class="portal-card main-card">
+          <div class="badge">Main Service</div>
+          <div class="card-content">
+            <h2 class="h2">{config.brands.education}</h2>
+            <p class="text-muted">
+              難関受験の「続かない」を仕組みで解決する。<br />
+              戦略的学習伴走サービス。
             </p>
-            <div class="divider"></div>
-            <div class="grid cols-2 mini">
-              <div class="mini-card">
-                <div class="mini-title">対象</div>
-                <div class="muted">難関中学 / 難関高校 / 医学部（再受験含む）</div>
-              </div>
-              <div class="mini-card">
-                <div class="mini-title">支援の軸</div>
-                <div class="muted">計画・教材・振り返り・修正（PDCA）</div>
-              </div>
-              <div class="mini-card">
-                <div class="mini-title">関わり方</div>
-                <div class="muted">週1面談 + 必要に応じた日々チャット</div>
-              </div>
-              <div class="mini-card">
-                <div class="mini-title">枠</div>
-                <div class="muted">週5枠限定（無理な勧誘はしません）</div>
-              </div>
+            <div class="action-fake">
+              <span class="btn btn-primary">詳しく見る</span>
             </div>
-            <div class="divider"></div>
-            <CTAButton kind="booking" label="予約ページで日程を確認" />
           </div>
+        </a>
+
+        <!-- Sub Services -->
+        <div class="sub-grid">
+          <a href="/creator" class="portal-card sub-card">
+            <h3 class="h3">{config.brands.creator}</h3>
+            <p class="text-dim text-sm">音楽制作 / 動画編集</p>
+            <span class="arrow">→</span>
+          </a>
+          <a href="/automation" class="portal-card sub-card">
+            <h3 class="h3">{config.brands.automation}</h3>
+            <p class="text-dim text-sm">法人AI導入 / 自動化</p>
+            <span class="arrow">→</span>
+          </a>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section compact">
+  <!-- About -->
+  <section class="section compact bg-surface">
     <div class="container">
-      <div class="grid cols-3">
-        <a class="card link-card main" href="/education">
-          <div class="badge">主役</div>
-          <h2 class="h2">教育（受験伴走）</h2>
-          <p class="muted">
-            「やること」を迷わせない学習設計と、週次レビューでの修正。続けられる形に落とします。
-          </p>
-          <div class="arrow">詳しく見る →</div>
-        </a>
-        <a class="card link-card" href="/creator">
-          <h2 class="h2">クリエイター</h2>
-          <p class="muted">音楽制作 / 動画編集。相談窓口と制作例（準備中）を掲載します。</p>
-          <div class="arrow">ページへ →</div>
-        </a>
-        <a class="card link-card" href="/automation">
-          <h2 class="h2">法人AI</h2>
-          <p class="muted">業務の自動化・AI活用の受託。小さなPoCから段階的に進めます。</p>
-          <div class="arrow">ページへ →</div>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
+      <SectionHeading title="Concept" subtitle="Why AIYuMe?" center />
       <div class="grid cols-2">
-        <div>
-          <h2 class="h2">Steady Studyが目指す支援</h2>
-          <p class="muted">
-            受験の不安は「情報不足」より「運用の不安定さ」で増えます。だからこそ、計画を立てて終わりにせず、
-            <strong>振り返り→修正</strong>までを仕組みにします。
+        <InfoCard title="構造化" icon="🧩">
+          <p>
+            「気合」や「感覚」に頼らず、課題を構造化して解決します。
+            学習も業務も、ボトルネックを特定すれば自然と動けるようになります。
           </p>
-          <ul class="clean">
-            <li>今日やることが具体的で、迷いが減る</li>
-            <li>模試・過去問の振り返りが、次の行動に繋がる</li>
-            <li>親子で揉めにくい「関わり方」を設計できる</li>
-          </ul>
-        </div>
-        <div class="card big-card">
-          <div class="big-inner">
-            <h2 class="h2">無料面談（30分）で話すこと</h2>
-            <ul class="clean">
-              <li>志望校と現状の差分（何がボトルネックか）</li>
-              <li>教材・塾・学習時間の整理（優先順位を決める）</li>
-              <li>続かない原因（計画・環境・負荷・設計）</li>
-              <li>次の2週間でやること（最小の行動に落とす）</li>
-            </ul>
-            <div class="divider"></div>
-            <div class="actions">
-              <CTAButton kind="line" label="LINEで無料面談を予約" />
-              <CTAButton kind="booking" label="予約ページで空きを見る" subtle />
-            </div>
-            <p class="kicker">※週5枠のため、直近の枠が埋まる場合があります。</p>
-          </div>
-        </div>
+        </InfoCard>
+        <InfoCard title="技術と人の調和" icon="🤖">
+          <p>
+            AIやツールは徹底的に活用しますが、最終的な「意思決定」と「責任」は人が持ちます。
+            システムに使われない、主体的な運用を設計します。
+          </p>
+        </InfoCard>
+      </div>
+    </div>
+  </section>
+
+  <!-- Latest / Links -->
+  <section class="section">
+    <div class="container text-center">
+      <SectionHeading title="コンテンツ" subtitle="Contents" center />
+      <div class="actions justify-center">
+        <a href="/articles" class="btn btn-outline">記事一覧を見る</a>
+        <a href="/contact" class="btn btn-ghost">お問い合わせ</a>
       </div>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .hero {
-    padding-top: 54px;
+  .hero-portal {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
   }
-  .hero-grid {
-    gap: 18px;
-    align-items: stretch;
+  .brand-title {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.03em;
   }
-  .actions {
+  .lead {
+    margin-bottom: 4rem;
+  }
+  .portal-grid {
+    max-width: 900px;
+    margin: 0 auto;
     display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-top: 18px;
+    flex-direction: column;
+    gap: 1.5rem;
   }
-  .panel {
-    padding: 18px;
-  }
-  .panel-inner {
-    padding: 10px 10px;
-  }
-  .mini {
-    gap: 10px;
-  }
-  .mini-card {
-    border: 1px solid rgba(148, 163, 184, 0.18);
-    border-radius: 12px;
-    padding: 12px;
-    background: rgba(17, 26, 51, 0.35);
-  }
-  .mini-title {
-    font-weight: 900;
-    margin-bottom: 6px;
-  }
-  .link-card {
-    padding: 18px;
+  .portal-card {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: rgba(30, 41, 59, 0.4);
+    transition: all 0.2s;
     text-decoration: none;
-    transition: transform 140ms ease, border-color 140ms ease;
-    display: grid;
-    gap: 8px;
     position: relative;
     overflow: hidden;
   }
-  .link-card:hover {
-    text-decoration: none;
-    transform: translateY(-1px);
-    border-color: rgba(199, 210, 254, 0.35);
+  .portal-card:hover {
+    border-color: var(--brand);
+    background: rgba(30, 41, 59, 0.6);
+    transform: translateY(-2px);
   }
-  .link-card .arrow {
-    color: var(--muted);
-    font-weight: 800;
-    margin-top: 4px;
-  }
-  .link-card.main {
-    border-color: rgba(124, 58, 237, 0.45);
-    background: linear-gradient(180deg, rgba(124, 58, 237, 0.14), rgba(255, 255, 255, 0.03));
+  .main-card {
+    padding: 3rem 2rem;
+    border-color: rgba(99, 102, 241, 0.3);
+    background: linear-gradient(180deg, rgba(99, 102, 241, 0.1), rgba(30, 41, 59, 0.4));
   }
   .badge {
     position: absolute;
-    top: 14px;
-    right: 14px;
-    padding: 6px 10px;
-    border-radius: 999px;
-    background: rgba(124, 58, 237, 0.25);
-    border: 1px solid rgba(124, 58, 237, 0.45);
+    top: 1rem;
+    right: 1rem;
+    background: var(--brand);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    border-radius: 99px;
+  }
+  .action-fake {
+    margin-top: 2rem;
+  }
+  .sub-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  .sub-card {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .arrow {
+    font-size: 1.5rem;
+    color: var(--text-dim);
+    margin-top: 1rem;
+    transition: transform 0.2s;
+  }
+  .sub-card:hover .arrow {
+    transform: translateX(4px);
     color: var(--text);
-    font-weight: 900;
-    font-size: 0.85rem;
   }
-  .big-card {
-    padding: 18px;
+  .text-sm {
+    font-size: 0.875rem;
   }
-  .big-inner {
-    padding: 10px 10px;
+  .justify-center {
+    justify-content: center;
+  }
+  .bg-surface {
+    background: rgba(30, 41, 59, 0.3);
+  }
+
+  @media (max-width: 768px) {
+    .sub-grid {
+      grid-template-columns: 1fr;
+    }
+    .brand-title {
+      font-size: 3rem;
+    }
   }
 </style>

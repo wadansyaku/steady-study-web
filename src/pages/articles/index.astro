@@ -1,0 +1,63 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { config } from '@/config';
+
+const title = `${config.brands.home}｜記事`;
+const description =
+  '受験家庭向けに、継続しやすい学習環境づくりのヒントをまとめています。';
+
+const articles = [
+  {
+    href: '/articles/study-tools',
+    title: '受験家庭で最初にそろえる学習道具3選',
+    summary:
+      '「何を買うか」より「続けられるか」を基準に、学習タイマー・復習管理・照明の3つに絞って解説します。',
+    updatedAt: '2026-02-11',
+  },
+] as const;
+---
+<BaseLayout title={title} description={description}>
+  <section class="section">
+    <div class="container">
+      <h1 class="h1">記事一覧</h1>
+      <p class="lead">受験の運用を安定させるための、実用的なガイドを公開しています。</p>
+      <div class="grid cards">
+        {articles.map((article) => (
+          <a class="card article-card" href={article.href}>
+            <div class="meta muted">更新日: {article.updatedAt}</div>
+            <h2 class="h2">{article.title}</h2>
+            <p class="muted">{article.summary}</p>
+            <div class="arrow">記事を読む →</div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .cards {
+    margin-top: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  .article-card {
+    padding: 18px;
+    text-decoration: none;
+    display: grid;
+    gap: 8px;
+    transition: transform 140ms ease, border-color 140ms ease;
+  }
+  .article-card:hover {
+    text-decoration: none;
+    transform: translateY(-1px);
+    border-color: rgba(199, 210, 254, 0.35);
+  }
+  .meta {
+    font-size: 0.92rem;
+  }
+  .article-card .arrow {
+    margin-top: 4px;
+    color: var(--muted);
+    font-weight: 800;
+  }
+</style>

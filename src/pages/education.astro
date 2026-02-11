@@ -1,19 +1,38 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import CTAButton from '@/components/CTAButton.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import InfoCard from '@/components/InfoCard.astro';
 import FAQAccordion from '@/components/FAQAccordion.astro';
 import { config } from '@/config';
 
-const title = `教育（受験伴走）｜${config.site.name}`;
+const title = `${config.brands.education}｜難関受験の学習伴走`;
 const description =
-  '難関中学受験・難関高校受験・医学部受験向け。週1面談＋必要に応じたチャット伴走で、学習計画・教材・振り返りを運用まで落とし込みます。';
+  '難関中学・高校・医学部受験向け。学習計画と振り返りを「仕組み化」し、迷いなく勉強できる状態を作ります。週1回の面談＋チャット伴走。';
 
 const pains = [
-  '何から手を付けていいか分からず、手が止まる',
-  '計画を立てても、数日で崩れて自己嫌悪になる',
-  '模試の振り返りが活かせず、同じミスを繰り返す',
-  '教材や塾情報はあるのに、「運用」が詰まる',
-  '親子で揉める（声かけ・関与度が難しい）',
+  { text: '何から手を付けていいか分からず、手が止まる時間が長い', icon: '🛑' },
+  { text: '計画を立てても、数日で崩れて自己嫌悪になる', icon: '📉' },
+  { text: '模試の振り返りが活かせず、同じミスを繰り返す', icon: '🔄' },
+  { text: '親子で勉強の方針について揉めてしまう', icon: '⚡' },
+];
+
+const features = [
+  {
+    title: '続けられる仕組み',
+    desc: '今日やることを「迷いなく」始められる形に落とし込みます。負荷が上がりすぎない配分、詰まった時の立て直し方までセットで設計します。',
+    icon: '🏗️',
+  },
+  {
+    title: '個別最適化',
+    desc: '教材を増やす前に、志望校と現状から必要な要素を棚卸し。「今やるべきこと」と「後回しにする勇気」を明確にします。',
+    icon: '🎯',
+  },
+  {
+    title: '週次レビュー (PDCA)',
+    desc: '模試・過去問・日々のログをもとに、1週間単位でズレを修正。改善点が具体的な行動に落ちるまで伴走します。',
+    icon: '📊',
+  },
 ];
 
 const faqs = [
@@ -22,99 +41,68 @@ const faqs = [
     a: `目安は ${config.education.pricePlaceholder} です。学年・志望校・現状・支援の深さで最適が変わるため、無料面談で状況を伺ったうえでご提案します。`,
   },
   {
-    q: '対象は誰ですか？（中学受験/高校受験/医学部）',
-    a: '難関中学受験・難関高校受験・医学部受験（再受験含む）を想定しています。基礎〜最難関まで、現状と志望に合わせて設計します。',
-  },
-  {
-    q: '成績は必ず上がりますか？',
-    a: '成果保証は行いません。ただし、学習が伸びる前提（教材選定・量と質・振り返り・修正）を整え、再現性のある運用に落とすことを重視します。',
+    q: '対象は誰ですか？',
+    a: '難関中学受験・難関高校受験・医学部受験（再受験含む）を想定しています。基礎から最難関レベルまで、現状と志望に合わせて設計します。',
   },
   {
     q: '塾に通っていても併用できますか？',
-    a: '可能です。塾のカリキュラムを前提に、家庭学習の設計・優先順位づけ・復習の型を整えます。',
-  },
-  {
-    q: '面談は本人だけですか？保護者も参加できますか？',
-    a: '基本は本人中心ですが、必要に応じて保護者同席や、保護者向けの短い共有時間を設けます。家庭内での摩擦を減らすことも目的に含みます。',
+    a: '可能です。むしろ塾のカリキュラムを最大限活かすために、家庭学習の優先順位と復習のサイクルを整えます。',
   },
   {
     q: '保護者はどれくらい関わればいいですか？',
-    a: 'ご家庭の方針に合わせて設計します。見守り中心でもOKです。声かけの頻度・確認ポイント・任せる範囲を一緒に決めます。',
-  },
-  {
-    q: '連絡はどれくらいの頻度ですか？',
-    a: '週1の面談に加え、必要に応じてチャットで状況確認・詰まりの解消を行います（プランにより範囲は異なります）。',
+    a: 'ご家庭の方針に合わせて設計します。「完全に見守り」でも、「ポイントだけ確認」でもOKです。役割分担を明確にし、親子の摩擦を減らします。',
   },
   {
     q: 'AIはどのように使いますか？',
-    a: '学習記録の整理、弱点の棚卸し、演習設計の補助などで「継続の負荷」を下げるために活用します。AIだけに任せず、方針と優先順位は人が設計します。',
-  },
-  {
-    q: '教材は指定ですか？',
-    a: '指定はありません。既にある教材・塾教材を活かしつつ、必要があれば過不足を整えます（買い足し前に優先順位を整理します）。',
-  },
-  {
-    q: '相性が合うか不安です。',
-    a: '無料面談で「合う/合わない」を率直に確認します。無理な勧誘はせず、必要なら別の選択肢（塾・家庭教師等）も含めて整理します。',
-  },
-  {
-    q: '途中解約や返金はできますか？',
-    a: '運用方法は支払い方法や外部決済により異なるため、契約前に条件を明確にしてご案内します（不透明なまま進めません）。',
+    a: '学習記録の整理、弱点の棚卸し、類似問題の作成などで活用します。「管理の負荷」をAIで下げ、人は「方針の決定」に集中するためです。',
   },
   {
     q: '週5枠限定なのはなぜですか？',
-    a: '週次レビューと日々の伴走は、設計よりも「運用」に時間が必要です。品質を落とさないために枠を制限しています。',
+    a: '一人ひとりのカリキュラム設計と日々の伴走に時間を使うため、品質を維持できる人数に絞っています。',
   },
 ];
 ---
+
 <BaseLayout title={title} description={description}>
   <!-- Hero -->
-  <section class="section hero">
+  <section class="section hero-section">
     <div class="container">
-      <div class="grid cols-2 hero-grid">
+      <div class="grid cols-2 items-center">
         <div>
-          <div class="pill">{config.education.bookingNote}</div>
+          <span class="pill-badge">{config.education.bookingNote}</span>
           <h1 class="h1">
-            受験の「続かない」を、
-            <br />
-            仕組みで変える受験伴走。
+            受験の「続かない」を、<br />
+            <span class="text-brand">仕組み</span>で解決する。<br />
+            <span class="text-accent">戦略的学習伴走</span>。
           </h1>
-          <p class="lead">
-            週1回の面談で計画・教材・振り返りを整理し、次の1週間を「迷いなく実行できる形」に落とします。
-            必要に応じてチャットで伴走し、計画倒れを減らします。
+          <p class="lead text-muted">
+            週1回の面談で「計画・運用・振り返り」を整え、
+            次の1週間を迷いなく実行できる状態にします。<br />
+            精神論ではなく、システムで継続を支えます。
           </p>
           <div class="actions">
-            <CTAButton kind="line" label="LINEで初回無料面談（30分）を予約" />
-            <CTAButton kind="booking" label="予約ページで空きを見る" subtle />
+            <CTAButton kind="line" label="まずはご相談（LINE無料）" />
+            <CTAButton kind="booking" label="空き日程を確認" variant="outline" />
           </div>
-          <div class="note">
-            <strong>対象：</strong>難関中学受験 / 難関高校受験 / 医学部受験（再受験含む）
-            <br />
-            <strong>核：</strong>「続けられる仕組み」×「個別最適化」×「週次レビュー」
-          </div>
-          <p class="kicker">
-            ※成果を保証するものではありません。学習の再現性（設計と運用）を整える支援です。
+          <p class="note-sm text-dim">
+            対象：難関中学 / 高校 / 医学部受験<br />
+            ※無理な勧誘は一切行いません。
           </p>
         </div>
 
-        <div class="card trust">
-          <div class="trust-inner">
-            <h2 class="h2">大切にすること</h2>
-            <ul class="clean">
-              <li><strong>やることを小さく：</strong>迷いが減る粒度まで具体化</li>
-              <li><strong>振り返りを型化：</strong>模試・過去問が次の行動に繋がる</li>
-              <li><strong>家族の運用を整える：</strong>揉めにくい関わり方を設計</li>
+        <div class="trust-card-wrapper">
+          <InfoCard title="大切にすること" class="trust-card">
+            <ul class="clean-list">
+              <li>✅ <strong>やることを小さく：</strong>迷いが減る粒度まで分解</li>
+              <li>✅ <strong>振り返りを型化：</strong>模試が次の行動に繋がる</li>
+              <li>✅ <strong>家族の平和：</strong>揉めにくい関わり方を設計</li>
             </ul>
-            <div class="divider"></div>
-            <div class="muted">
-              プロフィール（事実ベース）
-              <ul class="clean">
-                <li>名古屋大学医学部 在学</li>
-                <li>教材設計・学習設計</li>
-                <li>AI×学習最適化（記録・分析・補助生成）</li>
-              </ul>
+            <div class="profile-mini">
+              <div class="role text-brand">監修・伴走</div>
+              <div>名古屋大学医学部 在学</div>
+              <div>学習設計・教材設計専門</div>
             </div>
-          </div>
+          </InfoCard>
         </div>
       </div>
     </div>
@@ -123,170 +111,143 @@ const faqs = [
   <!-- Pains -->
   <section class="section">
     <div class="container">
-      <h2 class="h2">よくある詰まり（まず不安を言語化します）</h2>
+      <SectionHeading
+        title="こんな「詰まり」を感じていませんか？"
+        subtitle="Current Issues"
+        center
+      />
       <div class="grid cols-2">
-        {pains.map((p) => (
-          <div class="card pain">
-            <div class="pain-inner">{p}</div>
-          </div>
-        ))}
+        {
+          pains.map((p) => (
+            <InfoCard title="" icon={p.icon} class="pain-card">
+              <p class="pain-text">{p.text}</p>
+            </InfoCard>
+          ))
+        }
       </div>
-      <div class="note">
-        情報が足りないのではなく、<strong>実行の設計（運用）</strong>が難しいケースが多いです。
-        だからこそ「計画→実行→振り返り→修正」を回す仕組みから整えます。
+      <div class="message-box text-center">
+        <p>
+          情報が足りないのではなく、<br class="mobile-hide" />
+          <strong>「実行の設計（運用）」</strong>が難しいケースがほとんどです。<br />
+          だからこそ、気合ではなく仕組みから整える必要があります。
+        </p>
       </div>
     </div>
   </section>
 
-  <!-- Approach -->
-  <section class="section compact">
+  <!-- Solution -->
+  <section class="section bg-surface">
     <div class="container">
-      <h2 class="h2">解決アプローチ</h2>
+      <SectionHeading
+        title="AIYuMeのアプローチ"
+        subtitle="Our Approach"
+        center
+      >
+        <p slot="desc" class="text-center text-muted">
+          「計画→実行→振り返り→修正」のサイクルを、<br />
+          本人の性格と生活リズムに合わせて組み込みます。
+        </p>
+      </SectionHeading>
+
       <div class="grid cols-3">
-        <div class="card approach">
-          <div class="approach-inner">
-            <div class="approach-title">① 続けられる仕組み</div>
-            <p class="muted">
-              今日やることを「迷いなく」始められる形に。負荷が上がりすぎない配分、詰まった時の立て直し方まで含めます。
-            </p>
-          </div>
-        </div>
-        <div class="card approach">
-          <div class="approach-inner">
-            <div class="approach-title">② 個別最適化（教材・優先順位）</div>
-            <p class="muted">
-              教材を増やす前に、志望校と現状から必要な要素を棚卸し。やるべき順番と「捨てる判断」も明確にします。
-            </p>
-          </div>
-        </div>
-        <div class="card approach">
-          <div class="approach-inner">
-            <div class="approach-title">③ 週次レビュー（PDCA）</div>
-            <p class="muted">
-              模試・過去問・日々のログをもとに、1週間単位で修正。改善点が行動に落ちるまで伴走します。
-            </p>
-          </div>
-        </div>
+        {
+          features.map((f) => (
+            <InfoCard title={f.title} icon={f.icon}>
+              <p>{f.desc}</p>
+            </InfoCard>
+          ))
+        }
       </div>
     </div>
   </section>
 
-  <!-- Offer -->
+  <!-- Plans -->
   <section class="section">
     <div class="container">
-      <h2 class="h2">提供内容（プランは2択）</h2>
-      <div class="grid cols-2">
-        {config.education.plans.map((plan) => (
-          <div class="card plan">
-            <div class="plan-inner">
-              <div class="plan-head">
-                <div class="plan-name">{plan.name}</div>
-                <div class="plan-price muted">{plan.price}</div>
+      <SectionHeading title="伴走プラン" subtitle="Plans" center />
+      <div class="grid cols-2 plan-grid">
+        {
+          config.education.plans.map((plan) => (
+            <div class="card plan-card">
+              <div class="plan-header">
+                <h3 class="h2">{plan.name}</h3>
+                <div class="price text-brand">{plan.price}</div>
               </div>
-              <ul class="clean">
+              <ul class="feature-list">
                 {plan.features.map((f) => (
                   <li>{f}</li>
                 ))}
               </ul>
-              <div class="divider"></div>
-              <div class="actions">
-                <CTAButton kind="line" label="このプランで相談する" />
-                <CTAButton kind="booking" label="日程を確認" subtle />
+              <div class="plan-footer">
+                <CTAButton
+                  kind="line"
+                  label="このプランを相談"
+                  variant="primary"
+                  class="w-full"
+                />
               </div>
-              <p class="kicker">※料金や支援範囲は、状況に合わせて面談で最適化します。</p>
             </div>
-          </div>
-        ))}
+          ))
+        }
       </div>
-      <div class="note">
-        実績の見せ方について：合格実績などの数字が十分に揃うまでは、捏造はしません。代わりに、学習計画の作り方や改善プロセスの透明性で信頼を作ります。
-      </div>
+      <p class="text-center text-dim mt-4">
+        ※料金や支援範囲は、現状に合わせて面談で最適化・ご提案します。
+      </p>
     </div>
   </section>
 
   <!-- Process -->
-  <section class="section compact">
+  <section class="section compact bg-surface">
     <div class="container">
-      <h2 class="h2">進め方</h2>
-      <div class="card steps">
-        <ol class="steps-inner">
-          <li>
-            <strong>初回無料面談（30分）</strong>：現状・志望・教材・模試結果を整理し、詰まりの原因を言語化します。
-          </li>
-          <li>
-            <strong>診断</strong>：得点構造（伸びやすい科目/単元）と運用上のボトルネックを特定します。
-          </li>
-          <li>
-            <strong>2週間プラン</strong>：無理のない負荷で「まず回る形」を作ります（やること／量／確認ポイントを明確化）。
-          </li>
-          <li>
-            <strong>継続</strong>：週次レビューで修正し続け、実行の再現性を上げていきます。
-          </li>
-        </ol>
-      </div>
-    </div>
-  </section>
-
-  <!-- Parent involvement -->
-  <section class="section">
-    <div class="container">
-      <h2 class="h2">保護者の関与度（揉めにくくするための設計）</h2>
-      <div class="grid cols-3">
-        <div class="card involvement">
-          <div class="in-inner">
-            <div class="in-title">見守り型</div>
-            <p class="muted">
-              声かけは最小限。週次の共有だけ押さえ、本人の自走を優先します。
-            </p>
+      <SectionHeading title="開始までの流れ" subtitle="Process" center />
+      <div class="steps-container">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <h4>初回無料面談 (30分)</h4>
+            <p>現状の成績・志望校・使っている教材を整理し、何がボトルネックになっているかを言語化します。</p>
           </div>
         </div>
-        <div class="card involvement">
-          <div class="in-inner">
-            <div class="in-title">伴走型</div>
-            <p class="muted">
-              「確認ポイント」と「褒め方」を決め、家庭内での摩擦を減らします。
-            </p>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <h4>処方箋の提案</h4>
+            <p>得点を伸ばすための戦略と、それを実行するための「2週間プラン」をご提案します。</p>
           </div>
         </div>
-        <div class="card involvement">
-          <div class="in-inner">
-            <div class="in-title">調整型</div>
-            <p class="muted">
-              生活・部活・塾とのバランスを含めて運用を調整。過負荷を防ぎます。
-            </p>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <h4>伴走開始</h4>
+            <p>週1回の面談で軌道修正しながら、自走できるサイクルを作っていきます。</p>
           </div>
         </div>
-      </div>
-      <div class="note">
-        「どこまで口を出すべきか」が曖昧だと、親子の衝突が増えます。関与度は固定ではなく、時期（模試前/直前期）に応じて設計します。
       </div>
     </div>
   </section>
 
   <!-- FAQ -->
-  <section class="section compact">
+  <section class="section">
     <div class="container">
-      <h2 class="h2">FAQ</h2>
-      <FAQAccordion items={faqs} />
+      <SectionHeading title="よくある質問" subtitle="FAQ" center />
+      <div class="faq-wrapper">
+        <FAQAccordion items={faqs} />
+      </div>
     </div>
   </section>
 
-  <!-- CTA -->
-  <section class="section">
+  <!-- Final CTA -->
+  <section class="section section-cta">
     <div class="container">
-      <div class="card cta-card">
-        <div class="cta-inner">
-          <h2 class="h2">初回無料面談（30分）で、まず「詰まり」を整理します</h2>
-          <p class="muted">
-            週5枠のため、直近の枠が埋まる場合があります。空きを確認しつつ、LINEで相談内容だけ先に送っていただいてもOKです。
-          </p>
-          <div class="actions">
-            <CTAButton kind="line" label="LINEで無料面談を予約" />
-            <CTAButton kind="booking" label="予約ページで日程を選ぶ" />
-          </div>
-          <p class="kicker">
-            ※強引な勧誘は行いません。合う/合わないを率直に確認し、必要なら別の選択肢も含めて整理します。
-          </p>
+      <div class="card cta-box">
+        <h2 class="h2 text-center">まずは「詰まり」の原因を整理しませんか？</h2>
+        <p class="text-center text-muted mb-8">
+          週5枠限定のため、枠が埋まりやすくなっています。<br />
+          無理な勧誘はしません。現状の整理だけでもお役に立てます。
+        </p>
+        <div class="actions justify-center">
+          <CTAButton kind="line" label="LINEで無料面談を予約" />
+          <CTAButton kind="booking" label="Webで日程を選ぶ" variant="outline" />
         </div>
       </div>
     </div>
@@ -294,86 +255,150 @@ const faqs = [
 </BaseLayout>
 
 <style>
-  .hero {
-    padding-top: 54px;
+  .hero-section {
+    padding-top: 4rem;
+    padding-bottom: 6rem;
   }
-  .hero-grid {
-    gap: 18px;
-    align-items: stretch;
+  .pill-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 99px;
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--brand);
+    font-size: 0.875rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+  }
+  .lead {
+    font-size: 1.125rem;
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
   }
   .actions {
     display: flex;
-    gap: 12px;
+    gap: 1rem;
     flex-wrap: wrap;
-    margin-top: 18px;
+    margin-bottom: 1.5rem;
   }
-  .trust {
-    padding: 18px;
+  .note-sm {
+    font-size: 0.875rem;
   }
-  .trust-inner {
-    padding: 10px 10px;
-  }
-  .pain {
-    padding: 14px;
-  }
-  .pain-inner {
-    padding: 8px 10px;
-    font-weight: 800;
-    color: var(--muted);
-  }
-  .approach {
-    padding: 16px;
-  }
-  .approach-inner {
-    padding: 8px 10px;
-  }
-  .approach-title {
-    font-weight: 900;
-    margin-bottom: 6px;
-  }
-  .plan {
-    padding: 18px;
-  }
-  .plan-inner {
-    padding: 10px 10px;
-  }
-  .plan-head {
+  .trust-card-wrapper {
     display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    align-items: baseline;
-    margin-bottom: 8px;
+    justify-content: center;
   }
-  .plan-name {
-    font-weight: 900;
-    font-size: 1.15rem;
+  .trust-card {
+    border-top: 4px solid var(--accent);
   }
-  .steps {
-    padding: 18px;
+  .clean-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
   }
-  .steps-inner {
+  .clean-list li {
+    margin-bottom: 0.75rem;
+  }
+  .profile-mini {
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+  .pain-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .pain-text {
+    font-weight: 700;
+    font-size: 1.1rem;
     margin: 0;
-    padding: 12px 18px;
-    color: var(--muted);
-    display: grid;
-    gap: 10px;
   }
-  .involvement {
-    padding: 16px;
+  .message-box {
+    margin-top: 3rem;
+    padding: 2rem;
+    background: linear-gradient(to bottom, transparent, rgba(99, 102, 241, 0.05));
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
   }
-  .in-inner {
-    padding: 8px 10px;
+  .bg-surface {
+    background: rgba(30, 41, 59, 0.3);
   }
-  .in-title {
+  .plan-card {
+    display: flex;
+    flex-direction: column;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    background: rgba(30, 41, 59, 0.4);
+  }
+  .plan-header {
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  .price {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  .feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem 0;
+    flex-grow: 1;
+  }
+  .feature-list li {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+    position: relative;
+  }
+  .feature-list li::before {
+    content: '✓';
+    color: var(--accent);
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+  }
+  .steps-container {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .step {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+  .step-num {
+    font-size: 2rem;
     font-weight: 900;
-    margin-bottom: 6px;
+    color: var(--brand); /* Outline style */
+    opacity: 0.5;
+    line-height: 1;
   }
-  .cta-card {
-    padding: 18px;
-    border-color: rgba(34, 197, 94, 0.38);
-    background: linear-gradient(180deg, rgba(34, 197, 94, 0.12), rgba(255, 255, 255, 0.03));
+  .step-content h4 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
   }
-  .cta-inner {
-    padding: 10px 10px;
+  .step-content p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+  .faq-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .cta-box {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(99, 102, 241, 0.1));
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    padding: 4rem 2rem;
+  }
+  .justify-center {
+    justify-content: center;
+  }
+  @media (max-width: 768px) {
+    .mobile-hide { display: none; }
+    .hero-section { padding-top: 2rem; }
   }
 </style>

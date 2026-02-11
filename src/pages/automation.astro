@@ -1,76 +1,89 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import CTAButton from '@/components/CTAButton.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import InfoCard from '@/components/InfoCard.astro';
 import { config } from '@/config';
 
-const title = `法人AI（自動化）｜${config.site.name}`;
+const title = `${config.brands.automation}｜法人AI（自動化）`;
 const description =
-  '業務の自動化・AI活用の受託。小さなPoCから段階的に進め、現場で回る形に落とし込みます。';
+  'AIYuMe Automation。業務の自動化・AI活用の受託。小さなPoCから段階的に進め、現場で回る形に落とし込みます。';
 ---
+
 <BaseLayout title={title} description={description}>
-  <section class="section hero">
+  <!-- Hero -->
+  <section class="section hero text-center">
     <div class="container">
-      <div class="grid cols-2 hero-grid">
-        <div>
-          <div class="pill">法人向け（簡潔）</div>
-          <h1 class="h1">AI自動化を、現場で回る形に。</h1>
-          <p class="lead">
-            要件が曖昧でも大丈夫です。現状の業務フローを整理し、リスクと効果のバランスを見ながら、小さく始めます。
-          </p>
-          <div class="actions">
-            <a class="btn primary" href="/contact">問い合わせ窓口</a>
-            <CTAButton kind="line" label="LINEで軽く相談" subtle />
-          </div>
-          <p class="kicker">※教育事業とはページを分けています。法人案件は別枠で対応します。</p>
-        </div>
-        <div class="card panel">
-          <div class="panel-inner">
-            <h2 class="h2">提供領域</h2>
-            <ul class="clean">
-              <li>定型業務の自動化（入力・集計・通知など）</li>
-              <li>社内ナレッジの検索/要約（LLM活用）</li>
-              <li>問い合わせ対応の半自動化（一次切り分け）</li>
-              <li>PoC → 段階導入 → 運用設計</li>
-            </ul>
-            <div class="divider"></div>
-            <div class="muted">
-              セキュリティ・機密：必要に応じてNDA/権限設計/ログ設計を前提に進めます。
-            </div>
-          </div>
-        </div>
+      <span class="pill-badge">{config.brands.automation}</span>
+      <h1 class="h1">
+        AI自動化を、<br />
+        <span class="text-brand">現場で回る形</span>に。
+      </h1>
+      <p class="lead text-muted">
+        要件定義から運用設計まで。<br />
+        小さく始めて、確実に効果が出る範囲を広げます。
+      </p>
+      <div class="actions justify-center">
+        <a class="btn btn-primary" href="/contact">問い合わせ窓口</a>
+        <CTAButton kind="line" label="LINEで軽く相談" variant="ghost" />
       </div>
     </div>
   </section>
 
+  <!-- Areas -->
+  <section class="section bg-surface">
+    <div class="container">
+      <SectionHeading title="Areas" center />
+      <div class="grid cols-2">
+        <InfoCard title="定型業務の自動化" icon="⚙️">
+          <ul class="clean-list">
+            <li>データ入力・集計・整形</li>
+            <li>通知・アラートの自動化</li>
+            <li>API連携によるワークフロー構築</li>
+          </ul>
+        </InfoCard>
+        <InfoCard title="生成AI (LLM) 活用" icon="🧠">
+          <ul class="clean-list">
+            <li>社内ナレッジの検索・要約</li>
+            <li>問い合わせ一時対応の半自動化</li>
+            <li>ドキュメント生成支援</li>
+          </ul>
+        </InfoCard>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process -->
   <section class="section compact">
     <div class="container">
-      <h2 class="h2">進め方（例）</h2>
+      <SectionHeading title="Process" center />
       <div class="grid cols-3">
-        <div class="card step">
-          <div class="step-inner">
-            <div class="step-title">1. ヒアリング</div>
-            <p class="muted">目的・制約・現行フローを整理します。</p>
-          </div>
-        </div>
-        <div class="card step">
-          <div class="step-inner">
-            <div class="step-title">2. 小さなPoC</div>
-            <p class="muted">短期間で試作品を作り、期待値を合わせます。</p>
-          </div>
-        </div>
-        <div class="card step">
-          <div class="step-inner">
-            <div class="step-title">3. 運用設計</div>
-            <p class="muted">現場で回る手順・権限・例外処理を整えます。</p>
-          </div>
-        </div>
+        <InfoCard title="1. ヒアリング" icon="👂">
+          <p>目的・制約・現行フローを整理し、どこを自動化すべきか見定めます。</p>
+        </InfoCard>
+        <InfoCard title="2. PoC (試作)" icon="🧪">
+          <p>短期間でプロトタイプを作成し、期待通りの挙動になるか検証します。</p>
+        </InfoCard>
+        <InfoCard title="3. 運用設計" icon="📦">
+          <p>現場のマニュアル、エラー時の対応、権限設計を含めて納品します。</p>
+        </InfoCard>
       </div>
-      <div class="note">
-        誇大広告はしません。自動化は「置き換え」ではなく「運用」です。効果が出る範囲と、残る作業を明確にした上で進めます。
+      <div class="note text-center mt-4">
+        ※セキュリティ・機密保持（NDA）については、契約前にご相談の上、適切なフローで対応します。
       </div>
-      <div class="actions">
-        <a class="btn primary" href="/contact">相談する</a>
-        <a class="btn subtle" href="/">トップに戻る</a>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section">
+    <div class="container text-center">
+      <div class="card cta-box">
+        <h2 class="h2">業務改善のご相談</h2>
+        <p class="text-muted mb-8">
+          まずは「何が手間になっているか」をお聞かせください。<br />
+          自動化できる部分と、人がやるべき部分を整理します。
+        </p>
+        <a class="btn btn-primary" href="/contact">問い合わせる</a>
       </div>
     </div>
   </section>
@@ -78,32 +91,47 @@ const description =
 
 <style>
   .hero {
-    padding-top: 54px;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
   }
-  .hero-grid {
-    gap: 18px;
-    align-items: stretch;
+  .pill-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 99px;
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--brand);
+    font-size: 0.875rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+  }
+  .lead {
+    font-size: 1.125rem;
+    margin-bottom: 2rem;
   }
   .actions {
     display: flex;
-    gap: 12px;
+    gap: 1rem;
     flex-wrap: wrap;
-    margin-top: 18px;
   }
-  .panel {
-    padding: 18px;
+  .justify-center {
+    justify-content: center;
   }
-  .panel-inner {
-    padding: 10px 10px;
+  .bg-surface {
+    background: rgba(30, 41, 59, 0.3);
   }
-  .step {
-    padding: 16px;
+  .clean-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
   }
-  .step-inner {
-    padding: 8px 10px;
+  .clean-list li {
+    padding: 0.25rem 0;
+    color: var(--text-muted);
   }
-  .step-title {
-    font-weight: 900;
-    margin-bottom: 6px;
+  .cta-box {
+    padding: 3rem;
   }
+  .mt-4 { margin-top: 2rem; }
+  .mb-8 { margin-bottom: 2rem; }
 </style>

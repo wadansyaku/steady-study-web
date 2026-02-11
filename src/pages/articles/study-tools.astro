@@ -1,0 +1,197 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CTAButton from '@/components/CTAButton.astro';
+import { config, withAmazonAffiliateTag } from '@/config';
+
+const title = `受験家庭で最初にそろえる学習道具3選｜${config.brands.home}`;
+const description =
+  '成績アップをうたう道具ではなく、「続ける仕組み」を作るための道具を3つに絞って紹介します。';
+
+const items = [
+  {
+    name: '学習タイマー',
+    purpose: '25分集中 + 5分休憩のリズムを作る',
+    points: [
+      '残り時間が見えるタイプを選ぶ（終わりが分かると着手しやすい）',
+      'ボタン数が少ない機種を優先（操作が複雑だと使わなくなる）',
+      '机に固定しやすいサイズを選ぶ',
+    ],
+    href: withAmazonAffiliateTag(config.affiliate.amazonLinks.studyTimer),
+  },
+  {
+    name: '復習管理バインダー（A4）',
+    purpose: '解き直しと弱点の再訪を1か所にまとめる',
+    points: [
+      'インデックスで教科を分ける（探す時間を減らす）',
+      '「間違いノート専用」にして用途を固定する',
+      'ルーズリーフは1テーマ1枚で管理する',
+    ],
+    href: withAmazonAffiliateTag(config.affiliate.amazonLinks.reviewBinder),
+  },
+  {
+    name: '学習用デスクライト',
+    purpose: '夜の学習で目の疲れを抑え、勉強時間を安定させる',
+    points: [
+      '手元を均一に照らせる広配光タイプを選ぶ',
+      '色温度を切り替えられるモデルが使いやすい',
+      '眩しさを避けるため、光源が直接目に入らない形状を選ぶ',
+    ],
+    href: withAmazonAffiliateTag(config.affiliate.amazonLinks.deskLight),
+  },
+] as const;
+---
+<BaseLayout title={title} description={description}>
+  <article class="section">
+    <div class="container article-container">
+      <header class="hero text-center">
+        <span class="pill-badge">AIYuMe Learning 記事</span>
+        <h1 class="h1">受験家庭で最初にそろえる学習道具3選</h1>
+        <p class="lead text-muted">
+          「道具を買ったのに続かない」を防ぐには、便利さより
+          <strong>運用の単純さ</strong>
+          を優先するのが有効です。習慣化に直結する3点だけを紹介します。
+        </p>
+        
+        <!-- Affiliate Disclosure -->
+        <div class="disclosure-box">
+          <p class="text-xs text-dim">{config.affiliate.disclosure}</p>
+        </div>
+      </header>
+
+      <section class="card summary-card">
+        <h2 class="h3 mb-4">選定基準 (Criteria)</h2>
+        <ul class="check-list">
+          <li>✅ 毎日使う動作が増えすぎないこと（3ステップ以内）</li>
+          <li>✅ 親子で状況を共有しやすいこと（記録が残る）</li>
+          <li>✅ 高価すぎず、まず2週間試せること</li>
+        </ul>
+      </section>
+
+      <section class="items-list">
+        {items.map((item, index) => (
+          <div class="card item-card">
+            <div class="item-header">
+              <span class="item-num">0{index + 1}</span>
+              <h2 class="h2">{item.name}</h2>
+            </div>
+            <p class="text-brand font-bold mb-4">{item.purpose}</p>
+            <ul class="clean-list mb-8">
+              {item.points.map((point) => (
+                <li>• {point}</li>
+              ))}
+            </ul>
+            <a
+              class="btn btn-outline w-full"
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer sponsored nofollow"
+            >
+              Amazonで詳細を見る
+              <span aria-hidden="true" class="ml-2">↗</span>
+            </a>
+          </div>
+        ))}
+      </section>
+
+      <section class="card caution-card">
+        <h2 class="h3 mb-4">購入前に確認したい点</h2>
+        <ul class="text-sm text-muted">
+          <li>・価格・在庫・仕様は変動します。購入前にAmazonの商品ページで最新情報をご確認ください。</li>
+          <li>・道具は学習成果を保証するものではありません。運用方法とセットで効果が出ます。</li>
+          <li>・合わない場合は、道具を増やす前に「使う手順」を見直してください。</li>
+        </ul>
+      </section>
+
+      <section class="cta-section text-center">
+        <h2 class="h2">運用の設計もセットで。</h2>
+        <p class="text-muted mb-8">
+          道具選びよりも重要なのは、日々の回し方です。<br />
+          無料面談では、現状に合わせて「次の2週間で実行できる形」まで落とし込みます。
+        </p>
+        <div class="actions justify-center">
+          <CTAButton kind="line" label="LINEで無料面談を予約" />
+        </div>
+      </section>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .article-container {
+    max-width: 800px;
+  }
+  .hero {
+    margin-bottom: 4rem;
+  }
+  .pill-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 99px;
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--brand);
+    font-size: 0.875rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  .disclosure-box {
+    background: rgba(30, 41, 59, 0.3);
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    display: inline-block;
+    border: 1px dashed var(--border);
+  }
+  .text-xs { font-size: 0.75rem; }
+  .summary-card {
+    background: rgba(16, 185, 129, 0.05);
+    border-color: rgba(16, 185, 129, 0.2);
+    margin-bottom: 3rem;
+  }
+  .check-list {
+    list-style: none;
+    padding: 0;
+  }
+  .check-list li {
+    margin-bottom: 0.5rem;
+  }
+  .items-list {
+    display: grid;
+    gap: 2rem;
+    margin-bottom: 4rem;
+  }
+  .item-card {
+    padding: 2rem;
+  }
+  .item-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .item-num {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--border);
+    line-height: 1;
+  }
+  .clean-list {
+    list-style: none;
+    padding: 0;
+    color: var(--text-muted);
+  }
+  .clean-list li {
+    margin-bottom: 0.5rem;
+  }
+  .font-bold { font-weight: 700; }
+  .ml-2 { margin-left: 0.5rem; }
+  .caution-card {
+    background: rgba(30, 41, 59, 0.3);
+    margin-bottom: 4rem;
+  }
+  .text-sm { font-size: 0.875rem; }
+  ul.text-sm li { margin-bottom: 0.5rem; }
+  .actions {
+    display: flex;
+    gap: 1rem;
+  }
+  .justify-center { justify-content: center; }
+</style>

@@ -1,77 +1,100 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import CTAButton from '@/components/CTAButton.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import InfoCard from '@/components/InfoCard.astro';
 import { config } from '@/config';
 
-const title = `クリエイター｜${config.site.name}`;
+const title = `${config.brands.creator}｜クリエイター支援`;
 const description =
-  '音楽制作・動画編集の相談窓口。要件整理→提案→制作→納品まで、目的に合わせて進めます。';
+  'AIYuMe Studio。音楽制作・動画編集の相談窓口。要件整理→提案→制作→納品まで、目的に合わせて進めます。';
 ---
+
 <BaseLayout title={title} description={description}>
-  <section class="section hero">
+  <!-- Hero -->
+  <section class="section hero text-center">
     <div class="container">
-      <div class="grid cols-2 hero-grid">
-        <div>
-          <div class="pill">クリエイター向け（簡潔）</div>
-          <h1 class="h1">音楽制作 / 動画編集の相談窓口</h1>
-          <p class="lead">
-            まずは用途（SNS/YouTube/イベント/広告など）と納期、イメージを整理し、最短で形にします。
-          </p>
-          <div class="actions">
-            <CTAButton kind="line" label="LINEで制作を相談する" />
-            <a class="btn subtle" href="/contact">連絡先を見る</a>
-          </div>
-          <p class="kicker">※制作例・メニューは順次追加予定です（捏造はしません）。</p>
-        </div>
-        <div class="card panel">
-          <div class="panel-inner">
-            <h2 class="h2">できること</h2>
-            <ul class="clean">
-              <li>楽曲制作（BGM / ジングル / 効果音など）</li>
-              <li>動画編集（カット / テロップ / 音調整 / サムネ補助）</li>
-              <li>用途に合わせた提案（尺・テンポ・構成）</li>
-            </ul>
-            <div class="divider"></div>
-            <div class="muted">
-              進め方：ヒアリング → 提案 → 制作 → 確認 → 納品
-              <br />
-              料金：内容により変動（まずは要件を整理します）
-            </div>
-          </div>
-        </div>
+      <span class="pill-badge">{config.brands.creator}</span>
+      <h1 class="h1">
+        音楽と映像で、<br />
+        <span class="text-brand">世界観</span>をつくる。
+      </h1>
+      <p class="lead text-muted">
+        SNS・YouTube・イベント・広告。<br />
+        目的とイメージを整理し、最短で形にします。
+      </p>
+      <div class="actions justify-center">
+        <CTAButton kind="line" label="LINEで制作相談" />
+        <a class="btn btn-ghost" href="/contact">メールで問い合わせ</a>
       </div>
     </div>
   </section>
 
+  <!-- Services -->
+  <section class="section bg-surface">
+    <div class="container">
+      <SectionHeading title="Service" center />
+      <div class="grid cols-2">
+        <InfoCard title="音楽制作" icon="🎵">
+          <ul class="clean-list">
+            <li>BGM / ジングル / 効果音</li>
+            <li>歌ってみたMIX / マスタリング</li>
+            <li>用途に合わせた尺・雰囲気の提案</li>
+          </ul>
+        </InfoCard>
+        <InfoCard title="動画編集" icon="🎬">
+          <ul class="clean-list">
+            <li>YouTube動画 / ショート動画</li>
+            <li>カット / テロップ / 整音</li>
+            <li>サムネイル作成補助</li>
+          </ul>
+        </InfoCard>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process -->
   <section class="section compact">
     <div class="container">
-      <h2 class="h2">制作例（プレースホルダ）</h2>
-      <div class="grid cols-3">
-        <div class="card sample">
-          <div class="sample-inner">
-            <div class="sample-title">制作例A</div>
-            <p class="muted">準備中（後日差し替え）</p>
-          </div>
+      <SectionHeading title="Process" center />
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <h3>ヒアリング</h3>
+          <p class="text-muted">用途・納期・参考イメージを共有</p>
         </div>
-        <div class="card sample">
-          <div class="sample-inner">
-            <div class="sample-title">制作例B</div>
-            <p class="muted">準備中（後日差し替え）</p>
-          </div>
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <h3>提案・見積</h3>
+          <p class="text-muted">方向性のすり合わせ</p>
         </div>
-        <div class="card sample">
-          <div class="sample-inner">
-            <div class="sample-title">制作例C</div>
-            <p class="muted">準備中（後日差し替え）</p>
-          </div>
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <h3>制作・確認</h3>
+          <p class="text-muted">進捗確認と修正（リテイク）</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">04</div>
+          <h3>納品</h3>
+          <p class="text-muted">データ引き渡し</p>
         </div>
       </div>
-      <div class="note">
-        「何を頼めばいいか分からない」状態でも大丈夫です。目的と素材の有無だけ分かれば、こちらで要件を分解して提案します。
+      <div class="note text-center mt-4">
+        ※制作例・料金表は準備中です。まずはLINEでお問い合わせください（見積無料）。
       </div>
-      <div class="actions">
-        <CTAButton kind="line" label="LINEで制作の相談をする" />
-        <a class="btn subtle" href="/">トップに戻る</a>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section">
+    <div class="container text-center">
+      <div class="card cta-box">
+        <h2 class="h2">制作のご依頼・ご相談</h2>
+        <p class="text-muted mb-8">
+          「何をどう頼めばいいか分からない」状態でも大丈夫です。<br />
+          こちらで要件を分解して提案します。
+        </p>
+        <CTAButton kind="line" label="LINEで相談する" />
       </div>
     </div>
   </section>
@@ -79,32 +102,66 @@ const description =
 
 <style>
   .hero {
-    padding-top: 54px;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
   }
-  .hero-grid {
-    gap: 18px;
-    align-items: stretch;
+  .pill-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 99px;
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--brand);
+    font-size: 0.875rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+  }
+  .lead {
+    font-size: 1.125rem;
+    margin-bottom: 2rem;
   }
   .actions {
     display: flex;
-    gap: 12px;
+    gap: 1rem;
     flex-wrap: wrap;
-    margin-top: 18px;
   }
-  .panel {
-    padding: 18px;
+  .justify-center {
+    justify-content: center;
   }
-  .panel-inner {
-    padding: 10px 10px;
+  .bg-surface {
+    background: rgba(30, 41, 59, 0.3);
   }
-  .sample {
-    padding: 16px;
+  .clean-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
   }
-  .sample-inner {
-    padding: 8px 10px;
+  .clean-list li {
+    padding: 0.25rem 0;
+    color: var(--text-muted);
   }
-  .sample-title {
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  .step-card {
+    background: rgba(30, 41, 59, 0.4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    text-align: center;
+  }
+  .step-num {
+    font-size: 2rem;
     font-weight: 900;
-    margin-bottom: 6px;
+    color: var(--border);
+    line-height: 1;
+    margin-bottom: 0.5rem;
   }
+  .cta-box {
+    padding: 3rem;
+  }
+  .mt-4 { margin-top: 2rem; }
+  .mb-8 { margin-bottom: 2rem; }
 </style>

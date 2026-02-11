@@ -6,29 +6,58 @@ type Props = {
   kind: CTAKind;
   label?: string;
   class?: string;
-  subtle?: boolean;
+  variant?: 'primary' | 'accent' | 'outline' | 'ghost';
 };
 
-const { kind, label, subtle } = Astro.props;
+const { kind, label, class: className, variant } = Astro.props;
+
 const href = kind === 'line' ? config.urls.lineAddFriend : config.urls.booking;
+
+// Default labels
 const defaultLabel =
-  kind === 'line' ? 'LINEで無料面談を相談する' : '予約ページで日程を選ぶ';
-const buttonClass =
-  kind === 'line'
-    ? subtle
-      ? 'btn subtle'
-      : 'btn success'
-    : subtle
-      ? 'btn subtle'
-      : 'btn primary';
+  kind === 'line' ? 'LINEで無料相談（30分）' : 'Webで面談を予約する';
+
+// Default variants: LINE is Accent (Green), Booking is Primary (Brand)
+const defaultVariant = kind === 'line' ? 'accent' : 'primary';
+const activeVariant = variant ?? defaultVariant;
+
+const buttonClass = `btn btn-${activeVariant}`;
 ---
+
 <a
-  class={[buttonClass, Astro.props.class].filter(Boolean).join(' ')}
+  class:list={[buttonClass, className]}
   href={href}
   target="_blank"
   rel="noopener noreferrer"
 >
-  {label ?? defaultLabel}
-  <span aria-hidden="true">→</span>
+  <span class="label">{label ?? defaultLabel}</span>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="arrow"
+    aria-hidden="true"
+  >
+    <path d="M5 12h14"></path>
+    <path d="m12 5 7 7-7 7"></path>
+  </svg>
 </a>
+
+<style>
+  .label {
+    margin-right: 0.5rem;
+  }
+  .arrow {
+    transition: transform 0.2s;
+  }
+  a:hover .arrow {
+    transform: translateX(4px);
+  }
+</style>
 

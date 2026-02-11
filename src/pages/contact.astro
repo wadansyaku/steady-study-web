@@ -1,52 +1,57 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import CTAButton from '@/components/CTAButton.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import InfoCard from '@/components/InfoCard.astro';
 import { config } from '@/config';
 
 const title = `お問い合わせ｜${config.site.name}`;
 const description =
-  'Steady Studyのお問い合わせ窓口。基本はLINE、必要に応じてメールでも受け付けます。';
+  `${config.site.name}のお問い合わせ窓口。基本はLINE、必要に応じてメールでも受け付けます。`;
 ---
+
 <BaseLayout title={title} description={description}>
   <section class="section">
-    <div class="container">
-      <h1 class="h1">お問い合わせ</h1>
-      <p class="lead">
-        まずはLINEが最短です（無料面談の相談・日程調整）。法人案件や資料送付が必要な場合はメールもご利用ください。
+    <div class="container text-center">
+      <SectionHeading title="Contact" center />
+      <p class="lead text-muted mb-12">
+        まずはLINEが最短です（無料面談の相談・日程調整）。<br />
+        法人案件や資料送付が必要な場合はメールもご利用ください。
       </p>
 
-      <div class="grid cols-2">
-        <div class="card box">
-          <div class="box-inner">
-            <h2 class="h2">LINE（推奨）</h2>
-            <p class="muted">相談内容が未整理でもOKです。状況を短く送ってください。</p>
-            <div class="actions">
-              <CTAButton kind="line" label="LINEで相談する" />
-              <CTAButton kind="booking" label="予約ページを見る" subtle />
-            </div>
-            <p class="kicker">※週5枠のため、直近の枠が埋まる場合があります。</p>
+      <div class="grid cols-2 gap-8 max-w-4xl mx-auto">
+        <!-- LINE -->
+        <InfoCard title="LINE（推奨）" icon="💬" className="contact-card">
+          <p class="text-muted mb-6">
+            相談内容が未整理でもOKです。状況を短く送ってください。
+          </p>
+          <div class="actions flex-col gap-4">
+            <CTAButton kind="line" label="LINEで相談する" />
+            <CTAButton kind="booking" label="予約ページを見る" variant="ghost" />
           </div>
-        </div>
+          <p class="text-xs text-muted mt-4">
+            ※週5枠のため、直近の枠が埋まる場合があります。
+          </p>
+        </InfoCard>
 
-        <div class="card box">
-          <div class="box-inner">
-            <h2 class="h2">メール（補助）</h2>
-            <p class="muted">
-              法人のご相談や、ファイル共有が必要な場合はこちら。
-            </p>
-            <div class="email">
-              <div class="muted">連絡先</div>
-              <div class="addr">{config.contact.email}</div>
-            </div>
-            <div class="note">
-              件名例：<strong>無料面談希望（学年/志望校）</strong> /
-              <strong>法人AI相談</strong>
-            </div>
+        <!-- Email -->
+        <InfoCard title="メール（補助）" icon="✉️" className="contact-card">
+          <p class="text-muted mb-6">
+            法人のご相談や、ファイル共有が必要な場合はこちら。
+          </p>
+          <div class="email-box">
+            <div class="text-xs text-muted uppercase tracking-wide">Email Address</div>
+            <div class="font-bold text-lg select-all">{config.contact.email}</div>
           </div>
-        </div>
+          <div class="text-sm text-muted mt-4 text-left">
+            件名例：<br />
+            ・<strong>無料面談希望（学年/志望校）</strong><br />
+            ・<strong>法人AI相談</strong>
+          </div>
+        </InfoCard>
       </div>
 
-      <div class="note">
+      <div class="note text-muted mt-12 text-sm">
         注意：当サイトはv1ではサーバー処理を持たず、フォーム送信は外部サービス（LINE/予約/メール）で対応します。
       </div>
     </div>
@@ -54,28 +59,40 @@ const description =
 </BaseLayout>
 
 <style>
-  .box {
-    padding: 18px;
+  .mb-12 { margin-bottom: 3rem; }
+  .mb-6 { margin-bottom: 1.5rem; }
+  .gap-8 { gap: 2rem; }
+  .max-w-4xl { max-width: 56rem; }
+  .mx-auto { margin-left: auto; margin-right: auto; }
+  
+  .contact-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
-  .box-inner {
-    padding: 10px 10px;
-  }
+  
   .actions {
     display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-top: 12px;
+    flex-direction: column;
+    gap: 1rem;
   }
-  .email {
-    margin-top: 14px;
-    padding: 14px;
+  
+  .email-box {
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-    border: 1px solid rgba(148, 163, 184, 0.2);
-    background: rgba(17, 26, 51, 0.35);
+    padding: 1rem;
+    margin-bottom: 1rem;
   }
-  .addr {
-    font-weight: 900;
-    font-size: 1.08rem;
-    margin-top: 6px;
-  }
+  
+  .uppercase { text-transform: uppercase; }
+  .tracking-wide { letter-spacing: 0.05em; }
+  .font-bold { font-weight: 700; }
+  .text-lg { font-size: 1.125rem; }
+  .select-all { user-select: all; }
+  .text-left { text-align: left; }
+  .text-xs { font-size: 0.75rem; }
+  .text-sm { font-size: 0.875rem; }
+  .mt-4 { margin-top: 1rem; }
+  .mt-12 { margin-top: 3rem; }
 </style>

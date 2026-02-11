@@ -21,44 +21,54 @@ const { items } = Astro.props;
 <style>
   .faq {
     display: grid;
-    gap: 12px;
+    gap: 1rem;
   }
   .faq-item {
     border: 1px solid var(--border);
-    background: rgba(17, 26, 51, 0.55);
-    border-radius: var(--radius-sm);
-    padding: 12px 12px;
+    background: var(--surface-2);
+    border-radius: var(--radius);
+    padding: 1rem;
+    transition: background 0.2s;
+  }
+  .faq-item:hover {
+    background: rgba(51, 65, 85, 0.8);
   }
   summary {
     cursor: pointer;
     list-style: none;
     display: flex;
-    gap: 12px;
+    gap: 1rem;
     align-items: flex-start;
     justify-content: space-between;
-    font-weight: 800;
+    font-weight: 700;
+    color: var(--text);
   }
   summary:focus-visible {
-    outline: 2px solid rgba(124, 58, 237, 0.9);
-    outline-offset: 3px;
-    border-radius: 10px;
+    outline: 2px solid var(--brand);
+    outline-offset: 4px;
+    border-radius: 4px;
   }
   summary::-webkit-details-marker {
     display: none;
   }
   .q {
     flex: 1;
+    line-height: 1.5;
   }
   .icon {
-    margin-left: 8px;
-    color: var(--muted);
+    margin-left: 0.5rem;
+    color: var(--brand);
     font-weight: 900;
+    transition: transform 0.2s;
   }
   details[open] .icon {
     transform: rotate(45deg);
   }
   .a {
-    color: var(--muted);
-    padding-top: 10px;
+    color: var(--text-muted);
+    padding-top: 1rem;
+    line-height: 1.6;
+    border-top: 1px solid var(--border);
+    margin-top: 1rem;
   }
 </style>

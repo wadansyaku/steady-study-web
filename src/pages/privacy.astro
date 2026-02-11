@@ -1,94 +1,144 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
 import { config } from '@/config';
 
 const title = `プライバシーポリシー｜${config.site.name}`;
 const description =
-  'Steady Studyのプライバシーポリシー。LINE・外部予約サービス・アクセス解析の利用を想定しています。';
+  `${config.site.name}のプライバシーポリシー。LINE・外部予約サービス・アクセス解析の利用を想定しています。`;
 ---
+
 <BaseLayout title={title} description={description}>
   <section class="section">
-    <div class="container">
-      <h1 class="h1">プライバシーポリシー</h1>
-      <p class="muted">
+    <div class="container container-sm">
+      <h1 class="h1 text-center mb-8">プライバシーポリシー</h1>
+      <p class="text-muted text-center mb-12">
         {config.site.name}（以下「当サービス」）は、個人情報の保護を重要な責務と考え、以下の方針に基づき適切に取り扱います。
       </p>
 
-      <div class="card content">
-        <div class="content-inner">
-          <h2 class="h2">1. 取得する情報</h2>
-          <p class="muted">
+      <div class="policy-content">
+        <section class="mb-8">
+          <SectionHeading title="1. 取得する情報" className="policy-heading" />
+          <p class="text-muted">
             当サービスは、お問い合わせ・面談予約等の際に、氏名（ハンドルネームを含む）、連絡先（LINE/メール）、学年、学習状況などの情報を取得する場合があります。
           </p>
+        </section>
 
-          <h2 class="h2">2. 利用目的</h2>
-          <ul class="clean">
-            <li>お問い合わせへの対応</li>
-            <li>面談の実施、連絡、日程調整</li>
-            <li>サービス提供（学習支援）のための連絡・資料共有</li>
-            <li>品質改善（匿名化または個人が特定されない形での分析）</li>
+        <section class="mb-8">
+          <SectionHeading title="2. 利用目的" className="policy-heading" />
+          <ul class="clean-list">
+            <li>・お問い合わせへの対応</li>
+            <li>・面談の実施、連絡、日程調整</li>
+            <li>・サービス提供（学習支援）のための連絡・資料共有</li>
+            <li>・品質改善（匿名化または個人が特定されない形での分析）</li>
           </ul>
+        </section>
 
-          <h2 class="h2">3. 第三者提供</h2>
-          <p class="muted">
+        <section class="mb-8">
+          <SectionHeading title="3. 第三者提供" className="policy-heading" />
+          <p class="text-muted">
             法令に基づく場合を除き、本人の同意なく個人情報を第三者に提供しません。
           </p>
+        </section>
 
-          <h2 class="h2">4. 外部サービスの利用</h2>
-          <p class="muted">
+        <section class="mb-8">
+          <SectionHeading title="4. 外部サービスの利用" className="policy-heading" />
+          <p class="text-muted mb-4">
             当サービスは、利便性のため外部サービスを利用する場合があります。
           </p>
-          <ul class="clean">
+          <ul class="clean-list">
             <li>
-              LINE（連絡/予約導線）：
-              <a href={config.urls.lineAddFriend} target="_blank" rel="noopener noreferrer"
+              ・LINE（連絡/予約導線）：
+              <a href={config.urls.lineAddFriend} target="_blank" rel="noopener noreferrer" class="link"
                 >友だち追加</a
               >
             </li>
             <li>
-              外部予約サービス（予約導線）：
-              <a href={config.urls.booking} target="_blank" rel="noopener noreferrer">予約ページ</a>
+              ・外部予約サービス（予約導線）：
+              <a href={config.urls.booking} target="_blank" rel="noopener noreferrer" class="link">予約ページ</a>
             </li>
           </ul>
-          <p class="muted">
-            外部サービスにおける個人情報の取り扱いについては、各サービス提供者のプライバシーポリシーをご確認ください。
+          <p class="text-muted text-sm mt-2">
+            ※外部サービスにおける個人情報の取り扱いについては、各サービス提供者のプライバシーポリシーをご確認ください。
           </p>
+        </section>
 
-          <h2 class="h2">5. アクセス解析</h2>
-          <p class="muted">
+        <section class="mb-8">
+          <SectionHeading title="5. アクセス解析" className="policy-heading" />
+          <p class="text-muted">
             当サービスは、サイト改善のためアクセス解析ツールを利用する場合があります（導入する場合は設定でONにします）。
             解析タグの有無は <code>src/config.ts</code> の設定により切り替え可能です。
           </p>
+        </section>
 
-          <h2 class="h2">6. お問い合わせ</h2>
-          <p class="muted">
-            個人情報の取り扱いに関するお問い合わせは、<a href="/contact">お問い合わせページ</a>
+        <section class="mb-8">
+          <SectionHeading title="6. お問い合わせ" className="policy-heading" />
+          <p class="text-muted">
+            個人情報の取り扱いに関するお問い合わせは、<a href="/contact" class="link">お問い合わせページ</a>
             よりご連絡ください。
           </p>
+        </section>
 
-          <div class="divider"></div>
-          <p class="muted">制定日：2026-02-04</p>
-        </div>
+        <div class="divider border-t border-border my-8"></div>
+        <p class="text-right text-muted text-sm">制定日：2026-02-04</p>
       </div>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .content {
-    padding: 18px;
+  .container-sm {
+    max-width: 800px;
+    margin: 0 auto;
   }
-  .content-inner {
-    padding: 10px 10px;
+  .mb-4 { margin-bottom: 1rem; }
+  .mb-8 { margin-bottom: 2rem; }
+  .mb-12 { margin-bottom: 3rem; }
+  .mt-2 { margin-top: 0.5rem; }
+  .my-8 { margin-top: 2rem; margin-bottom: 2rem; }
+  
+  .policy-content {
+    background: rgba(30, 41, 59, 0.3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
   }
+  
+  .clean-list {
+    list-style: none;
+    padding: 0;
+    color: var(--text-muted);
+  }
+  .clean-list li {
+    margin-bottom: 0.5rem;
+  }
+  
+  .link {
+    color: var(--brand);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .link:hover {
+    color: var(--accent);
+  }
+  
   code {
     padding: 2px 6px;
-    border-radius: 8px;
-    border: 1px solid rgba(148, 163, 184, 0.22);
-    background: rgba(17, 26, 51, 0.6);
+    border-radius: 4px;
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid var(--border);
+    font-size: 0.85em;
+    font-family: monospace;
   }
-  a {
-    text-decoration: underline;
+  
+  .text-sm { font-size: 0.875rem; }
+  .text-right { text-align: right; }
+  
+  /* Override SectionHeading styles for inside policy */
+  :global(.policy-heading h2) {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid var(--brand);
+    padding-left: 1rem;
   }
 </style>
-

@@ -50,14 +50,20 @@
 ### `src/config.ts`
 
 ```ts
-const domain = 'TODO_DOMAIN';
+const domain = 'ai-yu-me.com';
 
 export const config = {
   site: {
-    name: 'Steady Study',
+    name: 'AIYuMe',
     domain,
     canonicalBase: `https://${domain}`,
     defaultOgImagePath: '/og.svg',
+  },
+  brands: {
+    home: 'AIYuMe',
+    education: 'AIYuMe Learning',
+    creator: 'AIYuMe Studio',
+    automation: 'AIYuMe Automation',
   },
   urls: {
     lineAddFriend: 'TODO_LINE_URL',
@@ -131,7 +137,7 @@ export function ogImageUrl(pathname: string = config.site.defaultOgImagePath) {
 
 ## コンポーネント
 
-- `src/components/Header.astro`：ナビ（教育/クリエイター/法人AI）＋右端LINE CTA
+- `src/components/Header.astro`：ナビ（AIYuMe Learning / Studio / Automation）＋右端LINE CTA
 - `src/components/Footer.astro`：`/privacy` `/contact` ＋コピーライト
 - `src/components/CTAButton.astro`：`line` / `booking` の2種
 - `src/components/FAQAccordion.astro`：`<details>` ベースの簡易アコーディオン

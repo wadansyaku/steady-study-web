@@ -20,6 +20,7 @@ npm run build
 1. このリポジトリを GitHub に push
 2. Cloudflare Dashboard → **Workers & Pages** → **Create application** → **Pages** → **Connect to Git**
 3. 対象リポジトリを選択し、プロジェクトを作成
+4. 既に CLI で作成済みの場合は `aiyume-web` をそのまま利用（`https://aiyume-web.pages.dev`）
 
 ## 4) Cloudflare Pages のビルド設定
 
@@ -33,7 +34,7 @@ npm run build
 
 `src/config.ts` を差し替えます。
 
-- `domain`：`TODO_DOMAIN` → 実ドメイン
+- `domain`：`ai-yu-me.com`
 - `config.urls.lineAddFriend`：`TODO_LINE_URL` → 公式LINE追加URL
 - `config.urls.booking`：`TODO_BOOKING_URL` → 予約ページURL
 - `config.contact.email`：`TODO_CONTACT_EMAIL` → 連絡用メール
@@ -42,13 +43,17 @@ npm run build
 
 ## 6) 独自ドメイン接続（概要）
 
-Cloudflare Pages の **Custom domains** から追加します。
+Cloudflare Pages の **Custom domains** から次の2つを追加します。
 
-- 既に Cloudflare でDNS管理している場合：画面の案内に従って追加（自動で設定されます）
-- まだDNSが Cloudflare でない場合：ドメインのネームサーバーを Cloudflare に向けてから、Custom domains を追加
+1. `ai-yu-me.com`（apex）
+2. `www.ai-yu-me.com`（www）
 
-DNS レコードは最終的に以下のどちらかになります（UIが案内します）。
+推奨運用：
+
+- `www.ai-yu-me.com` を `ai-yu-me.com` に 301 リダイレクト
+- SSL/TLS は `Full (strict)`
+
+DNS は Cloudflare 側が案内する設定に従ってください。通常は次の形です。
 
 - **CNAME**：`www` → `<your-project>.pages.dev`
-- ルートドメイン（`@`）：Cloudflare の推奨に従い、CNAME Flattening か A/AAAA を設定
-
+- **apex**（`@`）：Cloudflare の CNAME Flattening を使って `<your-project>.pages.dev` に向ける

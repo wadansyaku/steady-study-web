@@ -1,4 +1,4 @@
-# Steady Study Web (Astro / Static)
+# AIYuMe Web (Astro / Static)
 
 教育LPを中心にした静的サイトです。v1はサーバー処理なし（LINE/外部予約/メールで運用）を前提にしています。
 
@@ -22,11 +22,12 @@ npm run build
 
 出力先は `dist/` です。
 
-## 4) 設定（TODO差し替え）
+## 4) 設定（値の差し替え）
 
 `src/config.ts` の以下を差し替えてください。
 
-- `config.site.domain`
+- `config.site.domain`（現在 `ai-yu-me.com`）
+- `config.brands.*`
 - `config.urls.lineAddFriend`
 - `config.urls.booking`
 - `config.contact.email`
