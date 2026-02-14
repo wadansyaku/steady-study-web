@@ -16,6 +16,7 @@ export const config = {
   urls: {
     lineAddFriend: 'TODO_LINE_URL',
     booking: 'TODO_BOOKING_URL',
+    englishApp: '/aiyume_english/',
   },
   contact: {
     email: 'TODO_CONTACT_EMAIL',
