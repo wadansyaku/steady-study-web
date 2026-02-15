@@ -1,4 +1,5 @@
 const domain = 'ai-yu-me.com';
+const contactEmail = 'TODO_CONTACT_EMAIL';
 
 export const config = {
   site: {
@@ -17,9 +18,15 @@ export const config = {
     lineAddFriend: 'TODO_LINE_URL',
     booking: 'TODO_BOOKING_URL',
     englishApp: '/aiyume_english/',
+    consultations: {
+      learningLine: 'TODO_LINE_URL',
+      studioLine: 'TODO_LINE_URL',
+      automationMail: `mailto:${contactEmail}`,
+      automationLine: 'TODO_LINE_URL',
+    },
   },
   contact: {
-    email: 'TODO_CONTACT_EMAIL',
+    email: contactEmail,
   },
   affiliate: {
     amazonAssociateTag: 'TODO_AMAZON_ASSOCIATE_TAG',

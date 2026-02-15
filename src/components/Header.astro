@@ -1,5 +1,4 @@
 ---
-import CTAButton from '@/components/CTAButton.astro';
 import { config, normalizePathname } from '@/config';
 
 const pathname = normalizePathname(Astro.url.pathname);
@@ -8,16 +7,41 @@ const nav = [
   { href: '/creator', label: config.brands.creator },
   { href: '/automation', label: config.brands.automation },
 ] as const;
+
+const consultationLinks = [
+  {
+    persona: '受験',
+    label: 'LINEで無料面談（30分）',
+    href: config.urls.consultations.learningLine,
+    external: true,
+  },
+  {
+    persona: '制作',
+    label: 'LINEで制作相談',
+    href: config.urls.consultations.studioLine,
+    external: true,
+  },
+  {
+    persona: '法人',
+    label: 'メールで問い合わせ（資料共有向け）',
+    href: config.urls.consultations.automationMail,
+    external: false,
+    subLink: {
+      label: 'LINEで軽く相談',
+      href: config.urls.consultations.automationLine,
+    },
+  },
+] as const;
 ---
 
-<header class="header">
+<header class="header" data-consult-root>
   <div class="container inner">
     <a class="logo" href="/" aria-label={`${config.site.name} ホーム`}>
       <span class="mark" aria-hidden="true">AY</span>
       <span class="text">{config.site.name}</span>
     </a>
 
-    <nav class="nav" aria-label="Main Navigation">
+    <nav class="nav" aria-label="主要ナビゲーション">
       {
         nav.map((item) => (
           <a
@@ -31,30 +55,133 @@ const nav = [
       }
     </nav>
 
-    <div class="cta">
-      <CTAButton kind="line" label="無料面談（30分）" />
+    <div class="cta-wrap">
+      <button
+        class="btn btn-accent consult-toggle"
+        type="button"
+        id="consult-toggle"
+        aria-haspopup="dialog"
+        aria-controls="consult-menu"
+        aria-expanded="false"
+      >
+        無料相談
+      </button>
+
+      <div class="consult-menu card" id="consult-menu" role="dialog" aria-modal="false" hidden>
+        <p class="menu-title" id="consult-title">相談先を選択</p>
+        <ul class="consult-list" aria-labelledby="consult-title">
+          {
+            consultationLinks.map((item) => (
+              <li>
+                <a
+                  class="consult-link"
+                  href={item.href}
+                  target={item.external ? '_blank' : undefined}
+                  rel={item.external ? 'noopener noreferrer' : undefined}
+                >
+                  <span class="persona">{item.persona}</span>
+                  <span class="action">{item.label}</span>
+                </a>
+                {item.subLink && (
+                  <a
+                    class="sub-link"
+                    href={item.subLink.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {item.subLink.label}
+                  </a>
+                )}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
     </div>
   </div>
 </header>
+
+<script is:inline>
+  (() => {
+    const root = document.querySelector('[data-consult-root]');
+    if (!root) return;
+
+    const toggle = root.querySelector('#consult-toggle');
+    const menu = root.querySelector('#consult-menu');
+    if (!(toggle instanceof HTMLButtonElement) || !(menu instanceof HTMLElement)) return;
+
+    const focusableSelector = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    let lastFocused = null;
+
+    const openMenu = () => {
+      lastFocused = document.activeElement;
+      menu.hidden = false;
+      toggle.setAttribute('aria-expanded', 'true');
+      const firstFocusable = menu.querySelector(focusableSelector);
+      if (firstFocusable instanceof HTMLElement) firstFocusable.focus();
+    };
+
+    const closeMenu = (restoreFocus = true) => {
+      menu.hidden = true;
+      toggle.setAttribute('aria-expanded', 'false');
+      if (restoreFocus && lastFocused instanceof HTMLElement) lastFocused.focus();
+    };
+
+    toggle.addEventListener('click', () => {
+      if (menu.hidden) openMenu();
+      else closeMenu(false);
+    });
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Node) || root.contains(target)) return;
+      if (!menu.hidden) closeMenu(false);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !menu.hidden) {
+        closeMenu(true);
+      }
+
+      if (event.key !== 'Tab' || menu.hidden) return;
+
+      const focusables = [...menu.querySelectorAll(focusableSelector)].filter(
+        (element) => element instanceof HTMLElement && !element.hasAttribute('disabled')
+      );
+      if (focusables.length === 0) return;
+
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement;
+
+      if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        if (first instanceof HTMLElement) first.focus();
+      }
+      if (event.shiftKey && active === first) {
+        event.preventDefault();
+        if (last instanceof HTMLElement) last.focus();
+      }
+    });
+  })();
+</script>
 
 <style>
   .header {
     position: sticky;
     top: 0;
     z-index: 100;
-    height: var(--header-height);
     backdrop-filter: blur(12px);
-    background: rgba(15, 23, 42, 0.8); /* Slate 900 with opacity */
+    background: rgba(15, 23, 42, 0.86);
     border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
   }
   .inner {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
     align-items: center;
-    justify-content: space-between;
     gap: 1rem;
-    height: 100%;
+    min-height: var(--header-height);
+    padding: 0.7rem 0;
   }
   .logo {
     display: inline-flex;
@@ -63,7 +190,7 @@ const nav = [
     text-decoration: none;
     font-weight: 800;
     letter-spacing: -0.01em;
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     color: var(--text);
   }
   .mark {
@@ -80,19 +207,19 @@ const nav = [
   }
   .nav {
     display: flex;
-    gap: 0.5rem;
-    position: absolute; /* Center nav */
-    left: 50%;
-    transform: translateX(-50%);
+    gap: 0.35rem;
+    justify-content: center;
+    flex-wrap: wrap;
   }
   .nav-link {
     color: var(--text-muted);
     text-decoration: none;
-    padding: 0.5rem 0.75rem;
+    padding: 0.48rem 0.72rem;
     border-radius: var(--radius-sm);
     font-size: 0.95rem;
-    font-weight: 500;
+    font-weight: 600;
     transition: all 0.2s;
+    border: 1px solid transparent;
   }
   .nav-link:hover {
     color: var(--text);
@@ -100,19 +227,109 @@ const nav = [
   }
   .nav-link[aria-current='page'] {
     color: var(--text);
-    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(99, 102, 241, 0.35);
+    background: rgba(99, 102, 241, 0.15);
   }
-  .nav-link:focus-visible {
+  .cta-wrap {
+    position: relative;
+    justify-self: end;
+  }
+  .consult-toggle {
+    min-width: 112px;
+  }
+  .consult-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 10px);
+    width: min(360px, calc(100vw - 2.5rem));
+    padding: 1rem;
+    z-index: 110;
+    box-shadow: var(--shadow);
+  }
+  .menu-title {
+    margin: 0 0 0.8rem;
+    font-size: 0.92rem;
+    color: var(--text-dim);
+    font-weight: 700;
+  }
+  .consult-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.55rem;
+  }
+  .consult-link {
+    display: grid;
+    gap: 0.1rem;
+    padding: 0.72rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: rgba(15, 23, 42, 0.55);
+    color: var(--text);
+    text-decoration: none;
+  }
+  .consult-link:hover {
+    border-color: rgba(99, 102, 241, 0.45);
+    background: rgba(99, 102, 241, 0.12);
+    color: var(--text);
+  }
+  .consult-link:focus-visible,
+  .sub-link:focus-visible {
     outline: 2px solid var(--brand);
-    outline-offset: -2px;
+    outline-offset: 2px;
+  }
+  .persona {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    font-weight: 700;
+  }
+  .action {
+    font-weight: 700;
+    line-height: 1.35;
+  }
+  .sub-link {
+    display: inline-block;
+    margin-top: 0.32rem;
+    margin-left: 0.75rem;
+    font-size: 0.86rem;
+    color: var(--text-muted);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .consult-menu[hidden] {
+    display: none;
   }
 
   @media (max-width: 900px) {
-    .nav {
-      display: none; /* Hide nav on mobile for now, or implement mobile menu */
-    }
     .inner {
-      justify-content: space-between;
+      grid-template-columns: 1fr auto;
+      grid-template-areas:
+        'logo cta'
+        'nav nav';
+      row-gap: 0.6rem;
+      min-height: auto;
+    }
+    .logo {
+      grid-area: logo;
+    }
+    .nav {
+      grid-area: nav;
+      justify-content: flex-start;
+      overflow-x: auto;
+      white-space: nowrap;
+      padding-bottom: 0.2rem;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .nav::-webkit-scrollbar {
+      display: none;
+    }
+    .cta-wrap {
+      grid-area: cta;
+    }
+    .consult-menu {
+      right: 0;
     }
   }
 </style>
