@@ -166,13 +166,14 @@ const faqs = [
     <div class="container">
       <SectionHeading title="学習コンテンツ" subtitle="Learning Contents" center />
       <div class="card content-card">
-        <h3 class="h3">AIYuMe English（英単語アプリ）</h3>
+        <h3 class="h3">{config.brands.english}（中学生向け英単語アプリ）</h3>
         <p class="text-muted">
-          AIYuMe English は、AIYuMe Learning の中で使う英語学習コンテンツです。
-          週次面談で決めた学習方針に沿って、日々の語彙学習を進める用途で活用します。
+          {config.brands.english}
+          は、AIYuMe Learning の中で使う英語学習コンテンツです。ポップで続けやすいUIで、
+          中学生の語彙学習を日々回せるように設計しています。
         </p>
         <div class="actions content-actions justify-center">
-          <a class="btn btn-outline" href={config.urls.englishApp}>AIYuMe Englishを開く</a>
+          <a class="btn btn-outline" href={config.urls.englishApp}>{config.brands.english}を開く</a>
         </div>
       </div>
     </div>

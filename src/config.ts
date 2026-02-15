@@ -11,13 +11,14 @@ export const config = {
   brands: {
     home: 'AIYuMe',
     education: 'AIYuMe Learning',
+    english: 'AIYuMe Learning English',
     creator: 'AIYuMe Studio',
     automation: 'AIYuMe Automation',
   },
   urls: {
     lineAddFriend: 'TODO_LINE_URL',
     booking: 'TODO_BOOKING_URL',
-    englishApp: '/aiyume_english/',
+    englishApp: '/aiyume_english/review',
     consultations: {
       learningLine: 'TODO_LINE_URL',
       studioLine: 'TODO_LINE_URL',
@@ -31,7 +32,7 @@ export const config = {
   affiliate: {
     amazonAssociateTag: 'TODO_AMAZON_ASSOCIATE_TAG',
     disclosure:
-      '当ページはAmazonアソシエイト等のアフィリエイトリンクを含みます。リンク経由で購入されると、運営に紹介料が発生する場合があります。',
+      '当サイトはアフィリエイト広告を利用しています。Amazonのアソシエイトとして、AIYuMe は適格販売により収入を得ています。',
     amazonLinks: {
       studyTimer: 'https://amzn.to/4rHUUZq',
       reviewBinder: 'https://amzn.to/3ZyFT06',

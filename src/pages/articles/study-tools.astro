@@ -54,7 +54,8 @@ const items = [
         
         <!-- Affiliate Disclosure -->
         <div class="disclosure-box">
-          <p class="text-xs text-dim">{config.affiliate.disclosure}</p>
+          <p class="disclosure-label">広告開示</p>
+          <p class="disclosure-text">{config.affiliate.disclosure}</p>
         </div>
       </header>
 
@@ -135,12 +136,26 @@ const items = [
   }
   .disclosure-box {
     background: rgba(30, 41, 59, 0.3);
-    padding: 0.75rem;
+    padding: 0.9rem 1rem;
     border-radius: var(--radius-sm);
     display: inline-block;
     border: 1px dashed var(--border);
+    max-width: 680px;
+    text-align: left;
   }
-  .text-xs { font-size: 0.75rem; }
+  .disclosure-label {
+    margin: 0 0 0.3rem;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
+  }
+  .disclosure-text {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
   .summary-card {
     background: rgba(16, 185, 129, 0.05);
     border-color: rgba(16, 185, 129, 0.2);
