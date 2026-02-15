@@ -59,7 +59,9 @@ const ogImage = ogImageUrl();
             await Promise.all(
               registrations.map(async (registration) => {
                 const scopePath = new URL(registration.scope).pathname;
-                if (scopePath.startsWith('/aiyume_english/')) return;
+                const isEnglishScope =
+                  scopePath === '/aiyume_english' || scopePath.startsWith('/aiyume_english/');
+                if (isEnglishScope) return;
                 const result = await registration.unregister();
                 if (result) removed = true;
               })

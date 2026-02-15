@@ -18,7 +18,7 @@ export const config = {
   urls: {
     lineAddFriend: 'TODO_LINE_URL',
     booking: 'TODO_BOOKING_URL',
-    englishApp: '/aiyume_english/review',
+    englishApp: `https://${domain}/aiyume_english/auth`,
     consultations: {
       learningLine: 'TODO_LINE_URL',
       studioLine: 'TODO_LINE_URL',
