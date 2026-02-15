@@ -4,15 +4,22 @@ import { config } from '@/config';
 
 const title = `${config.brands.home}｜記事`;
 const description =
-  '受験家庭向けに、継続しやすい学習環境づくりのヒントをまとめています。';
+  'AIYuMe Learning / AIYuMe Studio の実用記事を公開しています。';
 
 const articles = [
+  {
+    href: '/articles/studio-canare-gs6',
+    title: 'AIYuMe Studioおすすめ機材｜CANARE GS-6 シールドケーブル',
+    summary:
+      '制作現場で運用しやすいシールドとして、CANARE GS-6（S-S / 1.5m）を紹介します。',
+    updatedAt: '2026-02-14',
+  },
   {
     href: '/articles/study-tools',
     title: '受験家庭で最初にそろえる学習道具3選',
     summary:
       '「何を買うか」より「続けられるか」を基準に、学習タイマー・復習管理・照明の3つに絞って解説します。',
-    updatedAt: '2026-02-11',
+    updatedAt: '2026-02-14',
   },
 ] as const;
 ---
@@ -20,7 +27,7 @@ const articles = [
   <section class="section">
     <div class="container">
       <h1 class="h1">記事一覧</h1>
-      <p class="lead">受験の運用を安定させるための、実用的なガイドを公開しています。</p>
+      <p class="lead">教育・制作の現場で使える、実用ガイドを公開しています。</p>
       <div class="grid cards">
         {articles.map((article) => (
           <a class="card article-card" href={article.href}>

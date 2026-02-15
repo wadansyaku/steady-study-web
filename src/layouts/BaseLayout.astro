@@ -47,6 +47,31 @@ const ogImage = ogImageUrl();
       <slot />
     </main>
     <Footer />
+    <script is:inline>
+      (() => {
+        if (!('serviceWorker' in navigator)) return;
+        const storageKey = 'aiyume_sw_cleanup_v1';
+
+        navigator.serviceWorker
+          .getRegistrations()
+          .then(async (registrations) => {
+            let removed = false;
+            await Promise.all(
+              registrations.map(async (registration) => {
+                const scopePath = new URL(registration.scope).pathname;
+                if (scopePath.startsWith('/aiyume_english/')) return;
+                const result = await registration.unregister();
+                if (result) removed = true;
+              })
+            );
+
+            if (removed && navigator.serviceWorker.controller && !sessionStorage.getItem(storageKey)) {
+              sessionStorage.setItem(storageKey, '1');
+              window.location.reload();
+            }
+          })
+          .catch(() => {});
+      })();
+    </script>
   </body>
 </html>
-

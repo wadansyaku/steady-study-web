@@ -1,0 +1,156 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CTAButton from '@/components/CTAButton.astro';
+import { config, withAmazonAffiliateTag } from '@/config';
+
+const title = `AIYuMe Studioおすすめ機材｜CANARE GS-6 シールドケーブル｜${config.brands.home}`;
+const description =
+  'AIYuMe Studioの制作現場で、安定運用しやすいシールドとしてCANARE GS-6を紹介します。';
+
+const product = {
+  name: 'CANARE カナレ GS-6 シールドケーブル',
+  variant: 'S-S プラグ / 1.5m',
+  details: '1.5m〜5m・L-L/L-S/S-Sから選択可・MADE IN JAPAN',
+  href: withAmazonAffiliateTag(config.affiliate.amazonLinks.canareGs6Cable),
+} as const;
+---
+<BaseLayout title={title} description={description}>
+  <article class="section">
+    <div class="container article-container">
+      <header class="hero text-center">
+        <span class="pill-badge">AIYuMe Studio 記事</span>
+        <h1 class="h1">制作で使うなら、まずはCANARE GS-6</h1>
+        <p class="lead text-muted">
+          配信・録音・編集の現場では、音質より先に「接続トラブルを減らせるか」が重要です。<br />
+          AIYuMe Studioでは、最初の1本として
+          <strong>{product.name}</strong>
+          を推奨しています。
+        </p>
+        <div class="disclosure-box">
+          <p class="text-xs text-dim">{config.affiliate.disclosure}</p>
+        </div>
+      </header>
+
+      <section class="card product-card">
+        <h2 class="h3 mb-4">今回紹介する機材</h2>
+        <ul class="clean-list mb-8">
+          <li>
+            <strong>製品名:</strong>
+            {product.name}
+          </li>
+          <li>
+            <strong>推奨バリエーション:</strong>
+            {product.variant}
+          </li>
+          <li>
+            <strong>仕様:</strong>
+            {product.details}
+          </li>
+        </ul>
+        <a
+          class="btn btn-outline w-full"
+          href={product.href}
+          target="_blank"
+          rel="noopener noreferrer sponsored nofollow"
+        >
+          Amazonで商品ページを見る
+          <span aria-hidden="true" class="ml-2">↗</span>
+        </a>
+      </section>
+
+      <section class="grid cols-2 points">
+        <div class="card">
+          <h2 class="h3 mb-4">おすすめする理由</h2>
+          <ul class="clean-list">
+            <li>・接触不良が起きにくく、収録時のリスクを抑えやすい</li>
+            <li>・長さとプラグ形状を用途に合わせて選べる</li>
+            <li>・導入しやすい価格帯で、最初の1本として使いやすい</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h2 class="h3 mb-4">使い分けの目安</h2>
+          <ul class="clean-list">
+            <li>・机上のオーディオIF接続: 1.5m〜2m</li>
+            <li>・立奏や少し移動する収録: 3m</li>
+            <li>・エフェクターや機材配置が広い場合: 5m</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="card caution-card">
+        <h2 class="h3 mb-4">注意点</h2>
+        <ul class="clean-list text-muted">
+          <li>・音の好みや機材構成で最適解は変わります。まず1本で検証してください。</li>
+          <li>・価格・在庫・仕様は変動するため、購入前に商品ページの最新情報をご確認ください。</li>
+          <li>・本記事は成果を保証するものではなく、機材選定の参考情報です。</li>
+        </ul>
+      </section>
+
+      <section class="cta-section text-center">
+        <h2 class="h2">制作の相談はAIYuMe Studioへ</h2>
+        <p class="text-muted mb-8">
+          機材選定から制作フローまで、目的に合わせて整理します。
+        </p>
+        <div class="actions justify-center">
+          <a class="btn btn-outline" href="/creator">AIYuMe Studioページへ</a>
+          <CTAButton kind="line" label="LINEで相談する" />
+        </div>
+      </section>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .article-container {
+    max-width: 860px;
+  }
+  .hero {
+    margin-bottom: 3rem;
+  }
+  .pill-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 99px;
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--brand);
+    font-size: 0.875rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+  }
+  .disclosure-box {
+    background: rgba(30, 41, 59, 0.3);
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    display: inline-block;
+    border: 1px dashed var(--border);
+  }
+  .text-xs {
+    font-size: 0.75rem;
+  }
+  .product-card {
+    margin-bottom: 2rem;
+  }
+  .clean-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .clean-list li {
+    margin-bottom: 0.5rem;
+  }
+  .points {
+    margin-bottom: 2rem;
+  }
+  .caution-card {
+    margin-bottom: 3rem;
+  }
+  .actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .justify-center {
+    justify-content: center;
+  }
+</style>

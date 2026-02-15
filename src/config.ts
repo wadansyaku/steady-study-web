@@ -29,6 +29,7 @@ export const config = {
       studyTimer: 'https://amzn.to/4rHUUZq',
       reviewBinder: 'https://amzn.to/3ZyFT06',
       deskLight: 'https://amzn.to/4auRN01',
+      canareGs6Cable: 'https://amzn.to/4tA6Xd0',
     },
   },
   education: {

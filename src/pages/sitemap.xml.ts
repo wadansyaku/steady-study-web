@@ -11,6 +11,7 @@ export const GET: APIRoute = () => {
     '/automation',
     '/articles',
     '/articles/study-tools',
+    '/articles/studio-canare-gs6',
     '/privacy',
     '/contact',
   ];

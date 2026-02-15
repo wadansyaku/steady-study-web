@@ -161,6 +161,23 @@ const faqs = [
     </div>
   </section>
 
+  <!-- Learning Contents -->
+  <section class="section compact">
+    <div class="container">
+      <SectionHeading title="学習コンテンツ" subtitle="Learning Contents" center />
+      <div class="card content-card">
+        <h3 class="h3">AIYuMe English（英単語アプリ）</h3>
+        <p class="text-muted">
+          AIYuMe English は、AIYuMe Learning の中で使う英語学習コンテンツです。
+          週次面談で決めた学習方針に沿って、日々の語彙学習を進める用途で活用します。
+        </p>
+        <div class="actions content-actions justify-center">
+          <a class="btn btn-outline" href={config.urls.englishApp}>AIYuMe Englishを開く</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Plans -->
   <section class="section">
     <div class="container">
@@ -283,6 +300,15 @@ const faqs = [
   }
   .note-sm {
     font-size: 0.875rem;
+  }
+  .content-card {
+    max-width: 760px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .content-actions {
+    margin-top: 1.5rem;
+    margin-bottom: 0;
   }
   .trust-card-wrapper {
     display: flex;
