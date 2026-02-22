@@ -32,6 +32,23 @@ function toSafeFloat(value, fallback = 0) {
   return n;
 }
 
+function hashFNV1a32(input) {
+  let hash = 0x811c9dc5;
+  const text = String(input || '');
+  for (let i = 0; i < text.length; i++) {
+    hash ^= text.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return hash >>> 0;
+}
+
+function toPublicPlayerId(playerId) {
+  const safe = String(playerId || '').trim();
+  if (!safe) return 'pilot_unknown';
+  const digest = hashFNV1a32(`voidrush:${safe}`).toString(36);
+  return `pilot_${digest.padStart(7, '0')}`;
+}
+
 function monthEndDay(year, month) {
   const d = new Date(Date.UTC(year, month, 0));
   return String(d.getUTCDate()).padStart(2, '0');
@@ -460,7 +477,8 @@ export async function fetchLeaderboard(env, seasonId, limit = 20) {
 
   return (result?.results || []).map((row, index) => ({
     rank: index + 1,
-    playerId: row.player_id,
+    playerId: toPublicPlayerId(row.player_id),
+    playerTag: toPublicPlayerId(row.player_id),
     totalMatches: toSafeInt(row.total_matches || 0),
     totalKills: toSafeInt(row.total_kills || 0),
     bestDomination: toSafeFloat(row.best_domination || 0),
@@ -812,7 +830,8 @@ export async function fetchSeasonArchive(env, {
 
   return (result?.results || []).map((row, index) => ({
     rank: index + 1,
-    playerId: row.player_id,
+    playerId: toPublicPlayerId(row.player_id),
+    playerTag: toPublicPlayerId(row.player_id),
     totalMatches: toSafeInt(row.total_matches || 0),
     totalKills: toSafeInt(row.total_kills || 0),
     bestDomination: toSafeFloat(row.best_domination || 0),
@@ -851,4 +870,167 @@ export async function listSeasons(env, limit = 12) {
     status: row.status,
     updatedAt: row.updated_at,
   }));
+}
+
+export async function ensureAuthIdentity(env, playerId, proofHash) {
+  const db = getDb(env);
+  if (!db) return { ok: false, reason: 'db_unavailable' };
+
+  const safePlayerId = String(playerId || '').trim().slice(0, 128);
+  const safeProofHash = String(proofHash || '').trim().slice(0, 128);
+  if (!safePlayerId) return { ok: false, reason: 'player_id_required' };
+  if (!safeProofHash) return { ok: false, reason: 'proof_hash_required' };
+
+  try {
+    const existing = await db
+      .prepare('SELECT proof_hash, created_at, updated_at FROM voidrush_auth_identities WHERE player_id = ?1 LIMIT 1')
+      .bind(safePlayerId)
+      .first();
+
+    if (existing) {
+      const matched = String(existing.proof_hash || '') === safeProofHash;
+      return {
+        ok: matched,
+        exists: true,
+        matched,
+        reason: matched ? null : 'proof_mismatch',
+        createdAt: existing.created_at || null,
+        updatedAt: existing.updated_at || null,
+      };
+    }
+
+    let created = false;
+    try {
+      await db
+        .prepare(
+          `INSERT INTO voidrush_auth_identities (
+            player_id,
+            proof_hash,
+            created_at,
+            updated_at
+          ) VALUES (?1, ?2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`
+        )
+        .bind(safePlayerId, safeProofHash)
+        .run();
+      created = true;
+    } catch (error) {
+      const message = String(error?.message || error || '');
+      if (!message.includes('UNIQUE') && !message.includes('constraint failed')) {
+        throw error;
+      }
+    }
+
+    const latest = await db
+      .prepare('SELECT proof_hash, created_at, updated_at FROM voidrush_auth_identities WHERE player_id = ?1 LIMIT 1')
+      .bind(safePlayerId)
+      .first();
+
+    if (!latest) {
+      return { ok: false, reason: 'auth_identity_create_failed' };
+    }
+
+    const matched = String(latest.proof_hash || '') === safeProofHash;
+    return {
+      ok: matched,
+      exists: true,
+      created,
+      matched,
+      reason: matched ? null : 'proof_mismatch',
+      createdAt: latest.created_at || null,
+      updatedAt: latest.updated_at || null,
+    };
+  } catch (error) {
+    const message = String(error?.message || error || '');
+    if (message.includes('no such table')) {
+      return { ok: false, reason: 'auth_identity_table_missing' };
+    }
+    throw error;
+  }
+}
+
+export async function consumeRateLimit(env, {
+  scope = 'global',
+  identifier = 'anonymous',
+  limit = 60,
+  windowSec = 60,
+} = {}) {
+  const db = getDb(env);
+  const safeLimit = Math.max(1, Math.min(10000, toSafeInt(limit, 60)));
+  const safeWindowSec = Math.max(5, Math.min(3600, toSafeInt(windowSec, 60)));
+  if (!db) {
+    return {
+      ok: true,
+      dbAvailable: false,
+      count: 0,
+      limit: safeLimit,
+      retryAfterSec: safeWindowSec,
+      skipped: true,
+    };
+  }
+
+  const safeScope = String(scope || 'global').trim().slice(0, 64) || 'global';
+  const safeIdentifier = String(identifier || 'anonymous').trim().slice(0, 192) || 'anonymous';
+  const nowEpochMs = Date.now();
+  const bucket = Math.floor(nowEpochMs / (safeWindowSec * 1000));
+  const bucketKey = `${safeScope}:${safeIdentifier}:${bucket}`;
+  const expiresAtEpoch = (bucket + 1) * safeWindowSec;
+  const nowEpochSec = Math.floor(nowEpochMs / 1000);
+
+  try {
+    await db
+      .prepare(
+        `INSERT INTO voidrush_rate_limits (
+          bucket_key,
+          counter,
+          expires_at_epoch,
+          created_at,
+          updated_at
+        ) VALUES (?1, 1, ?2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        ON CONFLICT(bucket_key) DO UPDATE SET
+          counter = counter + 1,
+          expires_at_epoch = excluded.expires_at_epoch,
+          updated_at = CURRENT_TIMESTAMP`
+      )
+      .bind(bucketKey, expiresAtEpoch)
+      .run();
+
+    const row = await db
+      .prepare('SELECT counter, expires_at_epoch FROM voidrush_rate_limits WHERE bucket_key = ?1 LIMIT 1')
+      .bind(bucketKey)
+      .first();
+
+    const count = Math.max(0, toSafeInt(row?.counter || 0));
+    const retryAfterSec = Math.max(1, toSafeInt(row?.expires_at_epoch || expiresAtEpoch) - nowEpochSec);
+
+    // Opportunistic cleanup (around 3% of calls) to keep table bounded.
+    if (Math.random() < 0.03) {
+      await db
+        .prepare('DELETE FROM voidrush_rate_limits WHERE expires_at_epoch < ?1')
+        .bind(nowEpochSec - 5)
+        .run();
+    }
+
+    return {
+      ok: count <= safeLimit,
+      dbAvailable: true,
+      count,
+      limit: safeLimit,
+      retryAfterSec,
+      scope: safeScope,
+    };
+  } catch (error) {
+    const message = String(error?.message || error || '');
+    if (message.includes('no such table')) {
+      return {
+        ok: true,
+        dbAvailable: true,
+        count: 0,
+        limit: safeLimit,
+        retryAfterSec: safeWindowSec,
+        scope: safeScope,
+        skipped: true,
+      };
+    }
+    throw error;
+  }
 }
