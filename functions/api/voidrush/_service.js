@@ -19,6 +19,7 @@ import {
 } from './_db.js';
 import {
   addBattlePassExp,
+  applyGachaPull,
   applyMatchResult,
   claimBattlePassReward,
   claimLoginBonus,
@@ -416,15 +417,9 @@ export async function mutationBattlePassClaim({ payload, state }) {
   return { ok: true, result };
 }
 
-export async function mutationGachaPull({ payload }) {
-  return {
-    ok: true,
-    result: {
-      recorded: true,
-      mode: payload.mode || 'unknown',
-      pulls: Array.isArray(payload.pulls) ? payload.pulls.length : 0,
-    },
-  };
+export async function mutationGachaPull({ payload, state }) {
+  const result = applyGachaPull(state, payload || {});
+  return { ok: true, result };
 }
 
 export async function handleLeaderboardGet(context) {

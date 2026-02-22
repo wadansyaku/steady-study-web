@@ -5,6 +5,42 @@ const LEDGER_MAX_ENTRIES = 500;
 const EXP_PER_META_LEVEL_BASE = 1000;
 const EXP_PER_BATTLEPASS_LEVEL = 500;
 const BATTLEPASS_MAX_LEVEL = 30;
+const GACHA_PITY_THRESHOLD = 60;
+const GACHA_COST_SINGLE = 10;
+const GACHA_COST_MULTI = 90;
+
+const GACHA_CHARACTER_MASTER = {
+  1: {
+    id: 1,
+    name: 'ネオンアサシン',
+    rarity: 'R',
+    description: '標準型。バランスの取れた戦闘ステータス。',
+    color: '#00ffff',
+    spriteClass: 'char-sprite-cyan',
+  },
+  2: {
+    id: 2,
+    name: 'タイタンブルーザー',
+    rarity: 'SR',
+    description: '重装型。広範囲攻撃・低機動。',
+    color: '#ff00ff',
+    spriteClass: 'char-sprite-fuchsia',
+  },
+  3: {
+    id: 3,
+    name: 'ファントムブレイド',
+    rarity: 'SSR',
+    description: '高速型。二段斬りの致命的な一撃。',
+    color: '#ffdd66',
+    spriteClass: 'char-sprite-gold',
+  },
+};
+
+const GACHA_LOOT_TABLE = [
+  { id: 1, weight: 60 },
+  { id: 2, weight: 30 },
+  { id: 3, weight: 10 },
+];
 
 export const LOGIN_BONUS_TABLE = [
   { day: 1, type: 'credits', amount: 500, label: '500 クレジット' },
@@ -269,6 +305,217 @@ function seededRandomFactory(seed) {
     x ^= x >>> 17;
     x ^= x << 5;
     return ((x >>> 0) % 100000) / 100000;
+  };
+}
+
+function ensureCharacterProgress(state, charId) {
+  if (!state.characterData || typeof state.characterData !== 'object') {
+    state.characterData = {};
+  }
+  const key = String(charId);
+  if (!state.characterData[key]) {
+    state.characterData[key] = {
+      level: 1,
+      exp: 0,
+      dupeCount: 0,
+      uncap: 0,
+    };
+  }
+  return state.characterData[key];
+}
+
+function duplicateCreditRewardByRarity(rarity) {
+  if (rarity === 'SSR') return 800;
+  if (rarity === 'SR') return 400;
+  return 200;
+}
+
+function weightedRollId(table, rand = Math.random) {
+  if (!Array.isArray(table) || table.length === 0) return 1;
+
+  const total = table.reduce((sum, item) => sum + Number(item.weight || 0), 0);
+  if (!(total > 0)) return Number(table[0]?.id || 1);
+
+  const roll = rand() * total;
+  let cumulative = 0;
+  for (const item of table) {
+    cumulative += Number(item.weight || 0);
+    if (roll <= cumulative) {
+      return Number(item.id || 1);
+    }
+  }
+  return Number(table[table.length - 1]?.id || 1);
+}
+
+function buildFallbackPullIds({
+  mode,
+  pullCount,
+  pityCounter,
+}, rand = Math.random) {
+  const srPlusTable = GACHA_LOOT_TABLE.filter((item) => {
+    const char = GACHA_CHARACTER_MASTER[item.id];
+    return char && (char.rarity === 'SR' || char.rarity === 'SSR');
+  });
+  const ssrTable = GACHA_LOOT_TABLE.filter((item) => GACHA_CHARACTER_MASTER[item.id]?.rarity === 'SSR');
+
+  let pity = clampInt(pityCounter ?? 0, 0, GACHA_PITY_THRESHOLD);
+  const ids = [];
+
+  for (let i = 0; i < pullCount; i++) {
+    pity += 1;
+
+    const forceSrPlus = mode === 'multi' && i === pullCount - 1;
+    let charId;
+
+    if (pity >= GACHA_PITY_THRESHOLD) {
+      charId = weightedRollId(ssrTable, rand);
+      pity = 0;
+    } else if (forceSrPlus) {
+      charId = weightedRollId(srPlusTable, rand);
+      if (GACHA_CHARACTER_MASTER[charId]?.rarity === 'SSR') {
+        pity = 0;
+      }
+    } else {
+      charId = weightedRollId(GACHA_LOOT_TABLE, rand);
+      if (GACHA_CHARACTER_MASTER[charId]?.rarity === 'SSR') {
+        pity = 0;
+      }
+    }
+
+    ids.push(Number(charId || 1));
+  }
+
+  return ids;
+}
+
+function normalizeClientPullIds(payload, pullCount) {
+  const rawPulls = Array.isArray(payload?.pulls)
+    ? payload.pulls
+    : Array.isArray(payload?.results)
+      ? payload.results
+      : [];
+
+  if (rawPulls.length !== pullCount) return null;
+
+  const ids = [];
+  for (const entry of rawPulls) {
+    const rawId = entry?.charId ?? entry?.character?.id;
+    const charId = clampInt(rawId ?? 0, 1, 999);
+    if (!GACHA_CHARACTER_MASTER[charId]) {
+      return null;
+    }
+    ids.push(charId);
+  }
+  return ids;
+}
+
+export function applyGachaPull(state, payload = {}) {
+  const mode = payload?.mode === 'multi' ? 'multi' : 'single';
+  const pullCount = mode === 'multi' ? 10 : 1;
+  const cost = mode === 'multi' ? GACHA_COST_MULTI : GACHA_COST_SINGLE;
+
+  if (state.gems < cost) {
+    return {
+      ok: true,
+      rejected: true,
+      reason: 'not_enough_gems',
+      mode,
+      pullCount,
+      requiredGems: cost,
+      currentGems: Number(state.gems || 0),
+      pityCounter: clampInt(state.pityCounter ?? 0, 0, GACHA_PITY_THRESHOLD),
+      results: [],
+    };
+  }
+
+  const clientPullIds = normalizeClientPullIds(payload, pullCount);
+  const usedClientPulls = Array.isArray(clientPullIds);
+  const pullIds = usedClientPulls
+    ? clientPullIds
+    : buildFallbackPullIds({
+      mode,
+      pullCount,
+      pityCounter: state.pityCounter,
+    });
+
+  addGems(state, -cost, mode === 'multi' ? 'gacha_pull_multi' : 'gacha_pull_single', {
+    mode,
+    cost,
+    pulls: pullCount,
+  });
+
+  let pityCounter = clampInt(state.pityCounter ?? 0, 0, GACHA_PITY_THRESHOLD);
+  const results = [];
+  let duplicateCount = 0;
+  let newCharacterCount = 0;
+  let creditsRewarded = 0;
+
+  for (const charId of pullIds) {
+    const char = GACHA_CHARACTER_MASTER[charId] || GACHA_CHARACTER_MASTER[1];
+    const isDuplicate = state.unlockedCharacters.includes(char.id);
+
+    if (!isDuplicate) {
+      state.unlockedCharacters.push(char.id);
+      newCharacterCount += 1;
+    }
+
+    const growth = ensureCharacterProgress(state, char.id);
+
+    let dupeCount = growth.dupeCount || 0;
+    let creditsReward = 0;
+
+    if (isDuplicate) {
+      dupeCount += 1;
+      growth.dupeCount = dupeCount;
+      duplicateCount += 1;
+
+      appendEconomyLog(state, {
+        category: 'character_shard',
+        source: 'gacha_duplicate',
+        amount: 1,
+        before: dupeCount - 1,
+        after: dupeCount,
+        meta: { charId: char.id },
+      });
+
+      creditsReward = duplicateCreditRewardByRarity(char.rarity);
+      creditsRewarded += creditsReward;
+      addCredits(state, creditsReward, 'gacha_duplicate_credit', {
+        charId: char.id,
+        rarity: char.rarity,
+      });
+    }
+
+    pityCounter += 1;
+    if (char.rarity === 'SSR' || pityCounter >= GACHA_PITY_THRESHOLD) {
+      pityCounter = 0;
+    }
+
+    results.push({
+      character: char,
+      isDuplicate,
+      dupeCount,
+      creditsReward,
+    });
+  }
+
+  state.unlockedCharacters = [...new Set(state.unlockedCharacters)];
+  state.pityCounter = pityCounter;
+
+  return {
+    ok: true,
+    mode,
+    pullCount,
+    cost,
+    pityCounter,
+    generatedByServer: !usedClientPulls,
+    usedClientPulls,
+    summary: {
+      duplicateCount,
+      newCharacterCount,
+      creditsRewarded,
+    },
+    results,
   };
 }
 
