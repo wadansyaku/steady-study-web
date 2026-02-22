@@ -98,6 +98,23 @@ const description =
     </div>
   </section>
 
+  <section class="section-sm">
+    <div class="container">
+      <div class="card note-card game-note">
+        <SectionHeading title="Creator Game Lab" subtitle="インタラクティブ実験" />
+        <h3 class="h3 mb-4">VOID-RUSH（試作）</h3>
+        <p class="text-muted mb-8">
+          クリエイター部門の実験コンテンツとして、ブラウザゲームを公開しています。
+          運用中アップデートを前提に、定期的に機能追加していきます。
+        </p>
+        <div class="actions justify-center">
+          <a class="btn btn-outline" href="/creator/void-rush/">ゲームを開く</a>
+          <a class="btn btn-ghost" href="/creator/void-rush/" target="_blank" rel="noopener noreferrer">新しいタブで開く</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- CTA -->
   <section class="section">
     <div class="container text-center">
@@ -178,6 +195,10 @@ const description =
   .note-card {
     max-width: 780px;
     margin: 0 auto;
+  }
+  .game-note {
+    border-color: color-mix(in srgb, var(--brand), transparent 70%);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--brand), transparent 92%), rgba(30, 41, 59, 0.45));
   }
   .mt-4 { margin-top: 2rem; }
   .mb-8 { margin-bottom: 2rem; }

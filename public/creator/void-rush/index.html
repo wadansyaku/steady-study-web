@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VOID-RUSH</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap"
+        rel="stylesheet">
+  <script type="module" crossorigin src="/creator/void-rush/assets/index-BKN28r7u.js"></script>
+  <link rel="stylesheet" crossorigin href="/creator/void-rush/assets/index-CeeBg9ZB.css">
+</head>
+
+<body>
+    <div id="game-container">
+        <canvas id="game-canvas"></canvas>
+
+        <div id="ui-layer" class="hidden">
+            <div id="damage-vignette" class="damage-flash"></div>
+
+            <div id="top-hud">
+                <div class="match-status">
+                    <span class="dom-val" id="domination-display">0%</span>
+                    <span class="timer" id="timer-display">60</span>
+                    <span class="phase-pill" id="phase-display">フェーズ: 安定</span>
+                </div>
+                <div class="objective-banner" id="objective-status">指令: リンクスキャン中...</div>
+            </div>
+
+            <div id="kill-log"></div>
+
+            <div id="center-message" class="hidden">
+                <h1 id="streak-text"></h1>
+            </div>
+
+            <div id="perk-screen" class="hidden">
+                <div class="perk-title">レベルアップ: パーク選択</div>
+                <div id="perk-options"></div>
+            </div>
+
+            <div id="bottom-hud">
+                <div id="status-icons">
+                    <div id="buff-status"></div>
+                    <div id="perk-status"></div>
+                </div>
+                <div class="overdrive-container">
+                    <div class="overdrive-header">
+                        <span id="overdrive-label">オーバードライブ 0%</span>
+                        <span id="overdrive-hint">Q: パルスノヴァ</span>
+                    </div>
+                    <div id="overdrive-bar">
+                        <div id="overdrive-fill"></div>
+                    </div>
+                </div>
+                <div id="bottom-bar">
+                    <div class="level-display">LVL <span id="level-display">1</span></div>
+                    <div id="hp-display" class="hp-display"></div>
+                    <div class="exp-bar-container">
+                        <div class="exp-bar-fill" id="exp-bar-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="mobile-controls" class="hidden">
+                <div id="joystick-zone"></div>
+                <div id="action-zone" class="horizontal-actions">
+                    <button id="ultimate-btn">ノヴァ</button>
+                    <button id="attack-btn">攻撃</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="home-screen">
+            <div id="home-top-bar">
+                <div id="home-tabs" class="desktop-only">
+                    <button class="nav-btn active" data-target="home-view-main">ホーム</button>
+                    <button class="nav-btn" data-target="home-view-roster">編成</button>
+                    <button class="nav-btn" data-target="home-view-gacha">ガチャ</button>
+                    <button class="nav-btn" data-target="home-view-shop">ショップ</button>
+                    <button class="nav-btn" data-target="home-view-missions">任務<span
+                            class="notif-badge hidden">0</span></button>
+                    <button class="nav-btn" data-target="home-view-battlepass">パス<span
+                            class="notif-badge hidden">0</span></button>
+                    <button class="nav-btn" data-target="home-view-stats">戦績</button>
+                </div>
+
+                <div class="user-profile">
+                    <div class="profile-pic"></div>
+                    <div class="user-meta">
+                        <div class="user-name">オペレーター</div>
+                        <div class="user-level" id="home-level">LV. 1</div>
+                    </div>
+                </div>
+
+                <div class="currency-container">
+                    <div class="currency-badge credits">
+                        <span class="icon">C</span>
+                        <span id="home-credits">0</span>
+                    </div>
+                    <div class="currency-badge gems">
+                        <span class="icon">💎</span>
+                        <span id="home-gems">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ホーム画面 -->
+            <div id="home-view-main" class="view-panel">
+                <div class="character-display">
+                    <div id="home-main-sprite" class="main-character-sprite char-sprite-cyan"></div>
+                    <div id="home-main-name" class="character-name">ネオンアサシン // LV.1</div>
+                </div>
+                <div class="mode-select">
+                    <button id="btn-battle" class="mode-btn">
+                        <div class="btn-title">出撃</div>
+                        <div class="btn-sub">VOID-RUSH マッチに参加</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 編成画面 -->
+            <div id="home-view-roster" class="view-panel hidden">
+                <div class="view-header">編成</div>
+                <div id="roster-grid" class="item-grid"></div>
+            </div>
+
+            <!-- ガチャ画面 -->
+            <div id="home-view-gacha" class="view-panel hidden">
+                <div class="gacha-container">
+                    <div class="gacha-banner">
+                        <h2>仮想空洞 ドロップ</h2>
+                        <p>オペレーターを獲得、または欠片を集めて限界突破。</p>
+                    </div>
+                    <div id="pity-display" class="pity-display"></div>
+                    <div class="gacha-actions">
+                        <button id="btn-pull-1" class="gacha-btn">単発召喚 <span>10 💎</span></button>
+                        <button id="btn-pull-10" class="gacha-btn gacha-btn-multi">10連召喚 <span>90 💎</span></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ショップ画面 -->
+            <div id="home-view-shop" class="view-panel hidden">
+                <div class="view-header">ショップ</div>
+                <div id="shop-list" class="shop-list"></div>
+            </div>
+
+            <!-- 任務画面 -->
+            <div id="home-view-missions" class="view-panel hidden">
+                <div class="view-header">デイリー任務</div>
+                <div id="mission-list" class="mission-list"></div>
+            </div>
+
+            <!-- バトルパス画面 -->
+            <div id="home-view-battlepass" class="view-panel hidden">
+                <div class="view-header">バトルパス</div>
+                <div id="bp-content" class="bp-content"></div>
+            </div>
+
+            <!-- 戦績画面 -->
+            <div id="home-view-stats" class="view-panel hidden">
+                <div class="view-header">戦闘記録</div>
+                <div id="stats-content" class="stats-content"></div>
+            </div>
+
+            <!-- Bottom Navigation (Mobile) -->
+            <div id="home-bottom-nav">
+                <button class="nav-btn active" data-target="home-view-main">ホーム</button>
+                <button class="nav-btn" data-target="home-view-roster">編成</button>
+                <button class="nav-btn" data-target="home-view-gacha">ガチャ</button>
+                <button class="nav-btn" data-target="home-view-shop">ショップ</button>
+                <button class="nav-btn" data-target="home-view-missions">任務<span
+                        class="notif-badge hidden">0</span></button>
+                <button class="nav-btn" data-target="home-view-battlepass">パス<span
+                        class="notif-badge hidden">0</span></button>
+                <button class="nav-btn" data-target="home-view-stats">戦績</button>
+            </div>
+
+            <!-- ガチャ演出オーバーレイ -->
+            <div id="gacha-overlay" class="hidden">
+                <div class="gacha-sequence">
+                    <div class="portal-ring"></div>
+                    <div id="gacha-result-card" class="result-card hidden">
+                        <div id="gacha-sprite" class="char-sprite char-sprite-cyan"></div>
+                        <h2 id="gacha-name">ネオンアサシン</h2>
+                        <div id="gacha-rarity" class="rarity-badge">R</div>
+                        <p id="gacha-desc"></p>
+                        <p id="gacha-dup-msg" class="hidden"></p>
+                    </div>
+                    <div id="gacha-multi-results" class="gacha-multi-grid hidden"></div>
+                </div>
+                <button id="btn-gacha-close" class="hidden">閉じる</button>
+            </div>
+
+            <!-- キャラ詳細モーダル -->
+            <div id="char-detail-modal" class="modal-overlay hidden"></div>
+
+            <!-- ログインボーナスモーダル -->
+            <div id="login-bonus-modal" class="modal-overlay hidden"></div>
+
+            <!-- チュートリアルオーバーレイ -->
+            <div id="tutorial-overlay" class="modal-overlay hidden"></div>
+        </div>
+
+        <div id="result-screen" class="screen hidden">
+            <h2 id="result-title">撃墜...</h2>
+            <div class="stats">
+                <p>最終支配率: <span id="final-domination">0%</span></p>
+                <p>撃破数: <span id="final-kills">0</span></p>
+            </div>
+            <div id="reward-display"></div>
+            <button id="rematch-btn" class="neon-btn">ホームに戻る</button>
+        </div>
+    </div>
+
+</body>
+
+</html>
