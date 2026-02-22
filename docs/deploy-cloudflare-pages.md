@@ -46,12 +46,47 @@ npm run cf:d1:migrate:local
 npm run cf:pages:dev
 ```
 
+ops APIも一緒に確認する場合:
+
+```bash
+npm run cf:pages:dev:ops
+```
+
 主なAPI:
 
 - `/api/voidrush/time`
 - `/api/voidrush/progression/snapshot`
 - `/api/voidrush/progression/match-result`
 - `/api/voidrush/progression/leaderboard`
+- `/api/voidrush/progression/season`
+
+### 運用API（Phase6）
+
+運用系APIは `VOIDRUSH_OPS_TOKEN` が必要です。Pages Project Settings の Environment Variables に設定してください。
+
+- `/api/voidrush/ops/daily-rollup`（GET/POST）
+- `/api/voidrush/ops/rollups`（GET）
+- `/api/voidrush/ops/anomalies`（GET）
+- `/api/voidrush/ops/season-rollover`（POST）
+
+ローカル例:
+
+```bash
+export VOIDRUSH_OPS_TOKEN=dev-token
+npm run cf:pages:dev
+curl -H "x-ops-token: dev-token" "http://127.0.0.1:8788/api/voidrush/ops/daily-rollup"
+```
+
+### Analytics Engine
+
+`wrangler.toml` で `VOIDRUSH_ANALYTICS` binding を追加済みです。Cloudflare側で dataset `voidrush_events` を作成してください。
+
+### 日次自動実行（GitHub Actions）
+
+`/.github/workflows/voidrush-daily-rollup.yml` を追加済みです。以下のSecretsを設定すると、毎日UTC 00:15に`/ops/daily-rollup`を実行します。
+
+- `VOIDRUSH_BASE_URL`（例: `https://ai-yu-me.com`）
+- `VOIDRUSH_OPS_TOKEN`（運用APIトークン）
 
 ## 6) 公開後にやること（重要）
 

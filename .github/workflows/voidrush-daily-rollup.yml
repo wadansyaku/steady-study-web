@@ -1,0 +1,42 @@
+name: VOIDRUSH Daily Rollup
+
+on:
+  schedule:
+    - cron: "15 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  daily-rollup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger rollup endpoint
+        env:
+          VOIDRUSH_BASE_URL: ${{ secrets.VOIDRUSH_BASE_URL }}
+          VOIDRUSH_OPS_TOKEN: ${{ secrets.VOIDRUSH_OPS_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${VOIDRUSH_BASE_URL:-}" ]; then
+            echo "VOIDRUSH_BASE_URL secret is required"
+            exit 1
+          fi
+
+          if [ -z "${VOIDRUSH_OPS_TOKEN:-}" ]; then
+            echo "VOIDRUSH_OPS_TOKEN secret is required"
+            exit 1
+          fi
+
+          DAY_KEY="$(date -u -d 'yesterday' +%F)"
+          URL="${VOIDRUSH_BASE_URL%/}/api/voidrush/ops/daily-rollup?day=${DAY_KEY}"
+
+          RESPONSE="$(curl -sS -w '\n%{http_code}' -H "x-ops-token: ${VOIDRUSH_OPS_TOKEN}" "${URL}")"
+          BODY="$(echo "${RESPONSE}" | sed '$d')"
+          STATUS="$(echo "${RESPONSE}" | tail -n 1)"
+
+          echo "day=${DAY_KEY}"
+          echo "${BODY}"
+
+          if [ "${STATUS}" -ge 400 ]; then
+            echo "rollup failed with status=${STATUS}"
+            exit 1
+          fi

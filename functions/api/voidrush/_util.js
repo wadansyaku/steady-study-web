@@ -3,6 +3,11 @@ function sanitizeText(value, maxLen = 200) {
   return value.trim().slice(0, maxLen);
 }
 
+export function sanitizeDateKey(value) {
+  const text = sanitizeText(value, 16);
+  return /^\d{4}-\d{2}-\d{2}$/.test(text) ? text : '';
+}
+
 export function json(data, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(data), {
     status,
@@ -36,6 +41,15 @@ export function toDateKey(epochMs = Date.now()) {
   return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
 }
 
+export function dateKeyOffset(baseKey, offsetDays) {
+  const safe = sanitizeDateKey(baseKey);
+  if (!safe) return '';
+  const date = new Date(`${safe}T00:00:00.000Z`);
+  if (Number.isNaN(date.getTime())) return '';
+  date.setUTCDate(date.getUTCDate() + Number(offsetDays || 0));
+  return toDateKey(date.getTime());
+}
+
 export function nowIso() {
   return new Date().toISOString();
 }
@@ -49,6 +63,26 @@ export function getPlayerId(request) {
 
 export function getSessionId(request) {
   return sanitizeText(request.headers.get('x-session-id'), 128);
+}
+
+function getBearerToken(request) {
+  const raw = sanitizeText(request.headers.get('authorization'), 512);
+  if (!raw) return '';
+  const match = raw.match(/^Bearer\s+(.+)$/i);
+  return match ? sanitizeText(match[1], 256) : '';
+}
+
+export function getOpsToken(request) {
+  const fromHeader = sanitizeText(request.headers.get('x-ops-token'), 256);
+  if (fromHeader) return fromHeader;
+  return getBearerToken(request);
+}
+
+export function isOpsAuthorized(request, env) {
+  const expected = sanitizeText(env?.VOIDRUSH_OPS_TOKEN || '', 256);
+  if (!expected) return false;
+  const received = getOpsToken(request);
+  return Boolean(received) && received === expected;
 }
 
 export async function readEnvelope(request) {

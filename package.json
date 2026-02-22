@@ -8,10 +8,14 @@
     "preview": "astro preview",
     "astro": "astro",
     "cf:pages:dev": "npx wrangler pages dev dist --compatibility-date=2026-02-22",
+    "cf:pages:dev:ops": "npx wrangler pages dev dist --compatibility-date=2026-02-22 --binding VOIDRUSH_OPS_TOKEN=dev-token",
     "cf:d1:migrate:local": "npx wrangler d1 migrations apply steady_study_voidrush_prod --local",
     "cf:d1:migrate:remote:prod": "npx wrangler d1 migrations apply steady_study_voidrush_prod --remote",
     "cf:d1:migrate:remote:preview": "npx wrangler d1 migrations apply steady_study_voidrush_prod --remote --preview",
-    "cf:d1:studio:prod": "npx wrangler d1 execute steady_study_voidrush_prod --remote --command \"SELECT player_id, season_score, updated_at FROM voidrush_players ORDER BY season_score DESC LIMIT 20;\""
+    "cf:d1:studio:prod": "npx wrangler d1 execute steady_study_voidrush_prod --remote --command \"SELECT player_id, season_id, season_score, updated_at FROM voidrush_players ORDER BY updated_at DESC LIMIT 20;\"",
+    "cf:d1:studio:seasons": "npx wrangler d1 execute steady_study_voidrush_prod --remote --command \"SELECT season_id, status, starts_on, ends_on, updated_at FROM voidrush_seasons ORDER BY starts_on DESC LIMIT 12;\"",
+    "cf:d1:studio:anomalies": "npx wrangler d1 execute steady_study_voidrush_prod --remote --command \"SELECT season_id, player_id, event_type, rule_id, severity, score, created_at FROM voidrush_anomaly_events ORDER BY created_at DESC LIMIT 20;\"",
+    "cf:ops:daily-rollup:local": "curl -sS -H \"x-ops-token: ${VOIDRUSH_OPS_TOKEN}\" \"http://127.0.0.1:8788/api/voidrush/ops/daily-rollup\""
   },
   "dependencies": {
     "astro": "^4.16.0"

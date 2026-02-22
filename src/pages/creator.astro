@@ -118,7 +118,10 @@ const description =
   <section class="section-sm">
     <div class="container">
       <div class="card note-card leaderboard-note">
-        <SectionHeading title="VOID-RUSH Leaderboard" subtitle="Season S0" />
+        <SectionHeading title="VOID-RUSH Leaderboard" subtitle="Latest Season" />
+        <p id="vr-season-label" class="text-muted mb-8">
+          シーズン情報を取得中...
+        </p>
         <p class="text-muted mb-8">
           API連携で集計した最新ランキングを表示します。
         </p>
@@ -260,6 +263,7 @@ const description =
 <script is:inline>
   (function () {
     const listEl = document.getElementById('vr-leaderboard');
+    const seasonEl = document.getElementById('vr-season-label');
     if (!listEl) return;
 
     async function loadLeaderboard() {
@@ -268,12 +272,17 @@ const description =
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         const rows = Array.isArray(data?.rows) ? data.rows : [];
+        const seasonId = String(data?.season || data?.activeSeason || '').trim();
         const esc = (v) => String(v)
           .replaceAll('&', '&amp;')
           .replaceAll('<', '&lt;')
           .replaceAll('>', '&gt;')
           .replaceAll('"', '&quot;')
           .replace(/'/g, '&#39;');
+
+        if (seasonEl) {
+          seasonEl.textContent = seasonId ? `現在のシーズン: ${seasonId}` : '現在のシーズン: 取得失敗';
+        }
 
         if (rows.length === 0) {
           listEl.innerHTML = '<li class=\"leaderboard-empty\">まだランキングデータがありません</li>';
@@ -293,6 +302,9 @@ const description =
           `;
         }).join('');
       } catch {
+        if (seasonEl) {
+          seasonEl.textContent = '現在のシーズン: 取得失敗';
+        }
         listEl.innerHTML = '<li class=\"leaderboard-empty\">ランキング取得に失敗しました</li>';
       }
     }
