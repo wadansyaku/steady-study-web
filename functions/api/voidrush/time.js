@@ -10,3 +10,12 @@ export async function onRequestGet(context) {
     dbAvailable: dbAvailable(context.env),
   });
 }
+
+export async function onRequestHead(context) {
+  const response = await onRequestGet(context);
+  return new Response(null, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: response.headers,
+  });
+}
