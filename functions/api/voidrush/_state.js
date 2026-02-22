@@ -330,7 +330,16 @@ function duplicateCreditRewardByRarity(rarity) {
   return 200;
 }
 
-function weightedRollId(table, rand = Math.random) {
+function secureRandom() {
+  if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
+    const arr = new Uint32Array(1);
+    crypto.getRandomValues(arr);
+    return arr[0] / 0x100000000;
+  }
+  return Math.random();
+}
+
+function weightedRollId(table, rand = secureRandom) {
   if (!Array.isArray(table) || table.length === 0) return 1;
 
   const total = table.reduce((sum, item) => sum + Number(item.weight || 0), 0);
@@ -347,11 +356,11 @@ function weightedRollId(table, rand = Math.random) {
   return Number(table[table.length - 1]?.id || 1);
 }
 
-function buildFallbackPullIds({
+function buildServerPullIds({
   mode,
   pullCount,
   pityCounter,
-}, rand = Math.random) {
+}, rand = secureRandom) {
   const srPlusTable = GACHA_LOOT_TABLE.filter((item) => {
     const char = GACHA_CHARACTER_MASTER[item.id];
     return char && (char.rarity === 'SR' || char.rarity === 'SSR');
@@ -388,27 +397,6 @@ function buildFallbackPullIds({
   return ids;
 }
 
-function normalizeClientPullIds(payload, pullCount) {
-  const rawPulls = Array.isArray(payload?.pulls)
-    ? payload.pulls
-    : Array.isArray(payload?.results)
-      ? payload.results
-      : [];
-
-  if (rawPulls.length !== pullCount) return null;
-
-  const ids = [];
-  for (const entry of rawPulls) {
-    const rawId = entry?.charId ?? entry?.character?.id;
-    const charId = clampInt(rawId ?? 0, 1, 999);
-    if (!GACHA_CHARACTER_MASTER[charId]) {
-      return null;
-    }
-    ids.push(charId);
-  }
-  return ids;
-}
-
 export function applyGachaPull(state, payload = {}) {
   const mode = payload?.mode === 'multi' ? 'multi' : 'single';
   const pullCount = mode === 'multi' ? 10 : 1;
@@ -428,15 +416,11 @@ export function applyGachaPull(state, payload = {}) {
     };
   }
 
-  const clientPullIds = normalizeClientPullIds(payload, pullCount);
-  const usedClientPulls = Array.isArray(clientPullIds);
-  const pullIds = usedClientPulls
-    ? clientPullIds
-    : buildFallbackPullIds({
-      mode,
-      pullCount,
-      pityCounter: state.pityCounter,
-    });
+  const pullIds = buildServerPullIds({
+    mode,
+    pullCount,
+    pityCounter: state.pityCounter,
+  });
 
   addGems(state, -cost, mode === 'multi' ? 'gacha_pull_multi' : 'gacha_pull_single', {
     mode,
@@ -508,8 +492,9 @@ export function applyGachaPull(state, payload = {}) {
     pullCount,
     cost,
     pityCounter,
-    generatedByServer: !usedClientPulls,
-    usedClientPulls,
+    generatedByServer: true,
+    usedClientPulls: false,
+    serverAuthoritative: true,
     summary: {
       duplicateCount,
       newCharacterCount,
