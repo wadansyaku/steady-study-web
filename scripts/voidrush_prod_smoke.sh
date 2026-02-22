@@ -29,6 +29,18 @@ else
   fail "bootstrap failed"
 fi
 
+TIME_GET_CODE="$(curl -sS -o /tmp/vr_time_get.json -w '%{http_code}' "${BASE_URL}/time")"
+[[ "$TIME_GET_CODE" == "200" ]] && pass "GET /time returns 200" || fail "GET /time expected 200, got ${TIME_GET_CODE}"
+
+SEASON_GET_CODE="$(curl -sS -o /tmp/vr_season_get.json -w '%{http_code}' "${BASE_URL}/progression/season")"
+[[ "$SEASON_GET_CODE" == "200" ]] && pass "GET /progression/season returns 200" || fail "GET /progression/season expected 200, got ${SEASON_GET_CODE}"
+
+TIME_HEAD_CODE="$(curl -sS -o /tmp/vr_time_head.txt -w '%{http_code}' -I "${BASE_URL}/time")"
+[[ "$TIME_HEAD_CODE" == "200" ]] && pass "HEAD /time returns 200" || fail "HEAD /time expected 200, got ${TIME_HEAD_CODE}"
+
+SEASON_HEAD_CODE="$(curl -sS -o /tmp/vr_season_head.txt -w '%{http_code}' -I "${BASE_URL}/progression/season")"
+[[ "$SEASON_HEAD_CODE" == "200" ]] && pass "HEAD /progression/season returns 200" || fail "HEAD /progression/season expected 200, got ${SEASON_HEAD_CODE}"
+
 NOAUTH_CODE="$(curl -sS -o /tmp/vr_snapshot_noauth.json -w '%{http_code}' "${BASE_URL}/progression/snapshot")"
 [[ "$NOAUTH_CODE" == "401" ]] && pass "snapshot without token is 401" || fail "snapshot without token expected 401, got ${NOAUTH_CODE}"
 
