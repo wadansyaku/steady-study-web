@@ -77,9 +77,10 @@ npm run cf:pages:dev
 curl -H "x-ops-token: dev-token" "http://127.0.0.1:8788/api/voidrush/ops/daily-rollup"
 ```
 
-### Analytics Engine
+### Analytics Engine（任意）
 
-`wrangler.toml` で `VOIDRUSH_ANALYTICS` binding を追加済みです。Cloudflare側で dataset `voidrush_events` を作成してください。
+Analytics Engine が有効化されているアカウントでは、`wrangler.toml` に `VOIDRUSH_ANALYTICS` binding を追加して利用できます。
+未有効アカウントで binding を設定するとデプロイが失敗するため、その場合は binding なしで運用してください。
 
 ### 日次自動実行（GitHub Actions）
 

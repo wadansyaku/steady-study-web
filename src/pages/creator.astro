@@ -266,11 +266,28 @@ const description =
     const seasonEl = document.getElementById('vr-season-label');
     if (!listEl) return;
 
+    const API_CANDIDATES = [
+      '/api/voidrush',
+      'https://aiyume-web.pages.dev/api/voidrush',
+    ];
+
+    async function fetchLeaderboardWithFallback() {
+      let lastError = null;
+      for (const base of API_CANDIDATES) {
+        try {
+          const res = await fetch(`${base}/progression/leaderboard?limit=5`, { cache: 'no-store' });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return await res.json();
+        } catch (error) {
+          lastError = error;
+        }
+      }
+      throw lastError || new Error('fetch_failed');
+    }
+
     async function loadLeaderboard() {
       try {
-        const res = await fetch('/api/voidrush/progression/leaderboard?limit=5', { cache: 'no-store' });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
+        const data = await fetchLeaderboardWithFallback();
         const rows = Array.isArray(data?.rows) ? data.rows : [];
         const seasonId = String(data?.season || data?.activeSeason || '').trim();
         const esc = (v) => String(v)
