@@ -30,7 +30,30 @@ npm run build
 
 （もし preset が効かない場合でも、上記を手入力でOKです）
 
-## 5) 公開後にやること（重要）
+## 5) VOID-RUSH API (D1) の準備
+
+`/creator/void-rush/` を公開する場合は D1 マイグレーションを適用します。
+
+```bash
+npm run cf:d1:migrate:remote:prod
+npm run cf:d1:migrate:remote:preview
+```
+
+ローカル `wrangler pages dev` で検証する場合:
+
+```bash
+npm run cf:d1:migrate:local
+npm run cf:pages:dev
+```
+
+主なAPI:
+
+- `/api/voidrush/time`
+- `/api/voidrush/progression/snapshot`
+- `/api/voidrush/progression/match-result`
+- `/api/voidrush/progression/leaderboard`
+
+## 6) 公開後にやること（重要）
 
 `src/config.ts` を差し替えます。
 
@@ -41,7 +64,7 @@ npm run build
 - 料金：`config.education.pricePlaceholder` と `config.education.plans[].price`
 - 解析：`config.analytics.enabled` / `config.analytics.snippet`（使うならON）
 
-## 6) 独自ドメイン接続（概要）
+## 7) 独自ドメイン接続（概要）
 
 Cloudflare Pages の **Custom domains** から次の2つを追加します。
 

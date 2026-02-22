@@ -115,6 +115,20 @@ const description =
     </div>
   </section>
 
+  <section class="section-sm">
+    <div class="container">
+      <div class="card note-card leaderboard-note">
+        <SectionHeading title="VOID-RUSH Leaderboard" subtitle="Season S0" />
+        <p class="text-muted mb-8">
+          API連携で集計した最新ランキングを表示します。
+        </p>
+        <ol id="vr-leaderboard" class="leaderboard-list">
+          <li class="leaderboard-empty">読み込み中...</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
   <!-- CTA -->
   <section class="section">
     <div class="container text-center">
@@ -200,6 +214,89 @@ const description =
     border-color: color-mix(in srgb, var(--brand), transparent 70%);
     background: linear-gradient(135deg, color-mix(in srgb, var(--brand), transparent 92%), rgba(30, 41, 59, 0.45));
   }
+  .leaderboard-note {
+    border-color: rgba(34, 211, 238, 0.35);
+  }
+  .leaderboard-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .leaderboard-list li {
+    display: grid;
+    grid-template-columns: 40px 1fr auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: rgba(2, 6, 23, 0.5);
+    font-size: 0.95rem;
+  }
+  .leader-rank {
+    font-weight: 800;
+    color: #22d3ee;
+  }
+  .leader-name {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  .leader-score {
+    font-weight: 700;
+    color: #facc15;
+  }
+  .leaderboard-empty {
+    color: var(--text-muted);
+    text-align: center;
+    grid-template-columns: 1fr !important;
+  }
   .mt-4 { margin-top: 2rem; }
   .mb-8 { margin-bottom: 2rem; }
 </style>
+
+<script is:inline>
+  (function () {
+    const listEl = document.getElementById('vr-leaderboard');
+    if (!listEl) return;
+
+    async function loadLeaderboard() {
+      try {
+        const res = await fetch('/api/voidrush/progression/leaderboard?limit=5', { cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const rows = Array.isArray(data?.rows) ? data.rows : [];
+        const esc = (v) => String(v)
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replace(/'/g, '&#39;');
+
+        if (rows.length === 0) {
+          listEl.innerHTML = '<li class=\"leaderboard-empty\">まだランキングデータがありません</li>';
+          return;
+        }
+
+        listEl.innerHTML = rows.map((row) => {
+          const rank = Number(row.rank || 0);
+          const player = esc(String(row.playerId || '').slice(0, 16));
+          const score = Number(row.seasonScore || 0);
+          return `
+            <li>
+              <span class=\"leader-rank\">#${rank}</span>
+              <span class=\"leader-name\">${player}</span>
+              <span class=\"leader-score\">${score}</span>
+            </li>
+          `;
+        }).join('');
+      } catch {
+        listEl.innerHTML = '<li class=\"leaderboard-empty\">ランキング取得に失敗しました</li>';
+      }
+    }
+
+    loadLeaderboard();
+  })();
+</script>

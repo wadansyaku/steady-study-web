@@ -1,7 +1,5 @@
-import { envelopeOk, json, safeReadJson } from '../../_util.js';
+import { handleMutation, mutationGachaPull } from '../../_service.js';
 
 export async function onRequestPost(context) {
-  const payload = await safeReadJson(context.request);
-  const path = new URL(context.request.url).pathname;
-  return json(envelopeOk(path, payload?.payload || null));
+  return handleMutation(context, 'gacha_pull', mutationGachaPull);
 }
