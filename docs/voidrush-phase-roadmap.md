@@ -24,7 +24,7 @@
 ## Phase 4（完了）
 
 - leaderboard API（`/progression/leaderboard`）
-- `/creator` ページにランキング表示を追加
+- `/creator/void-rush/` にランキング表示を追加
 
 ## Phase 5（完了）
 
@@ -48,4 +48,4 @@
 - 残タスク:
   - Cloudflare Worker Cron への移行（必要なら）
   - 異常検知の閾値をルールテーブル化してダッシュボード調整可能にする
-  - `creator` 画面に season history / archive leaderboard を表示
+  - `VOID-RUSH` 画面に season history / archive leaderboard を表示

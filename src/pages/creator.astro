@@ -1,331 +1,50 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import CTAButton from '@/components/CTAButton.astro';
-import SectionHeading from '@/components/SectionHeading.astro';
-import InfoCard from '@/components/InfoCard.astro';
-import { config } from '@/config';
+import { config, routeSeo } from '@/config';
 
-const title = `${config.brands.creator}｜クリエイター支援`;
-const description =
-  'AIYuMe Studio。音楽制作・動画編集の相談窓口。要件整理→提案→制作→納品まで、目的に合わせて進めます。';
+const seo = routeSeo('studio');
 ---
 
-<BaseLayout title={title} description={description}>
-  <!-- Hero -->
-  <section class="section hero text-center">
-    <div class="container">
-      <span class="pill-badge">{config.brands.creator}</span>
-      <h1 class="h1">
-        音楽と映像で、<br />
-        <span class="text-brand">世界観</span>をつくる。
-      </h1>
-      <p class="lead text-muted">
-        SNS・YouTube・イベント・広告。<br />
-        目的とイメージを整理し、最短で形にします。
-      </p>
-      <div class="actions justify-center">
-        <CTAButton kind="line" label="LINEで制作相談" />
-        <a class="btn btn-ghost" href="/contact">メールで問い合わせ</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Services -->
-  <section class="section bg-surface">
-    <div class="container">
-      <SectionHeading title="Service" center />
-      <div class="grid cols-2">
-        <InfoCard title="音楽制作" icon="🎵">
-          <ul class="clean-list">
-            <li>BGM / ジングル / 効果音</li>
-            <li>歌ってみたMIX / マスタリング</li>
-            <li>用途に合わせた尺・雰囲気の提案</li>
-          </ul>
-        </InfoCard>
-        <InfoCard title="動画編集" icon="🎬">
-          <ul class="clean-list">
-            <li>YouTube動画 / ショート動画</li>
-            <li>カット / テロップ / 整音</li>
-            <li>サムネイル作成補助</li>
-          </ul>
-        </InfoCard>
-      </div>
-    </div>
-  </section>
-
-  <!-- Process -->
-  <section class="section compact">
-    <div class="container">
-      <SectionHeading title="Process" center />
-      <div class="steps-grid">
-        <div class="step-card">
-          <div class="step-num">01</div>
-          <h3>ヒアリング</h3>
-          <p class="text-muted">用途・納期・参考イメージを共有</p>
-        </div>
-        <div class="step-card">
-          <div class="step-num">02</div>
-          <h3>提案・見積</h3>
-          <p class="text-muted">方向性のすり合わせ</p>
-        </div>
-        <div class="step-card">
-          <div class="step-num">03</div>
-          <h3>制作・確認</h3>
-          <p class="text-muted">進捗確認と修正（リテイク）</p>
-        </div>
-        <div class="step-card">
-          <div class="step-num">04</div>
-          <h3>納品</h3>
-          <p class="text-muted">データ引き渡し</p>
-        </div>
-      </div>
-      <div class="note text-center mt-4">
-        ※制作例・料金表は準備中です。まずはLINEでお問い合わせください（見積無料）。
-      </div>
-    </div>
-  </section>
-
-  <section class="section-sm">
-    <div class="container">
-      <div class="card note-card">
-        <SectionHeading title="Studio Note" subtitle="機材選びの実用記事" />
-        <h3 class="h3 mb-4">CANARE GS-6 シールドケーブルをおすすめする理由</h3>
-        <p class="text-muted mb-8">
-          AIYuMe Studioの制作現場で、トラブルを減らしやすい機材として紹介しています。
-        </p>
-        <a class="btn btn-outline" href="/articles/studio-canare-gs6">記事を読む</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="section-sm">
-    <div class="container">
-      <div class="card note-card game-note">
-        <SectionHeading title="Creator Game Lab" subtitle="インタラクティブ実験" />
-        <h3 class="h3 mb-4">VOID-RUSH（試作）</h3>
-        <p class="text-muted mb-8">
-          クリエイター部門の実験コンテンツとして、ブラウザゲームを公開しています。
-          運用中アップデートを前提に、定期的に機能追加していきます。
-        </p>
-        <div class="actions justify-center">
-          <a class="btn btn-outline" href="/creator/void-rush/">ゲームを開く</a>
-          <a class="btn btn-ghost" href="/creator/void-rush/" target="_blank" rel="noopener noreferrer">新しいタブで開く</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section-sm">
-    <div class="container">
-      <div class="card note-card leaderboard-note">
-        <SectionHeading title="VOID-RUSH Leaderboard" subtitle="Latest Season" />
-        <p id="vr-season-label" class="text-muted mb-8">
-          シーズン情報を取得中...
-        </p>
-        <p class="text-muted mb-8">
-          API連携で集計した最新ランキングを表示します。
-        </p>
-        <ol id="vr-leaderboard" class="leaderboard-list">
-          <li class="leaderboard-empty">読み込み中...</li>
-        </ol>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
+<BaseLayout
+  title={seo.title}
+  description="このページは AIYouMe Studio に移動しました。"
+  canonicalPath={seo.path}
+  noindex
+>
   <section class="section">
-    <div class="container text-center">
-      <div class="card cta-box">
-        <h2 class="h2">制作のご依頼・ご相談</h2>
-        <p class="text-muted mb-8">
-          「何をどう頼めばいいか分からない」状態でも大丈夫です。<br />
-          こちらで要件を分解して提案します。
-        </p>
-        <CTAButton kind="line" label="LINEで相談する" />
-      </div>
+    <div class="container compact text-center">
+      <h1 class="h1">ページを移動しました</h1>
+      <p class="lead text-muted">
+        旧URL `/creator` は、`/studio` に統合されました。
+      </p>
+      <a class="btn btn-primary" href={seo.path}>AIYouMe Studioへ移動する</a>
+      <p class="text-dim helper">
+        VOID-RUSH は Studio 配下の実験コンテンツとして、引き続き <a href={config.apps.voidrush.path}>こちら</a> から利用できます。
+      </p>
     </div>
   </section>
 </BaseLayout>
 
-<style>
-  .hero {
-    padding-top: 4rem;
-    padding-bottom: 4rem;
-  }
-  .pill-badge {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 99px;
-    background: rgba(99, 102, 241, 0.1);
-    color: var(--brand);
-    font-size: 0.875rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    border: 1px solid rgba(99, 102, 241, 0.2);
-  }
-  .lead {
-    font-size: 1.125rem;
-    margin-bottom: 2rem;
-  }
-  .actions {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-  .justify-center {
-    justify-content: center;
-  }
-  .bg-surface {
-    background: rgba(30, 41, 59, 0.3);
-  }
-  .clean-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .clean-list li {
-    padding: 0.25rem 0;
-    color: var(--text-muted);
-  }
-  .steps-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-  }
-  .step-card {
-    background: rgba(30, 41, 59, 0.4);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    text-align: center;
-  }
-  .step-num {
-    font-size: 2rem;
-    font-weight: 900;
-    color: var(--border);
-    line-height: 1;
-    margin-bottom: 0.5rem;
-  }
-  .cta-box {
-    padding: 3rem;
-  }
-  .note-card {
-    max-width: 780px;
-    margin: 0 auto;
-  }
-  .game-note {
-    border-color: color-mix(in srgb, var(--brand), transparent 70%);
-    background: linear-gradient(135deg, color-mix(in srgb, var(--brand), transparent 92%), rgba(30, 41, 59, 0.45));
-  }
-  .leaderboard-note {
-    border-color: rgba(34, 211, 238, 0.35);
-  }
-  .leaderboard-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 0.6rem;
-  }
-  .leaderboard-list li {
-    display: grid;
-    grid-template-columns: 40px 1fr auto;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.65rem 0.8rem;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: rgba(2, 6, 23, 0.5);
-    font-size: 0.95rem;
-  }
-  .leader-rank {
-    font-weight: 800;
-    color: #22d3ee;
-  }
-  .leader-name {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-    font-size: 0.8rem;
-    color: var(--text-muted);
-  }
-  .leader-score {
-    font-weight: 700;
-    color: #facc15;
-  }
-  .leaderboard-empty {
-    color: var(--text-muted);
-    text-align: center;
-    grid-template-columns: 1fr !important;
-  }
-  .mt-4 { margin-top: 2rem; }
-  .mb-8 { margin-bottom: 2rem; }
-</style>
-
 <script is:inline>
-  (function () {
-    const listEl = document.getElementById('vr-leaderboard');
-    const seasonEl = document.getElementById('vr-season-label');
-    if (!listEl) return;
-
-    const API_CANDIDATES = [
-      '/api/voidrush',
-      'https://aiyume-web.pages.dev/api/voidrush',
-    ];
-
-    async function fetchLeaderboardWithFallback() {
-      let lastError = null;
-      for (const base of API_CANDIDATES) {
-        try {
-          const res = await fetch(`${base}/progression/leaderboard?limit=5`, { cache: 'no-store' });
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return await res.json();
-        } catch (error) {
-          lastError = error;
-        }
-      }
-      throw lastError || new Error('fetch_failed');
+  (() => {
+    if (window.location.pathname === '/creator' || window.location.pathname === '/creator/') {
+      window.location.replace('/studio');
     }
-
-    async function loadLeaderboard() {
-      try {
-        const data = await fetchLeaderboardWithFallback();
-        const rows = Array.isArray(data?.rows) ? data.rows : [];
-        const seasonId = String(data?.season || data?.activeSeason || '').trim();
-        const esc = (v) => String(v)
-          .replaceAll('&', '&amp;')
-          .replaceAll('<', '&lt;')
-          .replaceAll('>', '&gt;')
-          .replaceAll('"', '&quot;')
-          .replace(/'/g, '&#39;');
-
-        if (seasonEl) {
-          seasonEl.textContent = seasonId ? `現在のシーズン: ${seasonId}` : '現在のシーズン: 取得失敗';
-        }
-
-        if (rows.length === 0) {
-          listEl.innerHTML = '<li class=\"leaderboard-empty\">まだランキングデータがありません</li>';
-          return;
-        }
-
-        listEl.innerHTML = rows.map((row) => {
-          const rank = Number(row.rank || 0);
-          const player = esc(String(row.playerId || '').slice(0, 16));
-          const score = Number(row.seasonScore || 0);
-          return `
-            <li>
-              <span class=\"leader-rank\">#${rank}</span>
-              <span class=\"leader-name\">${player}</span>
-              <span class=\"leader-score\">${score}</span>
-            </li>
-          `;
-        }).join('');
-      } catch {
-        if (seasonEl) {
-          seasonEl.textContent = '現在のシーズン: 取得失敗';
-        }
-        listEl.innerHTML = '<li class=\"leaderboard-empty\">ランキング取得に失敗しました</li>';
-      }
-    }
-
-    loadLeaderboard();
   })();
 </script>
+
+<style>
+  .compact {
+    max-width: 720px;
+  }
+
+  .helper {
+    margin-top: var(--sp-4);
+  }
+
+  .helper a {
+    color: var(--brand);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>

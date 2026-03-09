@@ -1,0 +1,7 @@
+# Legacy section routes -> canonical section routes
+/education /learning 301
+/education/ /learning 301
+/education/index.html /learning 301
+/creator /studio 301
+/creator/ /studio 301
+/creator/index.html /studio 301

@@ -1,14 +1,25 @@
 ---
 import { config, normalizePathname } from '@/config';
 
+type ConsultationLink = {
+  persona: string;
+  label: string;
+  href: string;
+  external: boolean;
+  subLink?: {
+    label: string;
+    href: string;
+  };
+};
+
 const pathname = normalizePathname(Astro.url.pathname);
 const nav = [
-  { href: '/education', label: config.brands.education },
-  { href: '/creator', label: config.brands.creator },
+  { href: '/learning', label: config.brands.learning },
+  { href: '/studio', label: config.brands.studio },
   { href: '/automation', label: config.brands.automation },
 ] as const;
 
-const consultationLinks = [
+const consultationLinks: ConsultationLink[] = [
   {
     persona: '受験',
     label: 'LINEで無料面談（30分）',
@@ -31,7 +42,7 @@ const consultationLinks = [
       href: config.urls.consultations.automationLine,
     },
   },
-] as const;
+];
 ---
 
 <header class="header" data-consult-root>

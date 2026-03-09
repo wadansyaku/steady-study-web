@@ -1,36 +1,54 @@
-# Cloudflare Pages デプロイ手順（Astro / Static）
+# Cloudflare Pages デプロイ手順
 
-## 1) ローカル実行
+## 1. ローカル確認
 
 ```bash
 npm install
+cp .env.example .env
 npm run dev
 ```
 
-## 2) ビルド
+公開前には `.env` を実値へ置き換えてください。
+
+## 2. ビルドと検証
 
 ```bash
 npm run build
+npm run validate:build
 ```
 
 出力先は `dist/` です。
 
-## 3) GitHub 連携（前提）
+## 3. Pages 設定
 
-1. このリポジトリを GitHub に push
-2. Cloudflare Dashboard → **Workers & Pages** → **Create application** → **Pages** → **Connect to Git**
-3. 対象リポジトリを選択し、プロジェクトを作成
-4. 既に CLI で作成済みの場合は `aiyume-web` をそのまま利用（`https://aiyume-web.pages.dev`）
+- Framework preset: Astro
+- Build command: `npm run build`
+- Build output directory: `dist`
 
-## 4) Cloudflare Pages のビルド設定
+GitHub Actions では build 後に `npm run validate:build` を実行します。Pages 側の本番/preview 環境でも同じ env キーを設定してください。
 
-- **Framework preset**: Astro
-- **Build command**: `npm run build`
-- **Build output directory**: `dist`
+## 4. Pages 環境変数
 
-（もし preset が効かない場合でも、上記を手入力でOKです）
+必須:
 
-## 5) VOID-RUSH API (D1) の準備
+- `PUBLIC_SITE_URL`
+- `PUBLIC_LINE_URL`
+- `PUBLIC_BOOKING_URL`
+- `PUBLIC_CONTACT_EMAIL`
+- `PUBLIC_ANALYTICS_ENABLED`
+- `PUBLIC_ANALYTICS_SNIPPET`
+- `PUBLIC_VOIDRUSH_API_BASE_URL`
+
+任意:
+
+- `PUBLIC_AMAZON_ASSOCIATE_TAG`
+
+推奨値:
+
+- `PUBLIC_SITE_URL=https://ai-yu-me.com`
+- `PUBLIC_VOIDRUSH_API_BASE_URL=/api/voidrush`
+
+## 5. VOID-RUSH API (D1) の準備
 
 `/creator/void-rush/` を公開する場合は D1 マイグレーションを適用します。
 
@@ -39,20 +57,20 @@ npm run cf:d1:migrate:remote:prod
 npm run cf:d1:migrate:remote:preview
 ```
 
-ローカル `wrangler pages dev` で検証する場合:
+ローカルで Pages Functions ごと確認する場合:
 
 ```bash
 npm run cf:d1:migrate:local
 npm run cf:pages:dev
 ```
 
-ops APIも一緒に確認する場合:
+ops API まで確認する場合:
 
 ```bash
 npm run cf:pages:dev:ops
 ```
 
-主なAPI:
+主な API:
 
 - `/api/voidrush/time`
 - `/api/voidrush/progression/snapshot`
@@ -60,14 +78,14 @@ npm run cf:pages:dev:ops
 - `/api/voidrush/progression/leaderboard`
 - `/api/voidrush/progression/season`
 
-### 運用API（Phase6）
+## 6. VOID-RUSH 運用 API
 
-運用系APIは `VOIDRUSH_OPS_TOKEN` が必要です。Pages Project Settings の Environment Variables に設定してください。
+`VOIDRUSH_OPS_TOKEN` を Pages Project Settings の Environment Variables に設定してください。
 
-- `/api/voidrush/ops/daily-rollup`（GET/POST）
-- `/api/voidrush/ops/rollups`（GET）
-- `/api/voidrush/ops/anomalies`（GET）
-- `/api/voidrush/ops/season-rollover`（POST）
+- `/api/voidrush/ops/daily-rollup`
+- `/api/voidrush/ops/rollups`
+- `/api/voidrush/ops/anomalies`
+- `/api/voidrush/ops/season-rollover`
 
 ローカル例:
 
@@ -77,42 +95,21 @@ npm run cf:pages:dev
 curl -H "x-ops-token: dev-token" "http://127.0.0.1:8788/api/voidrush/ops/daily-rollup"
 ```
 
-### Analytics Engine（任意）
+## 7. 日次自動実行
 
-Analytics Engine が有効化されているアカウントでは、`wrangler.toml` に `VOIDRUSH_ANALYTICS` binding を追加して利用できます。
-未有効アカウントで binding を設定するとデプロイが失敗するため、その場合は binding なしで運用してください。
+`/.github/workflows/voidrush-daily-rollup.yml` が UTC 00:15 に `/ops/daily-rollup` を実行します。必要な Secrets:
 
-### 日次自動実行（GitHub Actions）
+- `VOIDRUSH_BASE_URL`
+- `VOIDRUSH_OPS_TOKEN`
 
-`/.github/workflows/voidrush-daily-rollup.yml` を追加済みです。以下のSecretsを設定すると、毎日UTC 00:15に`/ops/daily-rollup`を実行します。
+## 8. 独自ドメイン
 
-- `VOIDRUSH_BASE_URL`（例: `https://ai-yu-me.com`）
-- `VOIDRUSH_OPS_TOKEN`（運用APIトークン）
+Cloudflare Pages の Custom domains で以下を設定します。
 
-## 6) 公開後にやること（重要）
+1. `ai-yu-me.com`
+2. `www.ai-yu-me.com`
 
-`src/config.ts` を差し替えます。
+推奨:
 
-- `domain`：`ai-yu-me.com`
-- `config.urls.lineAddFriend`：`TODO_LINE_URL` → 公式LINE追加URL
-- `config.urls.booking`：`TODO_BOOKING_URL` → 予約ページURL
-- `config.contact.email`：`TODO_CONTACT_EMAIL` → 連絡用メール
-- 料金：`config.education.pricePlaceholder` と `config.education.plans[].price`
-- 解析：`config.analytics.enabled` / `config.analytics.snippet`（使うならON）
-
-## 7) 独自ドメイン接続（概要）
-
-Cloudflare Pages の **Custom domains** から次の2つを追加します。
-
-1. `ai-yu-me.com`（apex）
-2. `www.ai-yu-me.com`（www）
-
-推奨運用：
-
-- `www.ai-yu-me.com` を `ai-yu-me.com` に 301 リダイレクト
+- `www.ai-yu-me.com` → `ai-yu-me.com` に 301 リダイレクト
 - SSL/TLS は `Full (strict)`
-
-DNS は Cloudflare 側が案内する設定に従ってください。通常は次の形です。
-
-- **CNAME**：`www` → `<your-project>.pages.dev`
-- **apex**（`@`）：Cloudflare の CNAME Flattening を使って `<your-project>.pages.dev` に向ける

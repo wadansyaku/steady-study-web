@@ -5,6 +5,9 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "validate:build": "node ./scripts/validate_build.mjs",
+    "lint": "astro check --minimumFailingSeverity error",
+    "typecheck": "tsc --noEmit",
     "preview": "astro preview",
     "astro": "astro",
     "cf:pages:dev": "npx wrangler pages dev dist --compatibility-date=2026-02-22",
@@ -21,6 +24,7 @@
     "astro": "^4.16.0"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.4",
     "typescript": "^5.5.4",
     "wrangler": "^4.67.0"
   }

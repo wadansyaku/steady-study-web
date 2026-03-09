@@ -1,162 +1,79 @@
-# 実装の設計（Astro / 静的）
+# 実装メモ（AIYouMe 公開サイト）
 
-## ファイルツリー
+## 現在の前提
 
-```
-.
-├─ astro.config.mjs
-├─ package.json
-├─ tsconfig.json
-├─ .gitignore
-├─ public/
-│  ├─ favicon.svg
-│  └─ og.svg
-├─ src/
-│  ├─ config.ts
-│  ├─ env.d.ts
-│  ├─ styles/
-│  │  └─ global.css
-│  ├─ layouts/
-│  │  └─ BaseLayout.astro
-│  ├─ components/
-│  │  ├─ Header.astro
-│  │  ├─ Footer.astro
-│  │  ├─ CTAButton.astro
-│  │  └─ FAQAccordion.astro
-│  └─ pages/
-│     ├─ index.astro
-│     ├─ education.astro
-│     ├─ creator.astro
-│     ├─ automation.astro
-│     ├─ privacy.astro
-│     ├─ contact.astro
-│     ├─ 404.astro
-│     ├─ robots.txt.ts
-│     └─ sitemap.xml.ts
-└─ docs/
-   ├─ copywriting.md
-   └─ deploy-cloudflare-pages.md
-```
+- 正規ルート: `/`, `/learning`, `/studio`, `/automation`, `/articles`, `/contact`, `/privacy`, `/creator/void-rush/`
+- legacy route: `/education`, `/creator`
+- ブランド表記: `AIYouMe`
+- canonical domain: `https://ai-yu-me.com`
 
-## 設定は `src/config.ts` に集約
+## 設定の単一ソース
 
-- ドメイン：`domain`（ここだけ差し替えれば canonical/robots/sitemap も更新されます）
-- 公式LINE：`config.urls.lineAddFriend`
-- 予約URL：`config.urls.booking`
-- 連絡メール：`config.contact.email`
-- 料金：`config.education.pricePlaceholder` / `config.education.plans[].price`
-- 解析タグ：`config.analytics.enabled` / `config.analytics.snippet`
+公開設定は `src/config.ts` と `src/env.d.ts` に集約しています。ハードコードではなく build-time env で供給します。
 
-### `src/config.ts`
+必須 env:
 
-```ts
-const domain = 'ai-yu-me.com';
+- `PUBLIC_SITE_URL`
+- `PUBLIC_LINE_URL`
+- `PUBLIC_BOOKING_URL`
+- `PUBLIC_CONTACT_EMAIL`
+- `PUBLIC_ANALYTICS_ENABLED`
+- `PUBLIC_ANALYTICS_SNIPPET`
+- `PUBLIC_VOIDRUSH_API_BASE_URL`
 
-export const config = {
-  site: {
-    name: 'AIYuMe',
-    domain,
-    canonicalBase: `https://${domain}`,
-    defaultOgImagePath: '/og.svg',
-  },
-  brands: {
-    home: 'AIYuMe',
-    education: 'AIYuMe Learning',
-    creator: 'AIYuMe Studio',
-    automation: 'AIYuMe Automation',
-  },
-  urls: {
-    lineAddFriend: 'TODO_LINE_URL',
-    booking: 'TODO_BOOKING_URL',
-  },
-  contact: {
-    email: 'TODO_CONTACT_EMAIL',
-  },
-  education: {
-    bookingNote: '週5枠限定（初回無料面談30分）',
-    pricePlaceholder: 'TODO_PRICE',
-    plans: [
-      {
-        id: 'light',
-        name: 'ライト',
-        price: 'TODO_PRICE',
-        features: [
-          '週1回の面談（学習計画／振り返り／次週の修正）',
-          '教材・優先順位の整理（迷いを減らす設計）',
-          '必要に応じたチャット相談（実行が止まった時の立て直し）',
-        ],
-      },
-      {
-        id: 'standard',
-        name: 'スタンダード',
-        price: 'TODO_PRICE',
-        features: [
-          '週1回の面談（学習計画／振り返り／次週の修正）',
-          '日々のチャット伴走（状況に応じて）',
-          '教材設計・学習記録の整理（継続負荷を下げる工夫）',
-        ],
-      },
-    ],
-  },
-  analytics: {
-    enabled: false,
-    snippet: 'TODO_ANALYTICS_SNIPPET',
-  },
-} as const;
+任意 env:
 
-export type CTAKind = 'line' | 'booking';
+- `PUBLIC_AMAZON_ASSOCIATE_TAG`
 
-export function normalizePathname(pathname: string) {
-  if (!pathname || pathname === '/') return '/';
-  return pathname.replace(/\/+$/, '');
-}
+dev では `.env.example` の値を fallback として利用できます。non-dev build では必須 env 未設定時に失敗します。
 
-export function canonicalUrl(pathname: string) {
-  const normalized = normalizePathname(pathname);
-  const base = config.site.canonicalBase.endsWith('/')
-    ? config.site.canonicalBase
-    : `${config.site.canonicalBase}/`;
-  const path = normalized === '/' ? '' : normalized.replace(/^\//, '');
-  return new URL(path, base).toString();
-}
+## サイト構成
 
-export function ogImageUrl(pathname: string = config.site.defaultOgImagePath) {
-  return canonicalUrl(pathname);
-}
-```
+### ページ
 
-## ページ（必須構成）
+- `/`:
+  - ブランド全体の入口
+  - 3事業を並列で見せるが、過度な送客はしない
+- `/learning`:
+  - 受験・学習伴走の主導線
+  - pricing は「無料面談後にご提案」
+- `/studio`:
+  - 制作相談の導線
+  - VOID-RUSH は「実験コンテンツ」として補助導線で扱う
+- `/automation`:
+  - 法人向け AI 自動化支援
+- `/creator/void-rush/`:
+  - 配布物として公開する実験コンテンツ
+  - API base は same-origin `/api/voidrush`
+- `/education`, `/creator`:
+  - noindex の移行ページ
+  - `public/_redirects` で 301 を設定
 
-- `/`：教育を主役にしつつ、3本柱へ分岐
-- `/education`：LP（親の不安→信頼→CTA）
-- `/creator`：簡潔（提供物・制作例プレースホルダ・相談導線）
-- `/automation`：簡潔（提供領域・進め方・問い合わせ導線）
-- `/privacy`：外部サービス/解析を想定したポリシー
-- `/contact`：LINEを主、メールは補助
-- `404`：静的404
+### SEO
 
-## コンポーネント
+- `BaseLayout.astro` が title / description / canonical / OGP を出力
+- `robots.txt.ts` は canonical sitemap のみを出力
+- `sitemap.xml.ts` は正規ルートのみを含む
 
-- `src/components/Header.astro`：ナビ（AIYuMe Learning / Studio / Automation）＋右端LINE CTA
-- `src/components/Footer.astro`：`/privacy` `/contact` ＋コピーライト
-- `src/components/CTAButton.astro`：`line` / `booking` の2種
-- `src/components/FAQAccordion.astro`：`<details>` ベースの簡易アコーディオン
+## VOID-RUSH の扱い
 
-## SEO最低限
+- この repo では `public/creator/void-rush` を build 済み配布物として扱います
+- ソース移管や再ビルド基盤の整備は別トラックです
+- 変更対象は最小限:
+  - preview domain 固定値の除去
+  - asset 参照整合
+  - 公開検証
 
-- `src/layouts/BaseLayout.astro`：title/description、canonical、OGP、favicon
-- `src/pages/robots.txt.ts`：`src/config.ts` のドメインから生成
-- `src/pages/sitemap.xml.ts`：固定ページ一覧から生成
+## CI / 検証
 
-## CSS
+- `npm run lint`
+- `npm run typecheck`
+- `npm run build`
+- `npm run validate:build`
 
-- `src/styles/global.css`：ベース/ボタン/グリッド/カード
-- ページ固有：各 `src/pages/*.astro` の `<style>`（必要最小）
+`scripts/validate_build.mjs` では以下を確認します。
 
-## npm scripts
-
-`package.json`
-
-- `npm run dev`：ローカル開発
-- `npm run build`：静的ビルド（`dist/`）
-- `npm run preview`：ビルド結果の確認
+- build 成果物に `TODO_`, `NEW_DOMAIN`, `AIYuMe`, preview-domain API base が残っていない
+- `robots.txt` / `sitemap.xml` が canonical domain を向く
+- VOID-RUSH asset 参照が実在する
+- VOID-RUSH bundle が `/api/voidrush` を使う

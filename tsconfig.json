@@ -5,6 +5,10 @@
     "paths": {
       "@/*": ["src/*"]
     }
-  }
+  },
+  "exclude": [
+    "dist",
+    "logs",
+    "public/creator/void-rush/assets"
+  ]
 }
-

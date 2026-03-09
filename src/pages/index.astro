@@ -1,623 +1,312 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import SectionHeading from '@/components/SectionHeading.astro';
-import { config } from '@/config';
+import { config, routeSeo } from '@/config';
 
-const title = `${config.brands.home}｜Intelligence, Organized.`;
-const description =
-  '受験の保護者/受験生、クリエイター、法人の業務改善担当それぞれに最適な入口を用意したAIYuMeのホームページです。';
+const seo = routeSeo('home');
 
-const personas = [
+const divisions = [
   {
-    id: 'learning',
-    label: '受験（保護者・受験生）',
-    short: '受験',
+    name: config.brands.learning,
+    href: '/learning',
+    summary: '受験・学習伴走。親子の不安を整理し、計画から実行・改善まで伴走します。',
+    cta: 'Learningを見る',
   },
   {
-    id: 'studio',
-    label: '音楽/映像（クリエイター）',
-    short: '音楽/映像',
+    name: config.brands.studio,
+    href: '/studio',
+    summary: '音楽制作・動画編集・クリエイティブ制作。目的に沿った成果物を設計して実装します。',
+    cta: 'Studioを見る',
   },
   {
-    id: 'automation',
-    label: '法人AI・自動化（業務改善）',
-    short: '法人AI・自動化',
+    name: config.brands.automation,
+    href: '/automation',
+    summary: '法人向けAI自動化・業務設計・実装支援。小さく始めて、現場で回る運用に落とし込みます。',
+    cta: 'Automationを見る',
+  },
+] as const;
+
+const methodSteps = [
+  {
+    title: 'Diagnose',
+    description: '現状を可視化し、詰まりの原因と優先順位を整理します。',
+  },
+  {
+    title: 'Design',
+    description: '目標と制約に合わせて、運用できる設計に分解します。',
+  },
+  {
+    title: 'Run',
+    description: '小さく実行し、現場の負荷が増えすぎない形で定着させます。',
+  },
+  {
+    title: 'Review',
+    description: '結果を確認し、次に効く改善を継続的に回します。',
   },
 ] as const;
 ---
 
-<BaseLayout title={title} description={description}>
-  <!-- ═══ Hero ═══════════════════════════════════════ -->
-  <section class="section hero">
+<BaseLayout title={seo.title} description={seo.description}>
+  <section class="section hero-section">
     <div class="container hero-inner">
-      <p class="hero-eyebrow">AIYuMe</p>
-      <h1 class="h1 hero-title">Intelligence, Organized.</h1>
+      <p class="hero-eyebrow">AI + You + Me</p>
+      <h1 class="h1 hero-title">AIYouMe（アイユメ）</h1>
       <p class="lead hero-lead">
-        続かない／形にならない／現場で回らない<br class="sp-only" />
-        を、仕組みで変える。
+        学習・制作・業務を、伴走と設計で回る状態へ。
       </p>
+      <p class="hero-sub text-muted">
+        AIを魔法のように扱うのではなく、摩擦を下げる道具として使いながら、
+        人が判断し、人が前進できる仕組みを作ります。
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-accent" href={config.urls.lineAddFriend} target="_blank" rel="noopener noreferrer">
+          無料相談する
+        </a>
+        <a class="btn btn-outline" href="/contact">お問い合わせ</a>
+      </div>
+    </div>
+  </section>
 
-      <div class="persona-switch" role="group" aria-label="ペルソナ選択">
+  <section class="section-sm value-section">
+    <div class="container narrow">
+      <SectionHeading title="Value" subtitle="何を増やし、何を減らすか" center />
+      <div class="grid cols-2">
+        <article class="card value-card">
+          <h3 class="h3">増やすもの</h3>
+          <ul>
+            <li>再現できる実行手順</li>
+            <li>意思決定の明確さ</li>
+            <li>継続できる運用習慣</li>
+          </ul>
+        </article>
+        <article class="card value-card">
+          <h3 class="h3">減らすもの</h3>
+          <ul>
+            <li>手戻りと迷い</li>
+            <li>属人化した進め方</li>
+            <li>やりっぱなしの施策</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm">
+    <div class="container narrow">
+      <SectionHeading title="Vision" subtitle="目指す状態" center />
+      <div class="card vision-card">
+        <p>
+          学習、制作、業務のどの領域でも、
+          <strong>「やるべきことが明確で、実行できて、改善が続く」</strong>
+          状態をつくる。
+          AIYouMeは、領域ごとに切り離された支援ではなく、共通のメソッドで成果に繋がる仕組みを提供します。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm method-section">
+    <div class="container">
+      <SectionHeading title="Method" subtitle="Diagnose → Design → Run → Review" center />
+      <p class="text-center text-muted method-note">
+        AIは“魔法”ではなく、実行の摩擦を下げるための道具として使います。
+      </p>
+      <div class="grid cols-4 method-grid">
         {
-          personas.map((persona) => (
-            <button
-              type="button"
-              class="persona-chip"
-              data-persona-target={persona.id}
-              aria-controls={`persona-${persona.id}`}
-            >
-              <span class="chip-label">{persona.label}</span>
-            </button>
+          methodSteps.map((step, index) => (
+            <article class="card method-card">
+              <p class="method-index">0{index + 1}</p>
+              <h3 class="h3">{step.title}</h3>
+              <p class="text-muted">{step.description}</p>
+            </article>
           ))
         }
       </div>
     </div>
   </section>
 
-  <!-- ═══ Service Entrances ══════════════════════════ -->
-  <section class="section-sm">
+  <section class="section divisions-section">
     <div class="container">
-      <SectionHeading title="あなた向けの入口" subtitle="Service Entrances" center />
-
-      <div class="grid cols-3 service-grid">
-        <!-- Learning -->
-        <article class="card svc-card" id="persona-learning" data-persona-section="learning">
-          <div class="svc-head">
-            <span class="svc-badge badge-b2c">個人</span>
-            <h2 class="h3">{config.brands.education}</h2>
-            <p class="svc-tagline">受験の"続かない"を、週次PDCAで回す</p>
-          </div>
-          <ul class="svc-features">
-            <li>週1面談で計画→実行→振り返り</li>
-            <li>模試が"次の行動"に落ちる形に</li>
-            <li>親子で揉めにくい関わり方を設計</li>
-          </ul>
-          <p class="svc-note">中学生向け単語帳アプリ「{config.brands.english}」を含む</p>
-          <div class="svc-actions">
-            <a
-              class="btn btn-accent w-full"
-              href={config.urls.consultations.learningLine}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              LINEで無料面談
-            </a>
-            <a class="svc-detail-link" href={config.urls.englishApp}>AIYuMe Englishを開く →</a>
-            <a class="svc-detail-link" href="/education/">サービス詳細を見る →</a>
-          </div>
-        </article>
-
-        <!-- Studio -->
-        <article class="card svc-card" id="persona-studio" data-persona-section="studio">
-          <div class="svc-head">
-            <span class="svc-badge badge-b2c">個人</span>
-            <h2 class="h3">{config.brands.creator}</h2>
-            <p class="svc-tagline">世界観を、音と映像で最短実装</p>
-          </div>
-          <ul class="svc-features">
-            <li>BGM / ジングル / MIX</li>
-            <li>YouTube / ショート編集</li>
-            <li>要件が未整理でも、目的から逆算して設計</li>
-          </ul>
-          <p class="svc-note">制作例・料金表は準備中。見積無料。未整理でもOK</p>
-          <div class="svc-actions">
-            <a
-              class="btn btn-accent w-full"
-              href={config.urls.consultations.studioLine}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              LINEで制作相談
-            </a>
-            <a class="svc-detail-link" href="/creator/">サービス詳細を見る →</a>
-          </div>
-        </article>
-
-        <!-- Automation (B2B) -->
-        <article
-          class="card svc-card svc-card--b2b"
-          id="persona-automation"
-          data-persona-section="automation"
-        >
-          <div class="svc-head">
-            <span class="svc-badge badge-b2b">法人</span>
-            <h2 class="h3">{config.brands.automation}</h2>
-            <p class="svc-tagline">AI自動化を、現場で回る形に</p>
-          </div>
-          <ul class="svc-features">
-            <li>定型業務の自動化</li>
-            <li>LLM活用の業務設計</li>
-            <li>運用設計（マニュアル/エラー対応/権限設計）</li>
-          </ul>
-          <p class="svc-note">NDA / 機密保持対応</p>
-          <div class="svc-actions">
-            <a class="btn btn-primary w-full" href={config.urls.consultations.automationMail}>
-              問い合わせる（メール）
-            </a>
-            <a
-              class="svc-detail-link"
-              href={config.urls.consultations.automationLine}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              LINEで軽く相談
-            </a>
-            <a class="svc-detail-link" href="/automation/">サービス詳細を見る →</a>
-          </div>
-        </article>
+      <SectionHeading title="Divisions" subtitle="3つの部門" center />
+      <div class="grid cols-3 division-grid">
+        {
+          divisions.map((division) => (
+            <article class="card division-card">
+              <h2 class="h3">{division.name}</h2>
+              <p class="text-muted">{division.summary}</p>
+              <a class="btn btn-outline w-full" href={division.href}>
+                {division.cta}
+              </a>
+            </article>
+          ))
+        }
       </div>
     </div>
   </section>
 
-  <!-- ═══ Concept ════════════════════════════════════ -->
-  <section class="section concept-section">
-    <div class="container">
-      <SectionHeading title="なぜAIYuMeか" subtitle="Concept" center />
-      <div class="grid cols-2 concept-grid">
-        <article class="card concept-card">
-          <h3 class="h3">構造化</h3>
-          <p class="text-muted">
-            気合や感覚に頼らず、課題を分解しボトルネックを特定します。
-          </p>
-          <p class="concept-detail">学習: 迷いを手順化 / 制作: 要件を言語化 / 業務: ボトルネックを定量化</p>
-        </article>
-        <article class="card concept-card">
-          <h3 class="h3">技術と人の調和</h3>
-          <p class="text-muted">
-            AIは負荷を下げるために使い、人が意思決定と責任を持つ運用を設計します。
-          </p>
-          <p class="concept-detail">学習: 記録支援 / 制作: 下処理短縮 / 業務: 自動化と運用統制を両立</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ Process ═══════════════════════════════════ -->
-  <section class="section-sm">
-    <div class="container">
-      <SectionHeading title="進め方" subtitle="Process" center />
-      <p class="process-sub text-center text-muted">どのサービスも「まずは未整理でもOK」です。</p>
-
-      <div class="grid cols-3 process-grid">
-        <article class="card process-card">
-          <h3 class="h3 process-label">Learning</h3>
-          <ol class="process-steps">
-            <li>無料面談</li>
-            <li>2週間プラン提案</li>
-            <li>伴走開始</li>
-          </ol>
-        </article>
-        <article class="card process-card">
-          <h3 class="h3 process-label">Studio</h3>
-          <ol class="process-steps">
-            <li>ヒアリング</li>
-            <li>見積</li>
-            <li>制作/修正</li>
-            <li>納品</li>
-          </ol>
-        </article>
-        <article class="card process-card">
-          <h3 class="h3 process-label">Automation</h3>
-          <ol class="process-steps">
-            <li>ヒアリング</li>
-            <li>PoC</li>
-            <li>運用設計</li>
-            <li>納品</li>
-          </ol>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ Final CTA ═════════════════════════════════ -->
-  <section class="section">
-    <div class="container">
+  <section class="section-sm final-cta-section">
+    <div class="container narrow">
       <div class="card final-cta-box">
-        <h2 class="h2 text-center">相談窓口</h2>
-        <p class="text-center text-muted final-cta-desc">
-          用途に合う窓口からご連絡ください。<br class="sp-only" />
-          判断が難しい場合は、どれからでも問題ありません。
+        <h2 class="h2 text-center">まずは現状整理から始めませんか</h2>
+        <p class="text-center text-muted">
+          相談内容が未整理でも問題ありません。状況を伺い、最初の一歩を一緒に設計します。
         </p>
-
         <div class="final-actions">
-          <!-- B2C group -->
-          <div class="final-group final-group--b2c">
-            <span class="final-group-label">個人（受験・制作）</span>
-            <div class="final-btns">
-              <a
-                class="btn btn-accent"
-                href={config.urls.consultations.learningLine}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                受験相談（LINE）
-              </a>
-              <a
-                class="btn btn-accent"
-                href={config.urls.consultations.studioLine}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                制作相談（LINE）
-              </a>
-            </div>
-          </div>
-
-          <div class="final-divider" aria-hidden="true"></div>
-
-          <!-- B2B group -->
-          <div class="final-group final-group--b2b">
-            <span class="final-group-label">法人</span>
-            <div class="final-btns">
-              <a class="btn btn-primary" href={config.urls.consultations.automationMail}>
-                法人相談（メール）
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div class="text-center">
-          <a class="svc-detail-link" href="/contact/">お問い合わせページへ →</a>
+          <a class="btn btn-accent" href={config.urls.lineAddFriend} target="_blank" rel="noopener noreferrer">
+            LINEで相談する
+          </a>
+          <a class="btn btn-primary" href={config.urls.booking} target="_blank" rel="noopener noreferrer">
+            面談を予約する
+          </a>
+          <a class="btn btn-ghost" href="/contact">お問い合わせへ</a>
         </div>
       </div>
     </div>
   </section>
 </BaseLayout>
 
-<!-- ═══ Persona Script (unchanged logic) ═══════════ -->
-<script is:inline>
-  (() => {
-    const validPersonas = ['learning', 'studio', 'automation'];
-    const buttons = [...document.querySelectorAll('[data-persona-target]')];
-    const sections = [...document.querySelectorAll('[data-persona-section]')];
-
-    if (buttons.length === 0 || sections.length === 0) return;
-
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    const applyPersona = (persona, options = { scroll: false, updateQuery: false }) => {
-      if (!validPersonas.includes(persona)) return;
-
-      buttons.forEach((button) => {
-        const active = button.getAttribute('data-persona-target') === persona;
-        button.classList.toggle('is-active', active);
-        button.setAttribute('aria-pressed', String(active));
-      });
-
-      sections.forEach((section) => {
-        const active = section.getAttribute('data-persona-section') === persona;
-        section.classList.toggle('is-active', active);
-      });
-
-      if (options.updateQuery) {
-        const url = new URL(window.location.href);
-        url.searchParams.set('persona', persona);
-        history.replaceState(null, '', `${url.pathname}?${url.searchParams.toString()}`);
-      }
-
-      if (options.scroll) {
-        const target = document.querySelector(`[data-persona-section="${persona}"]`);
-        if (target instanceof HTMLElement) {
-          target.scrollIntoView({
-            behavior: prefersReducedMotion ? 'auto' : 'smooth',
-            block: 'start',
-          });
-        }
-      }
-    };
-
-    buttons.forEach((button) => {
-      button.addEventListener('click', () => {
-        const persona = button.getAttribute('data-persona-target');
-        if (!persona) return;
-        applyPersona(persona, { scroll: true, updateQuery: true });
-      });
-    });
-
-    const fromQuery = new URLSearchParams(window.location.search).get('persona');
-    if (fromQuery && validPersonas.includes(fromQuery)) {
-      applyPersona(fromQuery, { scroll: false, updateQuery: false });
-      return;
-    }
-
-    applyPersona('learning', { scroll: false, updateQuery: false });
-  })();
-</script>
-
-<!-- ═══ Styles ══════════════════════════════════════ -->
 <style>
-  /* ── Helpers ──────────────────────────────────── */
-  .sp-only { display: none; }
-  @media (max-width: 768px) { .sp-only { display: inline; } }
-
-  /* ── Hero ─────────────────────────────────────── */
-  .hero {
-    padding: var(--sp-20) 0 var(--sp-12);
+  .hero-section {
+    padding-top: var(--sp-16);
+    padding-bottom: var(--sp-12);
   }
+
   .hero-inner {
-    max-width: 860px;
+    max-width: 820px;
     text-align: center;
   }
+
   .hero-eyebrow {
     display: inline-block;
     margin: 0 0 var(--sp-3);
     color: var(--brand);
-    font-weight: 800;
+    font-weight: 700;
     font-size: var(--text-sm);
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
+
   .hero-title {
     margin-bottom: var(--sp-4);
   }
+
   .hero-lead {
-    max-width: 640px;
-    margin: 0 auto;
-    font-size: var(--text-lg);
-  }
-
-  /* ── Persona Switch ──────────────────────────── */
-  .persona-switch {
-    margin-top: var(--sp-10);
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--sp-3);
-    max-width: 720px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .persona-chip {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 52px;
-    padding: var(--sp-3) var(--sp-4);
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border-strong);
-    background: transparent;
-    color: var(--text-muted);
+    margin: 0 auto var(--sp-4);
+    max-width: 680px;
     font-weight: 600;
-    font-size: var(--text-sm);
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .persona-chip:hover {
-    color: var(--text);
-    border-color: var(--brand);
-    background: rgba(99,102,241,0.06);
-  }
-  /* Active = filled brand — unmissable */
-  .persona-chip.is-active {
-    background: var(--brand);
-    border-color: var(--brand);
-    color: #fff;
-    box-shadow: 0 2px 10px var(--brand-glow);
-  }
-  .persona-chip:focus-visible {
-    outline: var(--focus-ring);
-    outline-offset: var(--focus-offset);
-  }
-  .chip-label {
-    pointer-events: none;
-    line-height: 1.3;
   }
 
-  /* ── Service Cards ───────────────────────────── */
-  .service-grid { align-items: stretch; }
-
-  .svc-card {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-5);
-    padding: var(--sp-6) var(--sp-6) var(--sp-8);
-    scroll-margin-top: 100px;
-    border-top: 3px solid transparent;
-    transition: border-color 0.15s, box-shadow 0.15s;
-  }
-  /* Active persona highlight */
-  .svc-card.is-active {
-    border-top-color: var(--brand);
-    box-shadow: 0 0 0 1px rgba(99,102,241,0.2), var(--shadow-sm);
-  }
-
-  /* B2B variant */
-  .svc-card--b2b {
-    background: rgba(15, 23, 42, 0.7);
-    border-color: var(--border-strong);
-    border-top-color: transparent;
-  }
-  .svc-card--b2b.is-active {
-    border-top-color: var(--text-dim); /* restrained: gray, not brand */
-  }
-
-  .svc-head {
-    display: grid;
-    gap: var(--sp-2);
-  }
-  .svc-badge {
-    display: inline-block;
-    width: fit-content;
-    padding: 2px var(--sp-3);
-    border-radius: var(--radius-full);
-    font-size: var(--text-xs);
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-  .badge-b2c {
-    background: rgba(16,185,129,0.12);
-    color: #6ee7b7;
-    border: 1px solid rgba(16,185,129,0.2);
-  }
-  .badge-b2b {
-    background: rgba(148,163,184,0.1);
-    color: var(--text-dim);
-    border: 1px solid rgba(148,163,184,0.2);
-  }
-
-  .svc-tagline {
-    margin: 0;
-    font-weight: 700;
+  .hero-sub {
+    margin: 0 auto;
+    max-width: 720px;
     font-size: var(--text-base);
-    line-height: 1.5;
   }
 
-  .svc-features {
-    margin: 0;
+  .hero-actions {
+    margin-top: var(--sp-8);
+    display: flex;
+    gap: var(--sp-3);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .narrow {
+    max-width: 860px;
+  }
+
+  .value-section .section-heading,
+  .method-section .section-heading,
+  .divisions-section .section-heading {
+    margin-bottom: var(--sp-8);
+  }
+
+  .value-card ul {
+    margin: var(--sp-4) 0 0;
     padding-left: var(--sp-5);
     color: var(--text-muted);
     display: grid;
     gap: var(--sp-2);
-    font-size: var(--text-sm);
-    line-height: 1.6;
   }
 
-  .svc-note {
+  .vision-card {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .vision-card p {
     margin: 0;
-    font-size: var(--text-xs);
-    color: var(--text-dim);
-    line-height: 1.5;
+    line-height: var(--leading-relaxed);
   }
 
-  .svc-actions {
-    margin-top: auto;
-    display: grid;
-    gap: var(--sp-3);
-  }
-
-  .svc-detail-link {
-    color: var(--text-muted);
-    text-decoration: none;
+  .method-note {
+    margin-top: calc(-1 * var(--sp-4));
+    margin-bottom: var(--sp-8);
     font-size: var(--text-sm);
-    font-weight: 600;
-    transition: color 0.15s;
-  }
-  .svc-detail-link:hover { color: var(--brand-light); }
-  .svc-detail-link:focus-visible {
-    outline: var(--focus-ring);
-    outline-offset: var(--focus-offset);
   }
 
-  /* ── Concept ─────────────────────────────────── */
-  .concept-section {
-    background: rgba(30, 41, 59, 0.18);
+  .method-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
-  .concept-grid {
-    gap: var(--sp-8);
+
+  .method-card {
+    height: 100%;
+    display: grid;
+    gap: var(--sp-2);
   }
-  .concept-card {
+
+  .method-index {
+    margin: 0;
+    color: var(--text-dim);
+    font-weight: 800;
+    font-size: var(--text-xs);
+    letter-spacing: 0.1em;
+  }
+
+  .division-grid {
+    align-items: stretch;
+  }
+
+  .division-card {
     display: grid;
     gap: var(--sp-4);
-  }
-  .concept-detail {
-    margin: 0;
-    padding-top: var(--sp-3);
-    border-top: 1px solid var(--border);
-    color: var(--text-dim);
-    font-size: var(--text-sm);
-    line-height: 1.6;
-  }
-
-  /* ── Process ─────────────────────────────────── */
-  .process-sub {
-    margin: calc(-1 * var(--sp-6)) 0 var(--sp-8);
-    font-size: var(--text-sm);
-  }
-  .process-grid { align-items: stretch; }
-  .process-card {
     height: 100%;
-    padding: var(--sp-6);
-  }
-  .process-label {
-    margin-bottom: var(--sp-4);
-    padding-bottom: var(--sp-3);
-    border-bottom: 2px solid var(--border);
-  }
-  .process-steps {
-    margin: 0;
-    padding-left: var(--sp-5);
-    color: var(--text-muted);
-    font-size: var(--text-sm);
-    display: grid;
-    gap: var(--sp-2);
-    line-height: 1.6;
-  }
-  .process-steps li::marker {
-    color: var(--brand);
-    font-weight: 700;
   }
 
-  /* ── Final CTA ───────────────────────────────── */
-  .final-cta-box {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: var(--sp-10) var(--sp-8);
-    display: grid;
-    gap: var(--sp-6);
-    text-align: center;
+  .division-card p {
+    margin: 0;
+    line-height: 1.7;
   }
-  .final-cta-desc {
-    font-size: var(--text-sm);
-    margin-bottom: 0;
+
+  .final-cta-box {
+    padding: var(--sp-10);
+    display: grid;
+    gap: var(--sp-5);
   }
 
   .final-actions {
     display: flex;
-    align-items: stretch;
-    gap: var(--sp-6);
-    justify-content: center;
-  }
-  .final-group {
-    flex: 1;
-    display: grid;
     gap: var(--sp-3);
-    max-width: 280px;
-  }
-  .final-group-label {
-    font-size: var(--text-xs);
-    font-weight: 700;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-  .final-btns {
-    display: grid;
-    gap: var(--sp-2);
-  }
-  .final-divider {
-    width: 1px;
-    background: var(--border-strong);
-    align-self: stretch;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
-  /* ── Responsive ──────────────────────────────── */
   @media (max-width: 960px) {
-    .persona-switch {
-      grid-template-columns: 1fr;
-      max-width: 400px;
-    }
-    .final-actions {
-      flex-direction: column;
-      align-items: center;
-    }
-    .final-divider {
-      width: 80%;
-      max-width: 200px;
-      height: 1px;
-    }
-    .final-group {
-      max-width: 100%;
-      width: 100%;
+    .method-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
   @media (max-width: 768px) {
-    .hero {
-      padding: var(--sp-12) 0 var(--sp-8);
+    .hero-section {
+      padding-top: var(--sp-12);
     }
-    .svc-card {
-      padding: var(--sp-5);
+
+    .method-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .final-cta-box {
+      padding: var(--sp-6);
     }
   }
 </style>

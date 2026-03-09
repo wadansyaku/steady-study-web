@@ -1,8 +1,8 @@
-# AIYuMe — Design Contract
+# AIYouMe — Design Contract
 
 Direction A: **Neutral Professional + Warm Accent**
 
-> このドキュメントは、AIYuMe全ページで守るべきデザインルールを定義します。
+> このドキュメントは、AIYouMe 全ページで守るべきデザインルールを定義します。
 > UIを追加・修正する際は、このファイルに準拠してください。
 
 ---
