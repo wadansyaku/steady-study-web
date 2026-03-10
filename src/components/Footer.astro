@@ -5,7 +5,15 @@ import { config } from '@/config';
 <footer class="footer">
   <div class="container inner">
     <div class="brand">
-      <div class="name">{config.brands.home}</div>
+      <img
+        class="brand-logo"
+        src="/brand/aiyoume-logo-dark.svg"
+        alt={config.brands.home}
+        width="280"
+        height="76"
+        loading="lazy"
+        decoding="async"
+      />
       <div class="sub-brands text-muted">
         {config.brands.learning} • {config.brands.studio} • {config.brands.automation}
       </div>
@@ -35,11 +43,15 @@ import { config } from '@/config';
     align-items: center;
     text-align: center;
   }
-  .name {
-    font-weight: 800;
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-    letter-spacing: -0.01em;
+  .brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .brand-logo {
+    width: auto;
+    height: 48px;
   }
   .sub-brands {
     font-size: 0.9rem;
@@ -70,6 +82,9 @@ import { config } from '@/config';
       justify-content: space-between;
       align-items: flex-start;
       text-align: left;
+    }
+    .brand {
+      align-items: flex-start;
     }
     .links {
       flex-direction: column;

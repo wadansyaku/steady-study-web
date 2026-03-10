@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="76" viewBox="0 0 280 76" fill="none">
+  <g transform="translate(2 2) scale(0.72)">
+    <path d="M48 46L26 24" stroke="#FDBA74" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"/>
+    <path d="M48 46L70 24" stroke="#6EE7B7" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"/>
+    <path d="M48 46V74" stroke="#7DD3FC" stroke-linecap="round" stroke-width="10"/>
+    <circle cx="26" cy="24" r="9" fill="#FDBA74"/>
+    <circle cx="70" cy="24" r="9" fill="#6EE7B7"/>
+    <circle cx="48" cy="74" r="9" fill="#7DD3FC"/>
+    <circle cx="48" cy="46" r="5" fill="#FFF7ED"/>
+  </g>
+  <text x="88" y="47" font-family="'Avenir Next', 'Segoe UI', 'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="38" font-weight="800" letter-spacing="-0.03em">
+    <tspan fill="#7DD3FC">AI</tspan><tspan fill="#FDBA74">You</tspan><tspan fill="#6EE7B7">Me</tspan>
+  </text>
+</svg>
