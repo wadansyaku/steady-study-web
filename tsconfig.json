@@ -1,14 +1,8 @@
 {
-  "extends": "astro/tsconfigs/strict",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    }
-  },
-  "exclude": [
-    "dist",
-    "logs",
-    "public/creator/void-rush/assets"
+  "files": [],
+  "references": [
+    { "path": "./packages/ui" },
+    { "path": "./packages/content" },
+    { "path": "./apps/web" }
   ]
 }

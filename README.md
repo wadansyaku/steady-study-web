@@ -1,6 +1,13 @@
-# AIYouMe Web (Astro / Cloudflare Pages)
+# AIYouMe Platform
 
-AIYouMe の公開サイトです。現在の正規導線は `/learning` `/studio` `/automation` で、`/education` `/creator` は legacy route として維持しています。`/creator/void-rush/` は Studio 配下の実験コンテンツです。
+AIYouMe の公開サイト基盤です。ブランド本体は `Next.js App Router + Cloudflare Workers`、UI とコンテンツ定義は workspace package に分離し、`VOID-RUSH` は `services/voidrush` へ切り出しています。
+
+## Workspace
+
+- `apps/web`: 公開サイト。`/learning` `/studio` `/automation` `/about` `/profile` `/case-studies` `/process` `/pricing` `/faq` `/security` `/terms` `/privacy` `/contact` を提供します。
+- `packages/ui`: ブランドトークン、ロゴ variant、共通 UI。
+- `packages/content`: サイトコンテンツ、Sanity schema、query/config。
+- `services/voidrush`: labs 分離用の実験サービス。
 
 ## Setup
 
@@ -9,46 +16,107 @@ npm install
 cp .env.example .env
 ```
 
-必須の公開設定は build-time env で管理します。
+主な環境変数:
 
-- `PUBLIC_SITE_URL`
-- `PUBLIC_LINE_URL`
-- `PUBLIC_BOOKING_URL`
-- `PUBLIC_CONTACT_EMAIL`
-- `PUBLIC_ANALYTICS_ENABLED`
-- `PUBLIC_ANALYTICS_SNIPPET`
-- `PUBLIC_VOIDRUSH_API_BASE_URL`
-- `PUBLIC_AMAZON_ASSOCIATE_TAG`（任意）
+- `NEXT_PUBLIC_SITE_URL`
+- `NEXT_PUBLIC_LINE_URL`
+- `NEXT_PUBLIC_BOOKING_URL`
+- `NEXT_PUBLIC_CONTACT_EMAIL`
+- `NEXT_PUBLIC_LABS_URL`
+- `NEXT_PUBLIC_SANITY_PROJECT_ID`
+- `NEXT_PUBLIC_SANITY_DATASET`
+- `NEXT_PUBLIC_TURNSTILE_SITE_KEY`
+- `TURNSTILE_SECRET_KEY`
+- `RESEND_API_KEY`
+- `RESEND_FROM_EMAIL`
+- `LEAD_NOTIFICATION_EMAIL`
+- `SANITY_API_READ_TOKEN`
+- `SANITY_API_WRITE_TOKEN`
 
-## Development
+## Local Development
 
 ```bash
 npm run dev
 ```
 
-dev では `.env.example` の値を流用できます。公開用ビルドでは実値を設定してください。
+`apps/web` が起動します。`/cms` は Sanity project id が設定されていれば embedded Studio を表示し、未設定時は schema 案内ページを表示します。
 
-## Build And Validation
+## Validation
 
 ```bash
+npm run lint
+npm run typecheck
 npm run build
-npm run validate:build
+npm run test:e2e
 ```
 
-出力先は `dist/` です。`validate:build` は以下を確認します。
+E2E は Playwright で以下を確認します。
 
-- `TODO_` / `NEW_DOMAIN` / `AIYuMe` が build 成果物に残っていない
-- `robots.txt` と `sitemap.xml` が canonical domain を向く
-- VOID-RUSH の asset 参照が実在し、API base が same-origin `/api/voidrush` を使う
+- desktop / mobile の主要公開ページ
+- axe の重大違反 0
+- canonical / JSON-LD
+- legacy redirect
+- first-party lead form
+- logo-driven visual regression
 
-## Cloudflare Pages
+初回のみブラウザを入れる場合:
 
-- Framework preset: Astro
-- Build command: `npm run build`
-- Output directory: `dist`
-- CI では build 後に `npm run validate:build` を実行します
+```bash
+npx playwright install chromium
+```
 
-## Notes
+## Cloudflare Workers
 
-- pricing は当面「無料面談後にご提案」で固定し、公開面で数値 placeholder は出しません。
-- `/api/voidrush/*` のサーバー契約は変えていません。変更したのはクライアント既定の base URL だけです。
+公開サイトは `apps/web` を OpenNext 経由で Workers へ載せます。
+
+```bash
+cd apps/web
+npm run build
+npm run preview
+```
+
+本番前に必要な設定:
+
+1. `wrangler.toml` の公開変数を実値へ更新する
+2. D1 binding `LEADS_DB` を追加する
+3. `TURNSTILE_SECRET_KEY` `RESEND_API_KEY` `RESEND_FROM_EMAIL` `LEAD_NOTIFICATION_EMAIL` を secret として投入する
+4. `NEXT_PUBLIC_SANITY_PROJECT_ID` を設定して `/cms` を有効化する
+
+lead tables は `apps/web/migrations/0001_leads.sql` を使います。
+
+手動デプロイ / migration:
+
+```bash
+npm run db:migrate
+npm run deploy
+npm run db:migrate:preview
+npm run deploy:preview
+```
+
+## GitHub Integration
+
+`main` push と `workflow_dispatch` 用に Cloudflare deploy workflow を追加しています。
+
+- GitHub secret: `CLOUDFLARE_API_TOKEN`
+- GitHub variable: `CLOUDFLARE_ACCOUNT_ID`
+
+secret 未設定時は workflow が no-op で終了し、何が不足しているかだけ出力します。
+
+Lighthouse CI workflow も追加しており、PR 上で performance / accessibility / SEO budget を確認できます。
+
+## Current Cloudflare Status
+
+- lead 用 D1 は `aiyoume-leads-prod` / `aiyoume-leads-preview` を作成済み
+- migration は preview / production とも適用済み
+- preview worker: `https://aiyoume-web-preview.kidsquestmissionjp.workers.dev`
+- production worker: `https://aiyoume-web.kidsquestmissionjp.workers.dev`
+- GitHub deploy workflow は追加済みだが、repo secret `CLOUDFLARE_API_TOKEN` はまだ未設定
+- custom domain / route はまだ Workers 側に接続していない
+
+## Legacy And Labs
+
+- `/education` -> `/learning`
+- `/creator` -> `/studio`
+- `/creator/void-rush/*` -> `https://labs.ai-yu-me.com/void-rush/*`
+
+`services/voidrush` には root から同期した資産があり、`npm run voidrush:sync` で再同期できます。

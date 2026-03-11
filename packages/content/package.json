@@ -1,0 +1,25 @@
+{
+  "name": "@aiyoume/content",
+  "private": true,
+  "type": "module",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./sanity": "./src/sanity-entry.ts",
+    "./queries": "./src/queries.ts"
+  },
+  "dependencies": {
+    "@sanity/vision": "^4.13.0",
+    "@sanity/client": "^7.17.0",
+    "next-sanity": "^12.1.1",
+    "sanity": "^5.14.1",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "^24.7.2",
+    "typescript": "^5.9.3"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  }
+}

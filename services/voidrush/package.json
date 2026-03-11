@@ -1,0 +1,8 @@
+{
+  "name": "@aiyoume/voidrush",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync:root-assets": "mkdir -p public/void-rush functions migrations && rsync -a ../../public/creator/void-rush/ public/void-rush/ && rsync -a ../../functions/ functions/ && rsync -a ../../migrations/ migrations/"
+  }
+}

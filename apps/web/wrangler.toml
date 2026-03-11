@@ -1,0 +1,47 @@
+name = "aiyoume-web"
+main = ".open-next/worker.js"
+compatibility_date = "2026-03-11"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+[vars]
+NEXT_PUBLIC_SITE_URL = "https://ai-yu-me.com"
+NEXT_PUBLIC_LINE_URL = "https://line.me/"
+NEXT_PUBLIC_BOOKING_URL = "https://example.com/booking"
+NEXT_PUBLIC_CONTACT_EMAIL = "hello@ai-yu-me.com"
+NEXT_PUBLIC_LABS_URL = "https://labs.ai-yu-me.com/void-rush"
+NEXT_PUBLIC_SANITY_DATASET = "production"
+
+[[d1_databases]]
+binding = "LEADS_DB"
+database_name = "aiyoume-leads-prod"
+database_id = "9c1983b0-5ab0-40c4-9e9d-49f7ddd1d306"
+
+[[routes]]
+pattern = "ai-yu-me.com/*"
+zone_name = "ai-yu-me.com"
+
+[env.preview]
+name = "aiyoume-web-preview"
+
+[env.preview.vars]
+NEXT_PUBLIC_SITE_URL = "https://ai-yu-me.com"
+NEXT_PUBLIC_LINE_URL = "https://line.me/"
+NEXT_PUBLIC_BOOKING_URL = "https://example.com/booking"
+NEXT_PUBLIC_CONTACT_EMAIL = "hello@ai-yu-me.com"
+NEXT_PUBLIC_LABS_URL = "https://labs.ai-yu-me.com/void-rush"
+NEXT_PUBLIC_SANITY_DATASET = "production"
+
+[[env.preview.d1_databases]]
+binding = "LEADS_DB"
+database_name = "aiyoume-leads-preview"
+database_id = "1e6b5be0-07fe-4f5b-b310-5b085bbfc7ae"
+
+# Add a LEADS_DB D1 binding and secrets before production deploy:
+# wrangler secret put TURNSTILE_SECRET_KEY
+# wrangler secret put RESEND_API_KEY
+# wrangler secret put RESEND_FROM_EMAIL
+# wrangler secret put LEAD_NOTIFICATION_EMAIL
