@@ -22,10 +22,6 @@ binding = "LEADS_DB"
 database_name = "aiyoume-leads-prod"
 database_id = "9c1983b0-5ab0-40c4-9e9d-49f7ddd1d306"
 
-[[routes]]
-pattern = "ai-yu-me.com/*"
-zone_name = "ai-yu-me.com"
-
 [env.preview]
 name = "aiyoume-web-preview"
 workers_dev = true
