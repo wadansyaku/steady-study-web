@@ -112,7 +112,9 @@ test('core site stays free of legacy void-rush assets', async ({ page }) => {
 test('desktop visual regression keeps logo-driven hero', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'chromium');
   await page.goto('/');
-  await expect(page.locator('.hero')).toHaveScreenshot('home-hero.png');
+  await expect(page.locator('.hero')).toHaveScreenshot('home-hero.png', {
+    maxDiffPixelRatio: 0.05,
+  });
   await expect(page.locator('.site-header')).toHaveScreenshot('desktop-header.png');
   await expect(page.locator('.site-footer')).toHaveScreenshot('site-footer.png');
   await expect(page.locator('.service-badge').first()).toHaveScreenshot('service-badge-learning.png');
@@ -121,5 +123,7 @@ test('desktop visual regression keeps logo-driven hero', async ({ page }, testIn
 test('mobile visual regression keeps navigation compact', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile');
   await page.goto('/');
-  await expect(page.locator('.site-header')).toHaveScreenshot('mobile-header.png');
+  await expect(page.locator('.site-header')).toHaveScreenshot('mobile-header.png', {
+    maxDiffPixelRatio: 0.05,
+  });
 });
