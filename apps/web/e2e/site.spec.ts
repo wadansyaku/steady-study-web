@@ -67,7 +67,7 @@ test('contact page renders and submits first-party lead form', async ({ page }) 
 });
 
 test('lead API rejects incomplete submissions', async ({ request }) => {
-  const response = await request.post('/api/leads/learning', {
+  const response = await request.post('/contact/submit/learning', {
     data: {
       service: 'learning',
       name: '',

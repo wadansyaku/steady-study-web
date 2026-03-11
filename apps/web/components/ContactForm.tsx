@@ -72,7 +72,7 @@ export function ContactForm({
     setStatus('submitting');
     setMessage('');
 
-    const response = await fetch(`/api/leads/${formState.service}`, {
+    const response = await fetch(`/contact/submit/${formState.service}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
