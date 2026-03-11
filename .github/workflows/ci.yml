@@ -107,10 +107,12 @@ jobs:
 
           for hostname in $(jq -r '.[]' <<<"${DOMAINS_JSON}"); do
             echo "::group::DNS ${hostname}"
-            curl -fsS \
+            if ! curl -fsS \
               -H "Authorization: Bearer ${CF_API_TOKEN}" \
               -H "Content-Type: application/json" \
-              "https://api.cloudflare.com/client/v4/zones/${zone_id}/dns_records?name=${hostname}" | jq .
+              "https://api.cloudflare.com/client/v4/zones/${zone_id}/dns_records?name=${hostname}" | jq .; then
+              echo "DNS record inspection is not permitted for this token"
+            fi
             echo "::endgroup::"
           done
 
@@ -132,13 +134,16 @@ jobs:
         run: |
           set -euo pipefail
           for hostname in $(jq -r '.[]' <<<"${DOMAINS_JSON}"); do
-            record_ids="$(
+            if ! record_ids="$(
               curl -fsS \
                 -H "Authorization: Bearer ${CF_API_TOKEN}" \
                 -H "Content-Type: application/json" \
                 "https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/dns_records?name=${hostname}" |
                 jq -r '.result[] | select(.type == "A" or .type == "AAAA" or .type == "CNAME") | .id'
-            )"
+            )"; then
+              echo "DNS record deletion is not permitted for this token"
+              continue
+            fi
 
             if [ -z "${record_ids}" ]; then
               echo "No A/AAAA/CNAME records to delete for ${hostname}"
@@ -159,6 +164,7 @@ jobs:
         if: ${{ inputs.mode == 'domain-migrate' }}
         run: |
           set -euo pipefail
+          sleep 10
           jq -n \
             --arg zone_name "${ZONE_NAME}" \
             '{
