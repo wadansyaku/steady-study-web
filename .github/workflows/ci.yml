@@ -75,10 +75,15 @@ jobs:
       - name: Verify token
         run: |
           set -euo pipefail
-          curl -fsS \
+          if ! curl -fsS \
             -H "Authorization: Bearer ${CF_API_TOKEN}" \
             -H "Content-Type: application/json" \
-            https://api.cloudflare.com/client/v4/user/tokens/verify | jq .
+            "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/tokens/verify" | jq .; then
+            curl -fsS \
+              -H "Authorization: Bearer ${CF_API_TOKEN}" \
+              -H "Content-Type: application/json" \
+              https://api.cloudflare.com/client/v4/user/tokens/verify | jq .
+          fi
 
       - name: Inspect Pages domains and DNS
         run: |
