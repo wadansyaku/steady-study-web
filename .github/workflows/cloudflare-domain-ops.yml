@@ -1,0 +1,146 @@
+name: Cloudflare Domain Ops
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Operation mode
+        required: true
+        default: inspect
+        type: choice
+        options:
+          - inspect
+          - migrate
+
+jobs:
+  domain-ops:
+    runs-on: ubuntu-latest
+    env:
+      ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+      CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      PROJECT_NAME: aiyume-web
+      WORKER_NAME: aiyoume-web
+      ZONE_NAME: ai-yu-me.com
+      DOMAINS_JSON: '["ai-yu-me.com","www.ai-yu-me.com"]'
+    steps:
+      - name: Validate inputs
+        run: |
+          set -euo pipefail
+          test -n "${ACCOUNT_ID}"
+          test -n "${CF_API_TOKEN}"
+
+      - name: Verify token
+        run: |
+          set -euo pipefail
+          curl -fsS \
+            -H "Authorization: Bearer ${CF_API_TOKEN}" \
+            -H "Content-Type: application/json" \
+            https://api.cloudflare.com/client/v4/user/tokens/verify | jq .
+
+      - name: Inspect Pages domains and DNS
+        run: |
+          set -euo pipefail
+          curl -fsS \
+            -H "Authorization: Bearer ${CF_API_TOKEN}" \
+            -H "Content-Type: application/json" \
+            "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/pages/projects/${PROJECT_NAME}/domains" | jq .
+
+          zone_id="$(
+            curl -fsS \
+              -H "Authorization: Bearer ${CF_API_TOKEN}" \
+              -H "Content-Type: application/json" \
+              "https://api.cloudflare.com/client/v4/zones?name=${ZONE_NAME}" |
+              jq -r '.result[0].id'
+          )"
+
+          test -n "${zone_id}"
+          test "${zone_id}" != "null"
+          echo "ZONE_ID=${zone_id}" >> "${GITHUB_ENV}"
+
+          for hostname in $(jq -r '.[]' <<<"${DOMAINS_JSON}"); do
+            echo "::group::DNS ${hostname}"
+            curl -fsS \
+              -H "Authorization: Bearer ${CF_API_TOKEN}" \
+              -H "Content-Type: application/json" \
+              "https://api.cloudflare.com/client/v4/zones/${zone_id}/dns_records?name=${hostname}" | jq .
+            echo "::endgroup::"
+          done
+
+      - name: Remove Pages custom domains
+        if: ${{ inputs.mode == 'migrate' }}
+        run: |
+          set -euo pipefail
+          for hostname in $(jq -r '.[]' <<<"${DOMAINS_JSON}"); do
+            echo "::group::DELETE Pages domain ${hostname}"
+            curl -fsS -X DELETE \
+              -H "Authorization: Bearer ${CF_API_TOKEN}" \
+              -H "Content-Type: application/json" \
+              "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/pages/projects/${PROJECT_NAME}/domains/${hostname}" | jq .
+            echo "::endgroup::"
+          done
+
+      - name: Remove conflicting DNS records
+        if: ${{ inputs.mode == 'migrate' }}
+        run: |
+          set -euo pipefail
+          for hostname in $(jq -r '.[]' <<<"${DOMAINS_JSON}"); do
+            record_ids="$(
+              curl -fsS \
+                -H "Authorization: Bearer ${CF_API_TOKEN}" \
+                -H "Content-Type: application/json" \
+                "https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/dns_records?name=${hostname}" |
+                jq -r '.result[] | select(.type == "A" or .type == "AAAA" or .type == "CNAME") | .id'
+            )"
+
+            if [ -z "${record_ids}" ]; then
+              echo "No A/AAAA/CNAME records to delete for ${hostname}"
+              continue
+            fi
+
+            for record_id in ${record_ids}; do
+              echo "::group::DELETE DNS ${hostname} ${record_id}"
+              curl -fsS -X DELETE \
+                -H "Authorization: Bearer ${CF_API_TOKEN}" \
+                -H "Content-Type: application/json" \
+                "https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/dns_records/${record_id}" | jq .
+              echo "::endgroup::"
+            done
+          done
+
+      - name: Attach Worker custom domains
+        if: ${{ inputs.mode == 'migrate' }}
+        run: |
+          set -euo pipefail
+          jq -n \
+            --arg zone_name "${ZONE_NAME}" \
+            --arg worker_name "${WORKER_NAME}" \
+            '{
+              override_scope: true,
+              override_existing_origin: true,
+              override_existing_dns_record: true,
+              origins: [
+                { hostname: "ai-yu-me.com", zone_name: $zone_name },
+                { hostname: "www.ai-yu-me.com", zone_name: $zone_name }
+              ]
+            }' > request.json
+
+          cat request.json | jq .
+
+          curl -fsS -X PUT \
+            -H "Authorization: Bearer ${CF_API_TOKEN}" \
+            -H "Content-Type: application/json" \
+            --data @request.json \
+            "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/workers/scripts/${WORKER_NAME}/domains/records" | jq .
+
+      - name: Verify Worker domains and live URLs
+        if: ${{ inputs.mode == 'migrate' }}
+        run: |
+          set -euo pipefail
+          curl -fsS \
+            -H "Authorization: Bearer ${CF_API_TOKEN}" \
+            -H "Content-Type: application/json" \
+            "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/workers/domains" | jq .
+
+          sleep 15
+          curl -I -s https://ai-yu-me.com
+          curl -I -s https://www.ai-yu-me.com
