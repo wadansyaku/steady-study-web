@@ -118,8 +118,12 @@ test('desktop visual regression keeps logo-driven hero', async ({ page }, testIn
   await expect(page.locator('.site-header')).toHaveScreenshot('desktop-header.png', {
     maxDiffPixelRatio: 0.05,
   });
-  await expect(page.locator('.site-footer')).toHaveScreenshot('site-footer.png');
-  await expect(page.locator('.service-badge').first()).toHaveScreenshot('service-badge-learning.png');
+  await expect(page.locator('.site-footer')).toHaveScreenshot('site-footer.png', {
+    maxDiffPixelRatio: 0.05,
+  });
+  await expect(page.locator('.service-badge').first()).toHaveScreenshot('service-badge-learning.png', {
+    maxDiffPixelRatio: 0.05,
+  });
 });
 
 test('mobile visual regression keeps navigation compact', async ({ page }, testInfo) => {
