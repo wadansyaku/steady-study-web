@@ -3,6 +3,7 @@
     "collect": {
       "startServerCommand": "npm run build && npx next start --hostname 127.0.0.1 --port 3200",
       "startServerReadyPattern": "Ready in|Ready on|Local:",
+      "startServerReadyTimeout": 240000,
       "url": [
         "http://127.0.0.1:3200/",
         "http://127.0.0.1:3200/learning",
