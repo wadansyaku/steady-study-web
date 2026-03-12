@@ -1,4 +1,4 @@
-import { caseStudies, homePageContent } from '@aiyoume/content';
+import { getCaseStudies, getGlobalSettings, getHomePage } from '@aiyoume/content';
 import {
   ContactStrip,
   PageHero,
@@ -18,15 +18,22 @@ const proofTypeLabels = {
   boundary: '対応範囲',
 } as const;
 
-export const metadata = buildMetadata({
-  title: homePageContent.seo.title,
-  description: homePageContent.seo.description,
-  ogTitle: homePageContent.seo.ogTitle,
-  ogDescription: homePageContent.seo.ogDescription,
-  path: '/',
-});
+export async function generateMetadata() {
+  const [settings, page] = await Promise.all([getGlobalSettings(), getHomePage()]);
 
-export default function HomePage() {
+  return buildMetadata({
+    title: page.seo.title,
+    description: page.seo.description,
+    ogTitle: page.seo.ogTitle,
+    ogDescription: page.seo.ogDescription,
+    path: '/',
+    siteName: settings.name,
+  });
+}
+
+export default async function HomePage() {
+  const [page, studies] = await Promise.all([getHomePage(), getCaseStudies()]);
+
   return (
     <>
       <JsonLd
@@ -34,12 +41,12 @@ export default function HomePage() {
           { name: 'ホーム', path: '/' },
         ])}
       />
-      <JsonLd data={faqJsonLd(homePageContent.faqPreview)} />
+      <JsonLd data={faqJsonLd(page.faqPreview)} />
 
       <PageHero
-        eyebrow={homePageContent.hero.eyebrow}
-        title={homePageContent.hero.title}
-        description={homePageContent.hero.description}
+        eyebrow={page.hero.eyebrow}
+        title={page.hero.title}
+        description={page.hero.description}
         actions={[
           { href: '/contact', label: 'お問い合わせ' },
           { href: '/case-studies', label: '事例を見る', kind: 'secondary' },
@@ -54,7 +61,7 @@ export default function HomePage() {
               <ServiceBadge theme="automation" />
             </div>
             <dl className="hero-card__facts">
-              {homePageContent.hero.facts.map((fact) => (
+              {page.hero.facts.map((fact) => (
                 <div key={fact.label}>
                   <dt>{fact.label}</dt>
                   <dd>{fact.value}</dd>
@@ -73,7 +80,7 @@ export default function HomePage() {
             description="最初から依頼内容が固まっていなくても構いません。いま止まっている場面が見えていれば、最初の切り分けを始められます。"
           />
           <div className="card-grid">
-            {homePageContent.fitCases.map((item) => (
+            {page.fitCases.map((item) => (
               <article key={item.title} className="plain-card fit-card">
                 {item.service ? (
                   <ServiceBadge theme={item.service} />
@@ -86,7 +93,7 @@ export default function HomePage() {
             ))}
           </div>
           <p className="section-note">
-            <strong>向いていない相談:</strong> {homePageContent.notFitNote}
+            <strong>向いていない相談:</strong> {page.notFitNote}
           </p>
         </div>
       </section>
@@ -99,7 +106,7 @@ export default function HomePage() {
             description="学習支援、制作支援、業務自動化のどこからでも入れます。迷う場合は、まず状況整理の相談としてお問い合わせください。"
           />
           <div className="card-grid card-grid--services">
-            {homePageContent.serviceHighlights.map((service) => (
+            {page.serviceHighlights.map((service) => (
               <ServiceCard
                 key={service.slug}
                 theme={service.slug}
@@ -123,7 +130,7 @@ export default function HomePage() {
             description="顔や強い自己演出ではなく、進め方、料金方針、対応範囲、セキュリティ、事例で信頼を作る設計です。"
           />
           <div className="card-grid">
-            {homePageContent.trustProofs.map((item) => (
+            {page.trustProofs.map((item) => (
               <ProofCard
                 key={item.title}
                 title={item.title}
@@ -145,7 +152,7 @@ export default function HomePage() {
             description="何がいつ決まり、どの段階で提案や見積もりに進むかを公開して、相談前の不安を減らします。"
           />
           <div className="card-grid journey-grid">
-            {homePageContent.processSteps.map((step) => (
+            {page.processSteps.map((step) => (
               <article key={step.step} className="plain-card journey-card">
                 <p className="journey-card__step">{step.step}</p>
                 <h3>{step.title}</h3>
@@ -164,7 +171,7 @@ export default function HomePage() {
             description="抽象論ではなく、相談前の状態、対応内容、変化を並べて、支援の実態が分かる形で示します。"
           />
           <div className="card-grid">
-            {caseStudies.map((study) => (
+            {studies.map((study) => (
               <article key={study.slug} className="case-card case-card--detailed">
                 <div className="case-card__head">
                   <ServiceBadge theme={study.service} />
@@ -208,7 +215,7 @@ export default function HomePage() {
             description="課題が曖昧でも相談できるか、費用感はどう決まるか、オンライン対応できるかなど、最初に気になりやすい点を先にまとめています。"
           />
           <div className="faq-list">
-            {homePageContent.faqPreview.map((item) => (
+            {page.faqPreview.map((item) => (
               <details key={item.question} className="faq-item">
                 <summary>{item.question}</summary>
                 <p>{item.answer}</p>
@@ -226,12 +233,12 @@ export default function HomePage() {
       <section className="section section--tinted">
         <div className="shell">
           <SectionHeader
-            eyebrow={homePageContent.brandSummary.eyebrow}
-            title={homePageContent.brandSummary.title}
-            description={homePageContent.brandSummary.description}
+            eyebrow={page.brandSummary.eyebrow}
+            title={page.brandSummary.title}
+            description={page.brandSummary.description}
           />
           <div className="pillar-grid">
-            {homePageContent.brandSummary.pillars.map((pillar) => (
+            {page.brandSummary.pillars.map((pillar) => (
               <article key={pillar.title} className="pillar-card">
                 <h3>{pillar.title}</h3>
                 <p>{pillar.body}</p>

@@ -1,12 +1,18 @@
-import { getPublicEnv } from '@/lib/env';
+import { getGlobalSettings } from '@aiyoume/content';
 import { buildMetadata } from '@/lib/seo';
 import { ContactForm } from '@/components/ContactForm';
+import { getPublicEnv } from '@/lib/env';
 
-export const metadata = buildMetadata({
-  title: 'お問い合わせ',
-  description: 'AIYouMe への問い合わせフォーム、LINE、予約導線と、最初にあると相談しやすい情報を掲載しています。',
-  path: '/contact',
-});
+export async function generateMetadata() {
+  const settings = await getGlobalSettings();
+
+  return buildMetadata({
+    title: 'お問い合わせ',
+    description: 'AIYouMe への問い合わせフォーム、LINE、予約導線と、最初にあると相談しやすい情報を掲載しています。',
+    path: '/contact',
+    siteName: settings.name,
+  });
+}
 
 export default async function ContactPage({
   searchParams,
@@ -14,7 +20,10 @@ export default async function ContactPage({
   searchParams: Promise<{ service?: string }>;
 }) {
   const params = await searchParams;
-  const env = getPublicEnv();
+  const [env, settings] = await Promise.all([
+    Promise.resolve(getPublicEnv()),
+    getGlobalSettings(),
+  ]);
   const service =
     params.service === 'learning' || params.service === 'studio' || params.service === 'automation'
       ? params.service
@@ -47,9 +56,9 @@ export default async function ContactPage({
         </div>
         <ContactForm
           initialService={service}
-          email={env.contactEmail}
-          lineUrl={env.lineUrl}
-          bookingUrl={env.bookingUrl}
+          email={settings.contactChannels.email}
+          lineUrl={settings.contactChannels.line}
+          bookingUrl={settings.contactChannels.booking}
           turnstileSiteKey={env.turnstileSiteKey}
         />
       </div>

@@ -1,21 +1,20 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { siteSettings } from '@aiyoume/content';
-import { SiteHeader } from '@aiyoume/ui';
+import { SiteHeader, type ActionLink, type NavItem } from '@aiyoume/ui';
 
-export function HeaderClient() {
+export function HeaderClient({
+  navItems,
+  cta,
+}: {
+  navItems: NavItem[];
+  cta: ActionLink;
+}) {
   const pathname = usePathname();
 
   if (pathname.startsWith('/cms')) {
     return null;
   }
 
-  return (
-    <SiteHeader
-      currentPath={pathname}
-      navItems={siteSettings.navigation}
-      cta={{ href: '/contact', label: 'お問い合わせ' }}
-    />
-  );
+  return <SiteHeader currentPath={pathname} navItems={navItems} cta={cta} />;
 }

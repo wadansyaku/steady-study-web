@@ -1,17 +1,22 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { siteSettings } from '@aiyoume/content';
-import { SiteFooter } from '@aiyoume/ui';
+import { SiteFooter, type NavItem } from '@aiyoume/ui';
 
-export function FooterClient() {
+export function FooterClient({
+  navItems,
+  utilityItems,
+  tag,
+}: {
+  navItems: NavItem[];
+  utilityItems: NavItem[];
+  tag: string;
+}) {
   const pathname = usePathname();
 
   if (pathname.startsWith('/cms')) {
     return null;
   }
 
-  return (
-    <SiteFooter navItems={siteSettings.footerNav} utilityItems={siteSettings.footerUtility} />
-  );
+  return <SiteFooter navItems={navItems} utilityItems={utilityItems} tag={tag} />;
 }

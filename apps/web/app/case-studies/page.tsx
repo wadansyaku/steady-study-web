@@ -1,21 +1,28 @@
-import { caseStudies } from '@aiyoume/content';
+import { getCaseStudies, getGlobalSettings } from '@aiyoume/content';
 import { CaseStudyCard } from '@aiyoume/ui';
 import { buildMetadata } from '@/lib/seo';
 
-export const metadata = buildMetadata({
-  title: '事例',
-  description: 'AIYouMe の学習支援・制作支援・業務自動化の事例を掲載しています。',
-  path: '/case-studies',
-});
+export async function generateMetadata() {
+  const settings = await getGlobalSettings();
 
-export default function CaseStudiesPage() {
+  return buildMetadata({
+    title: '事例',
+    description: 'AIYouMe の学習支援・制作支援・業務自動化の事例を掲載しています。',
+    path: '/case-studies',
+    siteName: settings.name,
+  });
+}
+
+export default async function CaseStudiesPage() {
+  const studies = await getCaseStudies();
+
   return (
     <section className="section">
       <div className="shell prose-shell">
         <p className="section-header__eyebrow">Case Studies</p>
         <h1>事例で、何を変える支援なのかを示します。</h1>
         <div className="card-grid">
-          {caseStudies.map((study) => (
+          {studies.map((study) => (
             <CaseStudyCard
               key={study.slug}
               theme={study.service}

@@ -53,6 +53,7 @@ test('home page exposes trust-first structure and core CTAs', async ({ page }) =
 });
 
 test('contact page renders and submits first-party lead form', async ({ page }) => {
+  test.slow();
   await page.goto('/contact?service=automation');
   await expect(page.getByLabel('相談先')).toHaveValue('automation');
   await page.getByLabel('お名前').fill('Playwright Test');
@@ -62,7 +63,13 @@ test('contact page renders and submits first-party lead form', async ({ page }) 
   await page
     .getByLabel('相談内容')
     .fill('Automation 導入前の整理を相談したいです。現状フローの棚卸しから支援をお願いします。');
-  await page.getByRole('button', { name: '問い合わせを送信' }).click();
+  await Promise.all([
+    page.waitForResponse((response) =>
+      response.url().includes('/contact/submit/automation') &&
+      response.request().method() === 'POST'
+    ),
+    page.getByRole('button', { name: '問い合わせを送信' }).click(),
+  ]);
   await expect(page.getByText('送信を受け付けました。通常 1 営業日以内に返信します。')).toBeVisible();
 });
 
@@ -84,6 +91,26 @@ test('lead API rejects incomplete submissions', async ({ request }) => {
     message: '入力内容を確認してください。',
   });
   expect(payload.issues).toBeTruthy();
+});
+
+test('lead API rejects unknown services with controlled 404', async ({ request }) => {
+  const response = await request.post('/contact/submit/unknown-service', {
+    data: {
+      service: 'unknown-service',
+      name: 'Playwright Test',
+      email: 'playwright@example.com',
+      message:
+        'This payload should never reach persistence because the service key is invalid.',
+      consent: true,
+    },
+  });
+
+  expect(response.status()).toBe(404);
+  const payload = await response.json();
+  expect(payload).toMatchObject({
+    ok: false,
+    message: 'Unknown service.',
+  });
 });
 
 test('legacy redirects stay intact', async ({ page, request }) => {

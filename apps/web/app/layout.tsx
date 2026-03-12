@@ -1,7 +1,6 @@
-import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { Noto_Sans_JP, Sora } from 'next/font/google';
-import { siteSettings } from '@aiyoume/content';
+import { getGlobalSettings } from '@aiyoume/content';
 import { JsonLd } from '@/components/JsonLd';
 import { FooterClient } from '@/components/FooterClient';
 import { HeaderClient } from '@/components/HeaderClient';
@@ -21,39 +20,51 @@ const displayFont = Sora({
   weight: ['400', '600', '700', '800'],
 });
 
-const env = getPublicEnv();
+export async function generateMetadata() {
+  const env = getPublicEnv();
+  const settings = await getGlobalSettings();
 
-export const metadata: Metadata = {
-  metadataBase: new URL(env.siteUrl),
-  title: {
-    default: siteSettings.name,
-    template: `%s | ${siteSettings.name}`,
-  },
-  description: siteSettings.description,
-  icons: {
-    icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/favicon.ico', type: 'image/x-icon' },
-    ],
-  },
-};
+  return {
+    metadataBase: new URL(env.siteUrl),
+    title: {
+      default: settings.name,
+      template: `%s | ${settings.name}`,
+    },
+    description: settings.description,
+    icons: {
+      icon: [
+        { url: '/favicon.svg', type: 'image/svg+xml' },
+        { url: '/favicon.ico', type: 'image/x-icon' },
+      ],
+    },
+  };
+}
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
+  const settings = await getGlobalSettings();
+
   return (
     <html lang="ja" className={`${bodyFont.variable} ${displayFont.variable}`}>
       <body>
         <a className="skip-link" href="#main">
           本文へスキップ
         </a>
-        <HeaderClient />
+        <HeaderClient
+          navItems={settings.navigation}
+          cta={{ href: '/contact', label: 'お問い合わせ' }}
+        />
         <main id="main">{children}</main>
-        <FooterClient />
-        <JsonLd data={organizationJsonLd()} />
-        <JsonLd data={websiteJsonLd()} />
+        <FooterClient
+          navItems={settings.footerNav}
+          utilityItems={settings.footerUtility}
+          tag={settings.description}
+        />
+        <JsonLd data={organizationJsonLd(settings)} />
+        <JsonLd data={websiteJsonLd(settings)} />
       </body>
     </html>
   );

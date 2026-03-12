@@ -1,13 +1,13 @@
 # AIYouMe Platform
 
-AIYouMe の公開サイト基盤です。ブランド本体は `Next.js App Router + Cloudflare Workers`、UI とコンテンツ定義は workspace package に分離し、`VOID-RUSH` は `services/voidrush` へ切り出しています。
+AIYouMe の公開サイト基盤です。主系は `apps/web` の `Next.js App Router + OpenNext + Cloudflare Workers` で、共通 UI とコンテンツ取得層は workspace package に分離しています。`VOID-RUSH` は `services/voidrush` に切り出し、公開サイト本体からは labs 導線として扱います。
 
 ## Workspace
 
-- `apps/web`: 公開サイト。`/learning` `/studio` `/automation` `/about` `/profile` `/case-studies` `/process` `/pricing` `/faq` `/security` `/terms` `/privacy` `/contact` を提供します。
-- `packages/ui`: ブランドトークン、ロゴ variant、共通 UI。
-- `packages/content`: サイトコンテンツ、Sanity schema、query/config。
-- `services/voidrush`: labs 分離用の実験サービス。
+- `apps/web`: 公開サイト本体。`/learning` `/studio` `/automation` `/about` `/profile` `/case-studies` `/process` `/pricing` `/faq` `/security` `/terms` `/privacy` `/contact` `/cms`
+- `packages/ui`: ロゴ、ブランドトークン、共通 UI
+- `packages/content`: fallback data、Sanity schema、query、CMS loader、seed data
+- `services/voidrush`: labs 配信用の実験サービス
 
 ## Setup
 
@@ -33,13 +33,16 @@ cp .env.example .env
 - `SANITY_API_READ_TOKEN`
 - `SANITY_API_WRITE_TOKEN`
 
+公開面の設定優先順位は `Sanity globalSettings > NEXT_PUBLIC_* fallback > packages/content/src/site-data.ts` です。
+
 ## Local Development
 
 ```bash
 npm run dev
 ```
 
-`apps/web` が起動します。`/cms` は Sanity project id が設定されていれば embedded Studio を表示し、未設定時は schema 案内ページを表示します。
+- `apps/web` が起動します
+- `/cms` は `NEXT_PUBLIC_SANITY_PROJECT_ID` があれば embedded Studio、なければ schema 案内ページを表示します
 
 ## Validation
 
@@ -50,20 +53,24 @@ npm run build
 npm run test:e2e
 ```
 
-E2E は Playwright で以下を確認します。
-
-- desktop / mobile の主要公開ページ
-- axe の重大違反 0
-- canonical / JSON-LD
-- legacy redirect
-- first-party lead form
-- logo-driven visual regression
-
-初回のみブラウザを入れる場合:
+必要なら Playwright Chromium を先に入れます。
 
 ```bash
 npx playwright install chromium
 ```
+
+## CMS
+
+Sanity に fallback data を投入する場合:
+
+```bash
+npm run cms:seed -- --dry-run
+npm run cms:seed
+```
+
+- `--dry-run` は投入対象 `_id` を表示するだけで書き込みません
+- 実行時は `NEXT_PUBLIC_SANITY_PROJECT_ID` と `SANITY_API_WRITE_TOKEN` が必要です
+- stable `_id` は `globalSettings.main`、`homePage.main`、`servicePage.*`、`caseStudy.*`、`faqItem.*` などに固定しています
 
 ## Cloudflare Workers
 
@@ -75,16 +82,7 @@ npm run build
 npm run preview
 ```
 
-本番前に必要な設定:
-
-1. `wrangler.toml` の公開変数を実値へ更新する
-2. D1 binding `LEADS_DB` を追加する
-3. `TURNSTILE_SECRET_KEY` `RESEND_API_KEY` `RESEND_FROM_EMAIL` `LEAD_NOTIFICATION_EMAIL` を secret として投入する
-4. `NEXT_PUBLIC_SANITY_PROJECT_ID` を設定して `/cms` を有効化する
-
-lead tables は `apps/web/migrations/0001_leads.sql` を使います。
-
-手動デプロイ / migration:
+手動デプロイ:
 
 ```bash
 npm run db:migrate
@@ -93,25 +91,26 @@ npm run db:migrate:preview
 npm run deploy:preview
 ```
 
-## GitHub Integration
+本番前に必要な設定:
 
-`main` push と `workflow_dispatch` 用に Cloudflare deploy workflow を追加しています。
+1. `apps/web/wrangler.toml` の public vars を実値へ更新
+2. D1 binding `LEADS_DB` を用意
+3. `TURNSTILE_SECRET_KEY` `RESEND_API_KEY` `RESEND_FROM_EMAIL` `LEAD_NOTIFICATION_EMAIL` を secret として投入
+4. Sanity を有効化する場合は `NEXT_PUBLIC_SANITY_PROJECT_ID` と必要な token を設定
+
+lead table migration は `apps/web/migrations/0001_leads.sql` を使います。
+
+## GitHub Actions
+
+- `ci.yml`: lint / typecheck / build / Playwright E2E
+- `deploy-web.yml`: `main` push または `workflow_dispatch` で Cloudflare Workers へ deploy
+- `lighthouse-web.yml`: Lighthouse CI
+- `voidrush-daily-rollup.yml`: VOID-RUSH ops の日次実行
+
+`deploy-web.yml` は fail-fast です。最低限次が必要です。
 
 - GitHub secret: `CLOUDFLARE_API_TOKEN`
 - GitHub variable: `CLOUDFLARE_ACCOUNT_ID`
-
-secret 未設定時は workflow が no-op で終了し、何が不足しているかだけ出力します。
-
-Lighthouse CI workflow も追加しており、PR 上で performance / accessibility / SEO budget を確認できます。
-
-## Current Cloudflare Status
-
-- lead 用 D1 は `aiyoume-leads-prod` / `aiyoume-leads-preview` を作成済み
-- migration は preview / production とも適用済み
-- preview worker: `https://aiyoume-web-preview.kidsquestmissionjp.workers.dev`
-- production worker: `https://aiyoume-web.kidsquestmissionjp.workers.dev`
-- GitHub deploy workflow は追加済みだが、repo secret `CLOUDFLARE_API_TOKEN` はまだ未設定
-- custom domain / route はまだ Workers 側に接続していない
 
 ## Legacy And Labs
 
@@ -119,4 +118,4 @@ Lighthouse CI workflow も追加しており、PR 上で performance / accessibi
 - `/creator` -> `/studio`
 - `/creator/void-rush/*` -> `https://labs.ai-yu-me.com/void-rush/*`
 
-`services/voidrush` には root から同期した資産があり、`npm run voidrush:sync` で再同期できます。
+`services/voidrush` は root の `public/creator/void-rush`、`functions`、`migrations` を同期元として使います。

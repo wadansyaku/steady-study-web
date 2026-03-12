@@ -1,11 +1,12 @@
-import { caseStudies, getCaseStudy } from '@aiyoume/content';
+import { getCaseStudies, getCaseStudy, getGlobalSettings } from '@aiyoume/content';
 import { notFound } from 'next/navigation';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbJsonLd } from '@/lib/json-ld';
 import { buildMetadata } from '@/lib/seo';
 
 export async function generateStaticParams() {
-  return caseStudies.map((study) => ({ slug: study.slug }));
+  const studies = await getCaseStudies();
+  return studies.map((study) => ({ slug: study.slug }));
 }
 
 export async function generateMetadata({
@@ -14,12 +15,13 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const study = getCaseStudy(slug);
+  const [settings, study] = await Promise.all([getGlobalSettings(), getCaseStudy(slug)]);
   if (!study) {
     return buildMetadata({
       title: 'Case Study',
       description: 'Case study not found.',
       path: '/case-studies',
+      siteName: settings.name,
     });
   }
 
@@ -27,6 +29,7 @@ export async function generateMetadata({
     title: study.title,
     description: study.summary,
     path: `/case-studies/${study.slug}`,
+    siteName: settings.name,
   });
 }
 
@@ -36,7 +39,7 @@ export default async function CaseStudyPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const study = getCaseStudy(slug);
+  const study = await getCaseStudy(slug);
   if (!study) {
     notFound();
   }

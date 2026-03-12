@@ -1,57 +1,34 @@
-# `ai-yu-me.com` を Cloudflare Pages に接続する
+# `ai-yu-me.com` を Cloudflare Workers に接続する
 
-対象プロジェクト: `aiyume-web`（Pages）
+対象: `apps/web` を OpenNext 経由で deploy した Worker
 
 ## 前提
 
 - canonical domain は `https://ai-yu-me.com`
-- AIYouMe の正規ルートは Pages 側で配信する
-- `NanjyoEnglishApp` は `/aiyume_english*` と `/api/*` を優先して処理する
+- 公開サイト本体は Worker が返す
+- `labs.ai-yu-me.com` は `VOID-RUSH` など実験系の分離先として使う
 
-## 1. DNS
+## 1. Worker 側
 
-Cloudflare DNS（Zone: `ai-yu-me.com`）で以下を設定します。
+- production worker に `ai-yu-me.com/*` を接続
+- 必要なら `www.ai-yu-me.com/*` も接続し、どちらを canonical にするか決める
+- `workers_dev = false` のまま route / custom domain を使う
 
-1. `www`
-   - Type: `CNAME`
-   - Target: `aiyume-web.pages.dev`
-   - Proxy: ON
-2. `@`
-   - Type: `CNAME`
-   - Target: `aiyume-web.pages.dev`
-   - Proxy: ON
+## 2. DNS
 
-## 2. Pages Custom Domains
-
-Pages プロジェクト `aiyume-web` に以下を追加します。
-
-- `ai-yu-me.com`
-- `www.ai-yu-me.com`
+Cloudflare DNS で Worker / Custom Domain の指示に従って apex と `www` を接続します。実際の record 形式は Workers 側の current setup に合わせます。
 
 ## 3. 推奨リダイレクト
 
-- `www.ai-yu-me.com/*` → `ai-yu-me.com/*` に 301
+- `www.ai-yu-me.com/*` -> `ai-yu-me.com/*` に 301
+- `/education` -> `/learning`
+- `/creator` -> `/studio`
+- `/creator/void-rush/*` -> `https://labs.ai-yu-me.com/void-rush/*`
 
-## 4. NanjyoEnglishApp と同居する場合
+## 4. 確認項目
 
-長期運用の推奨構成:
-
-- `NanjyoEnglishApp` の build base を `/aiyume_english/` に寄せる
-- Worker route は次だけに絞る
-  - `ai-yu-me.com/aiyume_english*`
-  - `ai-yu-me.com/api/*`
-  - `www.ai-yu-me.com/aiyume_english*`
-  - `www.ai-yu-me.com/api/*`
-- それ以外のルートは Pages が配信する
-
-暫定構成:
-
-- Worker が apex を受けつつ、`/aiyume_english*` と `/api/*` だけ自前処理
-- それ以外は Pages へプロキシ
-
-## 5. 確認項目
-
-- `https://ai-yu-me.com/` が AIYouMe のトップページを返す
-- `https://ai-yu-me.com/learning` `/studio` `/automation` が Pages 配信になる
-- `https://ai-yu-me.com/creator/void-rush/` が same-origin `/api/voidrush` を使う
-- `https://ai-yu-me.com/aiyume_english/` は NanjyoEnglishApp が返す
+- `https://ai-yu-me.com/` が AIYouMe トップを返す
+- `https://ai-yu-me.com/learning` `/studio` `/automation` が Worker 配信になる
+- `https://ai-yu-me.com/contact` の canonical と JSON-LD が正しい
+- `https://ai-yu-me.com/creator/void-rush/demo` が labs へ 3xx redirect する
+- `https://ai-yu-me.com/cms` は Sanity env の有無に応じて Studio または schema 案内を返す

@@ -9,6 +9,14 @@ import {
 } from '@/lib/leads';
 
 export async function handleLeadSubmission(request: Request, serviceParam: string) {
+  const service = verifyServiceKey(serviceParam);
+  if (!service) {
+    return NextResponse.json(
+      { ok: false, message: 'Unknown service.' },
+      { status: 404 }
+    );
+  }
+
   let body: unknown;
   try {
     body = await request.json();
@@ -21,7 +29,7 @@ export async function handleLeadSubmission(request: Request, serviceParam: strin
 
   const parsed = leadSubmissionSchema.safeParse({
     ...(typeof body === 'object' && body !== null ? body : {}),
-    service: verifyServiceKey(serviceParam),
+    service,
   });
 
   if (!parsed.success) {

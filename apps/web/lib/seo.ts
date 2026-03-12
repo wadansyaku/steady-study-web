@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { siteSettings } from '@aiyoume/content';
+import { siteSettings, type GlobalSettings } from '@aiyoume/content';
 import { getPublicEnv } from './env';
 
 export function absoluteUrl(path = '/') {
@@ -14,15 +14,17 @@ export function buildMetadata({
   ogTitle,
   ogDescription,
   path,
+  siteName = siteSettings.name,
 }: {
   title: string;
   description: string;
   ogTitle?: string;
   ogDescription?: string;
   path: string;
+  siteName?: GlobalSettings['name'];
 }): Metadata {
   const canonical = absoluteUrl(path);
-  const fullTitle = title === siteSettings.name ? title : `${title} | ${siteSettings.name}`;
+  const fullTitle = title === siteName ? title : `${title} | ${siteName}`;
   const openGraphTitle = ogTitle ?? fullTitle;
   const openGraphDescription = ogDescription ?? description;
 
@@ -36,7 +38,7 @@ export function buildMetadata({
       title: openGraphTitle,
       description: openGraphDescription,
       url: canonical,
-      siteName: siteSettings.name,
+      siteName,
       images: [absoluteUrl('/og.svg')],
       locale: 'ja_JP',
       type: 'website',

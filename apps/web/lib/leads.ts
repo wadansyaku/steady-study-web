@@ -32,7 +32,8 @@ function isMissingLeadTableError(error: unknown) {
 }
 
 export function verifyServiceKey(service: string) {
-  return leadServiceSchema.parse(service);
+  const parsed = leadServiceSchema.safeParse(service);
+  return parsed.success ? parsed.data : null;
 }
 
 export function resolveClientAddress(headers: Headers) {

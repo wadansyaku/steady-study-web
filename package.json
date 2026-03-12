@@ -17,6 +17,7 @@
     "typecheck": "npm run typecheck --workspace @aiyoume/ui && npm run typecheck --workspace @aiyoume/content && npm run typecheck --workspace @aiyoume/web",
     "db:migrate": "npm run db:migrate --workspace @aiyoume/web",
     "db:migrate:preview": "npm run db:migrate:preview --workspace @aiyoume/web",
+    "cms:seed": "tsx scripts/cms_seed.ts",
     "test:lighthouse": "npm run test:lighthouse --workspace @aiyoume/web",
     "test:e2e": "npm run test:e2e --workspace @aiyoume/web",
     "test:e2e:update": "npm run test:e2e:update --workspace @aiyoume/web",
@@ -26,6 +27,7 @@
     "node": ">=20.0.0"
   },
   "devDependencies": {
+    "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   }
 }

@@ -6,6 +6,11 @@ export type LinkItem = {
   external?: boolean;
 };
 
+export type BrandPillar = {
+  title: string;
+  body: string;
+};
+
 export type ProofAsset = {
   title: string;
   body: string;
@@ -34,6 +39,7 @@ export type ServicePage = {
 
 export type CaseStudy = {
   slug: string;
+  sortOrder: number;
   service: ServiceKey;
   title: string;
   summary: string;
@@ -44,6 +50,8 @@ export type CaseStudy = {
 };
 
 export type FAQItem = {
+  slug: string;
+  sortOrder: number;
   question: string;
   answer: string;
   service?: ServiceKey;
@@ -97,7 +105,113 @@ export type JourneyStep = {
   body: string;
 };
 
-export const siteSettings = {
+export type GlobalSettings = {
+  name: string;
+  tagline: string;
+  description: string;
+  navigation: LinkItem[];
+  footerNav: LinkItem[];
+  footerUtility: LinkItem[];
+  contactChannels: {
+    line: string;
+    booking: string;
+    email: string;
+    labs: string;
+  };
+  brandPillars: BrandPillar[];
+};
+
+export type HomePageContent = {
+  seo: {
+    title: string;
+    description: string;
+    ogTitle: string;
+    ogDescription: string;
+  };
+  hero: HomeHero;
+  fitCases: FitCase[];
+  notFitNote: string;
+  serviceHighlights: ServiceHighlight[];
+  trustProofs: TrustProof[];
+  processSteps: JourneyStep[];
+  faqPreview: FAQItem[];
+  brandSummary: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    pillars: BrandPillar[];
+  };
+};
+
+export type ProfileSummary = {
+  title: string;
+  body: string;
+  seoDescription: string;
+  role: string;
+  specialties: string[];
+  workingStyle: string[];
+  boundaries: string[];
+};
+
+export type AboutSummary = {
+  title: string;
+  body: string;
+  seoDescription: string;
+  principles: Array<{
+    title: string;
+    body: string;
+  }>;
+  boundaries: Array<{
+    title: string;
+    body: string;
+  }>;
+};
+
+export type PricingSummary = {
+  title: string;
+  seoDescription: string;
+  intro: string;
+  factors: string[];
+  proposalItems: string[];
+};
+
+export type PricingPageContent = PricingSummary & {
+  models: PricingModel[];
+};
+
+export type ProcessSummary = {
+  title: string;
+  intro: string;
+  seoDescription: string;
+  steps: JourneyStep[];
+};
+
+export type SecuritySummary = {
+  title: string;
+  seoDescription: string;
+  commitments: string[];
+  intake: string[];
+  boundaries: string[];
+  vendors: string[];
+};
+
+export type PolicySection = {
+  title: string;
+  body: string;
+};
+
+export type PolicyPageSlug = 'terms' | 'privacy';
+
+export type PolicyPageContent = {
+  slug: PolicyPageSlug;
+  eyebrow: string;
+  title: string;
+  seoTitle: string;
+  seoDescription: string;
+  sections: PolicySection[];
+};
+
+export const siteSettings: GlobalSettings = {
   name: 'AIYouMe',
   tagline: '学習支援・制作支援・業務自動化を、状況整理から相談できる。',
   description:
@@ -144,7 +258,7 @@ export const siteSettings = {
       body: '設計・実装・改善を引き受ける側として、責任の範囲と非対応を先に明確にする。',
     },
   ],
-} as const;
+};
 
 export const sharedJourneySteps: JourneyStep[] = [
   {
@@ -375,6 +489,7 @@ export const pricingModels: PricingModel[] = [
 export const caseStudies: CaseStudy[] = [
   {
     slug: 'learning-weekly-reset',
+    sortOrder: 10,
     service: 'learning',
     title: '家庭内で止まりがちな受験学習を、週次リズムに戻したケース',
     summary:
@@ -395,6 +510,7 @@ export const caseStudies: CaseStudy[] = [
   },
   {
     slug: 'studio-review-flow',
+    sortOrder: 20,
     service: 'studio',
     title: '動画と音のレビュー往復を減らし、納品までの流れを整えたケース',
     summary:
@@ -415,6 +531,7 @@ export const caseStudies: CaseStudy[] = [
   },
   {
     slug: 'automation-intake-router',
+    sortOrder: 30,
     service: 'automation',
     title: '社内問い合わせの一次整理を自動化し、人手確認の位置を明確にしたケース',
     summary:
@@ -437,37 +554,51 @@ export const caseStudies: CaseStudy[] = [
 
 export const faqItems: FAQItem[] = [
   {
+    slug: 'what-can-i-consult',
+    sortOrder: 10,
     question: '何を相談できますか？',
     answer:
       '学習計画の整理、制作要件の整理、業務フローの可視化と自動化の初期設計まで、課題の切り分け段階から相談できます。',
   },
   {
+    slug: 'how-pricing-works',
+    sortOrder: 20,
     question: '費用感はどのように決まりますか？',
     answer:
       '支援頻度、扱う範囲、必要な成果物、レビュー量、運用上の責任範囲で決まります。初回整理後に、必要な支援量に合わせて提案します。',
   },
   {
+    slug: 'online-support',
+    sortOrder: 30,
     question: 'オンラインで相談や進行はできますか？',
     answer:
       'はい。初回整理、定例、レビューの多くはオンラインで対応できます。対面が必要な場合も、まずはオンラインで前提をそろえます。',
   },
   {
+    slug: 'can-i-ask-before-clear',
+    sortOrder: 40,
     question: 'まだ課題が曖昧でも相談してよいですか？',
     answer:
       '構いません。最初から正確な依頼書は不要です。現状、困りごと、止まりやすい場面の3点があれば、最初の切り分けを始められます。',
   },
   {
+    slug: 'nda-and-permissions',
+    sortOrder: 50,
     question: 'NDA や権限管理の相談はできますか？',
     answer:
       'Automation を中心に対応しています。資料共有前に必要な条件がある場合も、問い合わせ時点で前提を確認できます。',
     service: 'automation',
   },
   {
+    slug: 'can-work-with-existing-vendors',
+    sortOrder: 60,
     question: '塾や既存の制作チーム、既存ベンダーと併用できますか？',
     answer:
       '可能です。AIYouMe はすべてを置き換える前提ではなく、既存の体制が回りやすくなるように設計します。',
   },
   {
+    slug: 'is-void-rush-core-service',
+    sortOrder: 70,
     question: 'VOID-RUSH は本サービスですか？',
     answer:
       'いいえ。VOID-RUSH は labs ドメインで運用する実験コンテンツで、Studio の検証事例としてのみ扱います。',
@@ -475,10 +606,11 @@ export const faqItems: FAQItem[] = [
   },
 ];
 
-export const profileSummary = {
+export const profileSummary: ProfileSummary = {
   title: '運営者の役割と判断基準を公開しています。',
   body:
     'AIYouMe は、課題が固まり切っていない段階から状況を整理し、学習支援・制作支援・業務自動化を「次の行動」と「責任の境界」が見える形に変える運営スタンスを取ります。',
+  seoDescription: 'AIYouMe の運営者が重視する役割、判断基準、対応スタンスを掲載しています。',
   role:
     '学習支援・制作支援・業務自動化の相談を、整理と実装の両面から支える運営者です。',
   specialties: [
@@ -498,10 +630,11 @@ export const profileSummary = {
   ],
 };
 
-export const aboutSummary = {
+export const aboutSummary: AboutSummary = {
   title: '相談前に判断できる情報を先に出すための運営方針です。',
   body:
     'AIYouMe は 3 事業を並列に扱いますが、どの相談でも「誰向けか」「何をどこまで持つか」「どこから先は持たないか」を最初に公開することを運営方針にしています。',
+  seoDescription: 'AIYouMe が誰向けで、どのような進め方や線引きを重視しているかを公開しています。',
   principles: [
     {
       title: '適合条件を先に示す',
@@ -532,7 +665,20 @@ export const aboutSummary = {
   ],
 };
 
-export const termsSummary = {
+export const processSummary: ProcessSummary = {
+  title: '問い合わせから実施後の振り返りまでを先に共有します。',
+  intro:
+    '何がいつ決まり、どの段階で提案や見積もりに進むかを公開し、相談前の不安を減らします。',
+  seoDescription: 'AIYouMe の問い合わせから提案、実施、振り返りまでの流れを掲載しています。',
+  steps: sharedJourneySteps,
+};
+
+export const termsSummary: PolicyPageContent = {
+  slug: 'terms',
+  eyebrow: 'Terms',
+  title: '利用条件の要約',
+  seoTitle: 'Terms',
+  seoDescription: 'AIYouMe の提供条件、レビュー、守秘、問い合わせ情報の取り扱いに関する要約です。',
   sections: [
     {
       title: '提供形態',
@@ -553,7 +699,9 @@ export const termsSummary = {
   ],
 };
 
-export const pricingSummary = {
+export const pricingSummary: PricingSummary = {
+  title: '費用感は「支援の量」と「持つ責任」で決まります。',
+  seoDescription: 'AIYouMe の費用感が何で決まるか、提案時に何を整理するかを掲載しています。',
   intro:
     '価格表で煽る代わりに、費用が何で変わるかを先に公開します。AIYouMe の費用感は、支援の量と持つ責任の大きさで決まります。',
   factors: [
@@ -571,8 +719,9 @@ export const pricingSummary = {
   ],
 };
 
-export const securitySummary = {
+export const securitySummary: SecuritySummary = {
   title: '問い合わせ前に確認できるセキュリティと契約の前提',
+  seoDescription: 'AIYouMe の問い合わせ導線、取り扱う情報、利用ベンダー、開始前に確認する前提を公開しています。',
   commitments: [
     'Cloudflare Workers / D1 を前提に、問い合わせ経路と保存先を明確化します。',
     'Turnstile による bot 対策を実装し、送信経路を first-party 化します。',
@@ -596,7 +745,33 @@ export const securitySummary = {
   ],
 };
 
-export const homePageContent = {
+export const privacySummary: PolicyPageContent = {
+  slug: 'privacy',
+  eyebrow: 'Privacy',
+  title: 'プライバシーポリシー',
+  seoTitle: 'Privacy',
+  seoDescription: 'AIYouMe の問い合わせ情報、外部ベンダー、labs コンテンツを含むプライバシーポリシーです。',
+  sections: [
+    {
+      title: '取得する情報',
+      body: '問い合わせフォームでは氏名、メール、相談内容、組織名、役割、送信経路に関する情報を受け取ります。',
+    },
+    {
+      title: '利用目的',
+      body: '相談対応、日程調整、案件提案、運用改善、bot 対策、不正送信検知のために使用します。',
+    },
+    {
+      title: '保存先とベンダー',
+      body: 'Cloudflare Workers / D1 を基盤にし、通知には Resend、CMS 管理には Sanity を利用する場合があります。',
+    },
+    {
+      title: 'labs コンテンツ',
+      body: 'VOID-RUSH は labs ドメインで分離運用し、本体問い合わせ用途とは別系統の実験コンテンツとして扱います。',
+    },
+  ],
+};
+
+export const homePageContent: HomePageContent = {
   seo: {
     title: '学習支援・制作支援・業務自動化の相談窓口',
     description:
@@ -746,18 +921,18 @@ export const homePageContent = {
   },
 };
 
-export function getServicePage(service: ServiceKey) {
+export function getStaticServicePage(service: ServiceKey) {
   return servicePages[service];
 }
 
-export function getAllServicePages() {
+export function getStaticAllServicePages() {
   return Object.values(servicePages);
 }
 
-export function getCaseStudy(slug: string) {
+export function getStaticCaseStudy(slug: string) {
   return caseStudies.find((item) => item.slug === slug) ?? null;
 }
 
-export function getCaseStudiesByService(service: ServiceKey) {
+export function getStaticCaseStudiesByService(service: ServiceKey) {
   return caseStudies.filter((item) => item.service === service);
 }

@@ -3,14 +3,19 @@ import { CmsStudioClient } from './CmsStudioClient';
 import { getPublicEnv } from '@/lib/env';
 
 const schemaNames = [
-  'siteSetting',
+  'globalSettings',
+  'homePage',
   'servicePage',
   'caseStudy',
-  'article',
   'faqItem',
-  'proofAsset',
-  'personProfile',
+  'aboutPage',
+  'profilePage',
+  'processPage',
+  'pricingPage',
+  'securityPage',
   'policyPage',
+  'article',
+  'proofAsset',
 ];
 
 export const dynamic = 'force-dynamic';

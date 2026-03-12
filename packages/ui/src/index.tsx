@@ -125,18 +125,18 @@ export function SiteHeader({
 export function SiteFooter({
   navItems,
   utilityItems,
+  tag,
 }: {
   navItems: NavItem[];
   utilityItems: NavItem[];
+  tag: string;
 }) {
   return (
     <footer className="site-footer">
       <div className="shell site-footer__inner">
         <div className="site-footer__brand">
           <Logo variant="logo-light" alt="AIYouMe" />
-          <p className="site-footer__tag">
-            学習支援・制作支援・業務自動化を、状況整理から相談できる公開サイトです。
-          </p>
+          <p className="site-footer__tag">{tag}</p>
         </div>
         <div className="site-footer__links">
           <div>

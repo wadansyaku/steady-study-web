@@ -9,6 +9,7 @@
     "./queries": "./src/queries.ts"
   },
   "dependencies": {
+    "@opennextjs/cloudflare": "^1.17.1",
     "@sanity/vision": "^4.13.0",
     "@sanity/client": "^7.17.0",
     "next-sanity": "^12.1.1",

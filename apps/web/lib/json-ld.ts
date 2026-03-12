@@ -1,26 +1,25 @@
-import type { FAQItem } from '@aiyoume/content';
-import { siteSettings } from '@aiyoume/content';
+import type { FAQItem, GlobalSettings } from '@aiyoume/content';
 import { absoluteUrl } from './seo';
 
-export function organizationJsonLd() {
+export function organizationJsonLd(settings: GlobalSettings) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: siteSettings.name,
+    name: settings.name,
     url: absoluteUrl('/'),
     logo: absoluteUrl('/brand/aiyoume-logo-dark.svg'),
-    email: `mailto:${siteSettings.contactChannels.email}`,
-    sameAs: [siteSettings.contactChannels.line],
+    email: `mailto:${settings.contactChannels.email}`,
+    sameAs: [settings.contactChannels.line],
   };
 }
 
-export function websiteJsonLd() {
+export function websiteJsonLd(settings: GlobalSettings) {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: siteSettings.name,
+    name: settings.name,
     url: absoluteUrl('/'),
-    description: siteSettings.description,
+    description: settings.description,
   };
 }
 

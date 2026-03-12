@@ -1,4 +1,4 @@
-import { getCaseStudiesByService, getServicePage } from '@aiyoume/content';
+import { getCaseStudies, getGlobalSettings, getServicePage } from '@aiyoume/content';
 import { ContactStrip, PageHero, ProofCard, SectionHeader, ServiceBadge } from '@aiyoume/ui';
 import { notFound } from 'next/navigation';
 import { JsonLd } from '@/components/JsonLd';
@@ -18,18 +18,24 @@ export async function generateMetadata({
 }) {
   const { service } = await params;
   if (!services.includes(service as (typeof services)[number])) {
+    const settings = await getGlobalSettings();
     return buildMetadata({
-      title: 'AIYouMe',
+      title: settings.name,
       description: 'AIYouMe service page',
       path: '/',
+      siteName: settings.name,
     });
   }
 
-  const page = getServicePage(service as (typeof services)[number]);
+  const [settings, page] = await Promise.all([
+    getGlobalSettings(),
+    getServicePage(service as (typeof services)[number]),
+  ]);
   return buildMetadata({
     title: page.title,
     description: page.seoDescription,
     path: `/${service}`,
+    siteName: settings.name,
   });
 }
 
@@ -43,8 +49,11 @@ export default async function ServicePage({
     notFound();
   }
 
-  const page = getServicePage(service as (typeof services)[number]);
-  const studies = getCaseStudiesByService(page.key);
+  const [page, allStudies] = await Promise.all([
+    getServicePage(service as (typeof services)[number]),
+    getCaseStudies(),
+  ]);
+  const studies = allStudies.filter((study) => study.service === page.key);
 
   return (
     <>

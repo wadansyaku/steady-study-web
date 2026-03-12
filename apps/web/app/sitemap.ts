@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { caseStudies } from '@aiyoume/content';
+import { getCaseStudies } from '@aiyoume/content';
 import { absoluteUrl } from '@/lib/seo';
 
 const baseRoutes = [
@@ -19,8 +19,9 @@ const baseRoutes = [
   '/case-studies',
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
+  const studies = await getCaseStudies();
 
   return [
     ...baseRoutes.map((route) => ({
@@ -29,7 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: route === '/' ? ('weekly' as const) : ('monthly' as const),
       priority: route === '/' ? 1 : 0.7,
     })),
-    ...caseStudies.map((item) => ({
+    ...studies.map((item) => ({
       url: absoluteUrl(`/case-studies/${item.slug}`),
       lastModified: now,
       changeFrequency: 'monthly' as const,

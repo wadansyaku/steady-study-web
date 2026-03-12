@@ -1,10 +1,13 @@
 import type { MetadataRoute } from 'next';
+import { getGlobalSettings } from '@aiyoume/content';
 
-export default function manifest(): MetadataRoute.Manifest {
+export default async function manifest(): Promise<MetadataRoute.Manifest> {
+  const settings = await getGlobalSettings();
+
   return {
-    name: 'AIYouMe',
-    short_name: 'AIYouMe',
-    description: '学習・制作・業務を、軽く動く運用へ。',
+    name: settings.name,
+    short_name: settings.name,
+    description: settings.tagline,
     start_url: '/',
     display: 'standalone',
     background_color: '#F7F4ED',
