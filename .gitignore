@@ -3,6 +3,14 @@ dist
 .astro
 .npm-cache
 .DS_Store
+.next
+.open-next
+.vercel
+.playwright-cli
+playwright-report
+test-results
+output
+.lighthouseci
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

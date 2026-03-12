@@ -1,4 +1,6 @@
-# Cloudflare Pages デプロイ手順
+# Cloudflare Workers デプロイ手順
+
+この repo の公開サイト本体は `apps/web` の `Next.js App Router + OpenNext + Cloudflare Workers` を前提に運用します。Pages / Astro の手順は現在の主系ではありません。
 
 ## 1. ローカル確認
 
@@ -8,108 +10,87 @@ cp .env.example .env
 npm run dev
 ```
 
-公開前には `.env` を実値へ置き換えてください。
-
-## 2. ビルドと検証
+## 2. 品質確認
 
 ```bash
+npm run lint
+npm run typecheck
 npm run build
-npm run validate:build
+npm run test:e2e
 ```
 
-出力先は `dist/` です。
-
-## 3. Pages 設定
-
-- Framework preset: Astro
-- Build command: `npm run build`
-- Build output directory: `dist`
-
-GitHub Actions では build 後に `npm run validate:build` を実行します。Pages 側の本番/preview 環境でも同じ env キーを設定してください。
-
-## 4. Pages 環境変数
-
-必須:
-
-- `PUBLIC_SITE_URL`
-- `PUBLIC_LINE_URL`
-- `PUBLIC_BOOKING_URL`
-- `PUBLIC_CONTACT_EMAIL`
-- `PUBLIC_ANALYTICS_ENABLED`
-- `PUBLIC_ANALYTICS_SNIPPET`
-- `PUBLIC_VOIDRUSH_API_BASE_URL`
-
-任意:
-
-- `PUBLIC_AMAZON_ASSOCIATE_TAG`
-
-推奨値:
-
-- `PUBLIC_SITE_URL=https://ai-yu-me.com`
-- `PUBLIC_VOIDRUSH_API_BASE_URL=/api/voidrush`
-
-## 5. VOID-RUSH API (D1) の準備
-
-`/creator/void-rush/` を公開する場合は D1 マイグレーションを適用します。
+## 3. OpenNext / Workers 確認
 
 ```bash
-npm run cf:d1:migrate:remote:prod
-npm run cf:d1:migrate:remote:preview
+cd apps/web
+npm run build
+npm run preview
 ```
 
-ローカルで Pages Functions ごと確認する場合:
+`preview` は `opennextjs-cloudflare build && wrangler dev` を実行します。
+
+## 4. 必要な設定
+
+public vars:
+
+- `NEXT_PUBLIC_SITE_URL`
+- `NEXT_PUBLIC_LINE_URL`
+- `NEXT_PUBLIC_BOOKING_URL`
+- `NEXT_PUBLIC_CONTACT_EMAIL`
+- `NEXT_PUBLIC_LABS_URL`
+- `NEXT_PUBLIC_SANITY_DATASET`
+- `NEXT_PUBLIC_SANITY_PROJECT_ID`（CMS を使う場合）
+- `NEXT_PUBLIC_TURNSTILE_SITE_KEY`（Turnstile を使う場合）
+
+secrets:
+
+- `TURNSTILE_SECRET_KEY`
+- `RESEND_API_KEY`
+- `RESEND_FROM_EMAIL`
+- `LEAD_NOTIFICATION_EMAIL`
+- `SANITY_API_READ_TOKEN`（必要な場合）
+- `SANITY_API_WRITE_TOKEN`（seed / write が必要な場合）
+
+## 5. D1 migration
+
+lead form 用 D1 は `apps/web/migrations/0001_leads.sql` を使います。
 
 ```bash
-npm run cf:d1:migrate:local
-npm run cf:pages:dev
+npm run db:migrate
+npm run db:migrate:preview
 ```
 
-ops API まで確認する場合:
+## 6. Deploy
+
+手動:
 
 ```bash
-npm run cf:pages:dev:ops
+npm run deploy
+npm run deploy:preview
 ```
 
-主な API:
+GitHub Actions:
 
-- `/api/voidrush/time`
-- `/api/voidrush/progression/snapshot`
-- `/api/voidrush/progression/match-result`
-- `/api/voidrush/progression/leaderboard`
-- `/api/voidrush/progression/season`
+- `/.github/workflows/deploy-web.yml`
+- 必須: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
 
-## 6. VOID-RUSH 運用 API
+workflow は fail-fast で、認証情報が足りなければその場で失敗します。
 
-`VOIDRUSH_OPS_TOKEN` を Pages Project Settings の Environment Variables に設定してください。
+## 7. Sanity seed
 
-- `/api/voidrush/ops/daily-rollup`
-- `/api/voidrush/ops/rollups`
-- `/api/voidrush/ops/anomalies`
-- `/api/voidrush/ops/season-rollover`
-
-ローカル例:
+CMS を有効化する前に fallback data を seed する場合:
 
 ```bash
-export VOIDRUSH_OPS_TOKEN=dev-token
-npm run cf:pages:dev
-curl -H "x-ops-token: dev-token" "http://127.0.0.1:8788/api/voidrush/ops/daily-rollup"
+npm run cms:seed -- --dry-run
+npm run cms:seed
 ```
 
-## 7. 日次自動実行
+必要 env:
 
-`/.github/workflows/voidrush-daily-rollup.yml` が UTC 00:15 に `/ops/daily-rollup` を実行します。必要な Secrets:
+- `NEXT_PUBLIC_SANITY_PROJECT_ID`
+- `NEXT_PUBLIC_SANITY_DATASET`
+- `SANITY_API_WRITE_TOKEN`
 
-- `VOIDRUSH_BASE_URL`
-- `VOIDRUSH_OPS_TOKEN`
+## 8. VOID-RUSH
 
-## 8. 独自ドメイン
-
-Cloudflare Pages の Custom domains で以下を設定します。
-
-1. `ai-yu-me.com`
-2. `www.ai-yu-me.com`
-
-推奨:
-
-- `www.ai-yu-me.com` → `ai-yu-me.com` に 301 リダイレクト
-- SSL/TLS は `Full (strict)`
+公開サイト本体は `/creator/void-rush/*` を labs へ redirect します。`services/voidrush` は別トラックで運用します。
